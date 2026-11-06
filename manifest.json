@@ -1,0 +1,18 @@
+{
+  "name": "BukuPinkKu - Peneman Ibu & Anak",
+  "short_name": "BukuPinkKu",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fdf7f8",
+  "theme_color": "#f28ba2",
+  "orientation": "portrait-primary",
+  "description": "Aplikasi tracking kehamilan buku pink sehingga anak umur 3 tahun dengan perkongsian pasangan.",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23f28ba2'/><text x='50%' y='65%' font-size='50' text-anchor='middle'>🌸</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

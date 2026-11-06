@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BukuPinkKu - Peneman Digital Kehamilan & Kenangan Anak (0-3 Tahun)</title>
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#f28ba2">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="BukuPinkKu">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pastel: {
+              50: '#fff5f7',
+              100: '#fde8ed',
+              200: '#fbd2dc',
+              300: '#f8b1c2',
+              400: '#f28ba2',
+              500: '#e86785',
+              600: '#d4496b',
+              700: '#b43252',
+            },
+            tealsoft: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#14b8a6',
+              600: '#0d9488',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+  </style>
+</head>
+<body class="bg-[#fdf7f8] text-slate-800 min-h-screen pb-24 md:pb-12">
+
+  <!-- TOP BAR: Partner Role Switcher -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-pastel-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-2xl mx-auto px-4 py-2.5 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <span class="text-2xl">🌸</span>
+        <div>
+          <h1 class="text-base font-bold text-pastel-600 leading-tight">BukuPinkKu</h1>
+          <p class="text-[11px] text-slate-500">Kod Pasangan: <span class="font-mono font-semibold bg-pastel-100 text-pastel-700 px-1.5 py-0.5 rounded border border-pastel-200">PINK-8821</span></p>
+        </div>
+      </div>
+
+      <!-- Simulasi Tukar Peranan Pasangan -->
+      <div class="flex items-center bg-pastel-50 p-1 rounded-xl border border-pastel-200">
+        <button id="btn-role-mom" onclick="switchRole('mother')" 
+          class="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all shadow-sm bg-white text-pastel-600 border border-pastel-200">
+          <span>👩</span>
+          <span>Sarah</span>
+        </button>
+        <button id="btn-role-dad" onclick="switchRole('father')" 
+          class="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 border border-transparent">
+          <span>👨</span>
+          <span>Amir</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- NOTIFIKASI TOAST -->
+  <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-full shadow-lg flex items-center space-x-2 transition-all opacity-0 pointer-events-none">
+    <i data-lucide="bell" class="w-4 h-4 text-pastel-300"></i>
+    <span id="toast-text">Data dikemaskini</span>
+  </div>
+
+  <!-- CONTAINER UTAMA -->
+  <main class="max-w-2xl mx-auto px-4 py-4 space-y-4">
+
+    <!-- FASA TOGGLE: HAMIL vs ANAK LAHIR -->
+    <div class="bg-white p-1.5 rounded-2xl border border-pastel-200 flex items-center shadow-sm">
+      <button id="btn-phase-pregnancy" onclick="switchPhase('pregnancy')"
+        class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 bg-pastel-500 text-white shadow-sm">
+        <span>🤰</span>
+        <span>Fasa Hamil (Buku Pink)</span>
+      </button>
+      <button id="btn-phase-child" onclick="switchPhase('child')"
+        class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 text-slate-600 hover:text-slate-900">
+        <span>👶</span>
+        <span>Fasa Anak (0 - 3 Tahun)</span>
+      </button>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- [A] BAHAGIAN FASA KEHAMILAN                                     -->
+    <!-- ============================================================== -->
+    <div id="section-pregnancy" class="space-y-4">
+
+      <!-- HERO CARD: STATUS KANDUNGAN -->
+      <div class="bg-gradient-to-br from-[#f8b1c2] via-[#f49cb1] to-[#eb7d98] rounded-3xl p-5 text-white shadow-md relative overflow-hidden border border-pastel-200/60">
+        <div class="absolute -right-6 -bottom-6 w-36 h-36 bg-white/20 rounded-full blur-2xl"></div>
+        <div class="flex justify-between items-start mb-3 relative z-10">
+          <div>
+            <span class="inline-block bg-white/30 backdrop-blur-md text-[11px] font-semibold px-2.5 py-1 rounded-full mb-1 text-slate-900">
+              👶 Trimester Kedua (Minggu 24)
+            </span>
+            <h2 class="text-xl font-extrabold text-slate-900">Baby Aisyah (Kandungan)</h2>
+            <p class="text-xs text-slate-800/90 font-medium">Saiz bayi: Sebesar Buah Betik (~600g)</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-black text-slate-900">112</p>
+            <p class="text-[10px] uppercase tracking-wider text-slate-800 font-semibold">Hari ke EDD</p>
+          </div>
+        </div>
+
+        <div class="space-y-1.5 pt-2 border-t border-white/30 relative z-10">
+          <div class="flex justify-between text-[11px] font-semibold text-slate-800">
+            <span>Tarikh EDD: <strong>15 Nov 2026</strong></span>
+            <span>60% Tempoh Hamil</span>
+          </div>
+          <div class="w-full bg-white/40 h-2.5 rounded-full overflow-hidden p-0.5">
+            <div class="bg-white h-full rounded-full transition-all duration-500 shadow-sm" style="width: 60%"></div>
+          </div>
+          <div class="pt-2 flex justify-end">
+            <button onclick="openModal('modal-add-memory')" class="bg-white/80 hover:bg-white text-slate-900 text-[11px] font-bold px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm transition">
+              <span>📸</span>
+              <span>+ Simpan Foto Scan 4D / Kenangan</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BANNER TIPS SUAMI (HAMIL) -->
+      <div id="dad-banner-preg" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-3.5 flex items-start space-x-3 text-amber-900 shadow-sm">
+        <span class="text-lg">💡</span>
+        <div class="text-xs space-y-0.5">
+          <p class="font-bold">Tips Suami (Amir):</p>
+          <p class="text-amber-800">Minggu depan Sarah ada temu janji minum air gula di KK. Jangan lupa ingatkan Sarah untuk berpuasa mulai pukul 10:00 malam.</p>
+        </div>
+      </div>
+
+      <!-- SUB-TABS HAMIL -->
+      <div class="flex space-x-2 border-b border-pastel-200 pb-2 overflow-x-auto text-xs font-semibold">
+        <button onclick="switchPregSubtab('overview')" id="subtab-preg-overview" class="px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap">Dashboard Hamil</button>
+        <button onclick="switchPregSubtab('appt')" id="subtab-preg-appt" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">Janji Temu KK</button>
+        <button onclick="switchPregSubtab('vitals')" id="subtab-preg-vitals" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">Bacaan Vital (HB/BP)</button>
+        <button onclick="switchPregSubtab('pantang')" id="subtab-preg-pantang" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">Pantang & Alahan</button>
+      </div>
+
+      <!-- VIEW 1: OVERVIEW HAMIL -->
+      <div id="view-preg-overview" class="space-y-3">
+        <div class="bg-white rounded-2xl p-4 border border-pastel-200 shadow-sm space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
+              <i data-lucide="calendar" class="w-4 h-4 text-pastel-500"></i>
+              <span>Temujanji KK Terdekat: 12 Nov 2026 (8:30 AM)</span>
+            </span>
+            <span class="text-[10px] bg-pastel-100 text-pastel-700 font-bold px-2 py-0.5 rounded-full">6 Hari Lagi</span>
+          </div>
+          <p class="text-xs text-slate-600">Pemeriksaan: <strong>Minum Air Gula (MGTT) & Detail Scan</strong> di KK Bandar Baru Bangi</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border border-pastel-200 shadow-sm space-y-2.5">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
+              <i data-lucide="pill" class="w-4 h-4 text-tealsoft-600"></i>
+              <span>Peringatan Ubat Harian</span>
+            </span>
+            <button onclick="sendNudge('ubat')" class="text-[11px] font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg">
+              Ingatkan Isteri 🔔
+            </button>
+          </div>
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-center p-2.5 rounded-xl bg-pastel-50/50 border border-pastel-100 text-xs">
+              <div>
+                <p class="font-bold text-slate-800">Iberet Folic Acid (1x Pagi)</p>
+                <p class="text-[10px] text-slate-500">Minum bersama air limau / jus oren</p>
+              </div>
+              <button onclick="toggleMed(1)" id="med-1-status" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800">
+                ✓ Dah Makan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-center text-xs">
+          <div class="bg-white p-3 rounded-2xl border border-pastel-200 shadow-sm">
+            <p class="text-[10px] text-slate-500 font-semibold">BACAAN HB TERAKHIR</p>
+            <p class="text-lg font-black text-emerald-600 my-0.5">11.4 g/dL</p>
+            <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full">Normal KKM ✅</span>
+          </div>
+          <div class="bg-white p-3 rounded-2xl border border-pastel-200 shadow-sm">
+            <p class="text-[10px] text-slate-500 font-semibold">TEKANAN DARAH</p>
+            <p class="text-lg font-black text-slate-800 my-0.5">118/74 mmHg</p>
+            <span class="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-full">Sihat</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: APPOINTMENT -->
+      <div id="view-preg-appt" class="hidden space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-slate-700 uppercase">Jadual Temujanji KK & Swasta</h3>
+          <button onclick="openModal('modal-add-appointment')" class="text-xs font-bold text-white bg-pastel-500 hover:bg-pastel-600 px-3 py-1.5 rounded-xl flex items-center space-x-1">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <span>Tambah</span>
+          </button>
+        </div>
+        <div class="space-y-2">
+          <div class="bg-white p-3.5 rounded-2xl border border-pastel-200 shadow-sm space-y-1.5 text-xs">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="bg-pastel-100 text-pastel-700 text-[10px] font-bold px-2 py-0.5 rounded">KKIA Kerajaan</span>
+                <p class="font-bold text-slate-800 mt-1">Minum Air Gula (MGTT) & Scan</p>
+                <p class="text-[11px] text-slate-500">KK Bandar Baru Bangi</p>
+              </div>
+              <span class="font-bold text-pastel-600">12 Nov 2026, 8:30 AM</span>
+            </div>
+            <div class="pt-2 border-t border-slate-100 flex justify-between text-[11px] text-slate-500">
+              <span>Senarai semak: Buku Pink, IC, Sampel Urin</span>
+              <span class="text-emerald-600 font-semibold">Hadir Berdua</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: VITALS -->
+      <div id="view-preg-vitals" class="hidden space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-slate-700 uppercase">Rekod Buku Pink KKM</h3>
+          <button onclick="openModal('modal-add-vital')" class="text-xs font-bold text-white bg-pastel-500 hover:bg-pastel-600 px-3 py-1.5 rounded-xl flex items-center space-x-1">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <span>Log Bacaan Baru</span>
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl border border-pastel-200 divide-y divide-slate-100 overflow-hidden shadow-sm">
+          <div class="p-3 flex justify-between items-center text-xs">
+            <div>
+              <p class="font-bold text-slate-800">15 Okt 2026 (Minggu 20)</p>
+              <p class="text-[11px] text-slate-500">BP: 118/74 mmHg | Berat: 58.2 kg</p>
+            </div>
+            <span class="text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">HB 11.4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 4: PANTANG -->
+      <div id="view-preg-pantang" class="hidden space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-slate-700 uppercase">Pantang & Alahan Semasa Hamil</h3>
+          <button onclick="openModal('modal-add-allergy')" class="text-xs font-bold text-white bg-pastel-500 hover:bg-pastel-600 px-3 py-1.5 rounded-xl flex items-center space-x-1">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <span>Tambah</span>
+          </button>
+        </div>
+        <div class="space-y-2">
+          <div class="bg-white p-3 rounded-2xl border border-pastel-200 shadow-sm text-xs space-y-1">
+            <div class="flex justify-between">
+              <span class="font-bold text-slate-800">Udang & Ketam</span>
+              <span class="text-[10px] bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded">Alahan Makanan</span>
+            </div>
+            <p class="text-slate-600 text-[11px]">Kesan: Ruam gatal sekitar leher & loya teruk</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- [B] BAHAGIAN FASA ANAK (0 - 3 TAHUN)                            -->
+    <!-- ============================================================== -->
+    <div id="section-child" class="hidden space-y-4">
+
+      <!-- HERO CARD: STATUS ANAK -->
+      <div class="bg-gradient-to-br from-[#c4b5fd] via-[#f9a8d4] to-[#f472b6] rounded-3xl p-5 text-slate-900 shadow-md relative overflow-hidden border border-purple-200">
+        <div class="absolute -right-6 -bottom-6 w-36 h-36 bg-white/30 rounded-full blur-2xl"></div>
+        <div class="flex justify-between items-start mb-3 relative z-10">
+          <div>
+            <span class="inline-block bg-white/60 backdrop-blur-md text-[11px] font-bold px-2.5 py-1 rounded-full mb-1 text-purple-900">
+              👶 Umur: 8 Bulan 12 Hari
+            </span>
+            <h2 class="text-xl font-extrabold text-slate-900">Nur Aisyah Humaira</h2>
+            <p class="text-xs text-slate-800 font-medium">Lahir: 15 Mac 2026 | Darah: O+</p>
+          </div>
+          <div class="text-right">
+            <span class="text-2xl font-black text-purple-900">7.8</span>
+            <span class="text-xs font-bold text-purple-900">kg</span>
+            <p class="text-[10px] uppercase tracking-wider text-slate-800 font-semibold">Tinggi: 68.5 cm</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/40 text-center relative z-10 text-xs">
+          <div class="bg-white/40 p-1.5 rounded-xl">
+            <p class="text-[10px] font-semibold text-slate-700">Persentil KKM</p>
+            <p class="font-bold text-emerald-800">Normal (Garisan Hijau)</p>
+          </div>
+          <div class="bg-white/40 p-1.5 rounded-xl">
+            <p class="text-[10px] font-semibold text-slate-700">Gigi Tumbuh</p>
+            <p class="font-bold text-purple-900">2 Batang (Bawah)</p>
+          </div>
+          <div class="bg-white/40 p-1.5 rounded-xl">
+            <p class="text-[10px] font-semibold text-slate-700">Fasa Makan</p>
+            <p class="font-bold text-pink-900">Solid Food (Puri/Bubur)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- BANNER TIPS SUAMI (ANAK) -->
+      <div id="dad-banner-child" class="hidden bg-purple-50 border border-purple-200 rounded-2xl p-3.5 flex items-start space-x-3 text-purple-900 shadow-sm">
+        <span class="text-lg">🧸</span>
+        <div class="text-xs space-y-0.5">
+          <p class="font-bold">Tips Ayah (Amir):</p>
+          <p class="text-purple-800">Aisyah sudah mula pandai ketawa dan menoleh bila nama dipanggil! Rujuk tab 'Memori & Album' untuk simpan foto kenangan fasa ini.</p>
+        </div>
+      </div>
+
+      <!-- SUB-TABS ANAK (TERMASUK TAB KENANGAN / MEMORI) -->
+      <div class="flex space-x-2 border-b border-pastel-200 pb-2 overflow-x-auto text-xs font-semibold">
+        <button onclick="switchChildSubtab('memories')" id="subtab-child-memories" class="px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap flex items-center space-x-1 shadow-sm">
+          <span>📸</span>
+          <span>Album & Kenangan</span>
+        </button>
+        <button onclick="switchChildSubtab('vaccine')" id="subtab-child-vaccine" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">💉 Vaksin KKM</button>
+        <button onclick="switchChildSubtab('food')" id="subtab-child-food" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">🥣 Makanan & 3-Day Rule</button>
+        <button onclick="switchChildSubtab('milestone')" id="subtab-child-milestone" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">🌟 Milestone</button>
+      </div>
+
+      <!-- [CHILD TAB: ALBUM & KENANGAN / WINNING POINT] -->
+      <div id="view-child-memories" class="space-y-3.5">
+        
+        <!-- PRO BANNER: Retensi Langganan -->
+        <div class="bg-gradient-to-r from-amber-50 to-pink-50 border border-amber-200 p-3.5 rounded-2xl flex items-center justify-between text-xs shadow-sm">
+          <div class="space-y-0.5">
+            <span class="text-[10px] bg-amber-200 text-amber-900 font-bold px-2 py-0.5 rounded-full">✨ Buku Kenangan Aisyah (0-3 Tahun)</span>
+            <p class="font-bold text-slate-800">Simpanan Foto & Video Tanpa Had</p>
+            <p class="text-[11px] text-slate-600">Boleh eksport menjadi <strong>Photobook PDF</strong> untuk dicetak bila genap 1 atau 3 tahun!</p>
+          </div>
+          <button onclick="showToast('Ciri Eksport Photobook PDF bersedia untuk langganan Pro!')" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-extrabold text-[11px] px-3 py-2 rounded-xl whitespace-nowrap shadow-sm">
+            Eksport Buku 📖
+          </button>
+        </div>
+
+        <!-- Butang Tambah Foto Kenangan Baru -->
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Garis Masa Memori Bayi</h3>
+          <button onclick="openModal('modal-add-memory')" class="bg-pastel-500 hover:bg-pastel-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm transition">
+            <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+            <span>+ Simpan Kenangan Baru</span>
+          </button>
+        </div>
+
+        <!-- TIMELINE FOTO & MEMORI ANAK -->
+        <div class="space-y-3" id="memory-timeline-container">
+
+          <!-- Memory 1: 8 Bulan (Terkini) -->
+          <div class="bg-white p-3.5 rounded-2xl border border-pastel-200 shadow-sm space-y-2.5">
+            <div class="flex justify-between items-start">
+              <div class="flex items-center space-x-2">
+                <div class="w-7 h-7 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-xs">8M</div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-800">Senyuman Nampak 2 Batang Gigi Comel!</h4>
+                  <p class="text-[10px] text-slate-500">15 November 2026 (Umur 8 Bulan)</p>
+                </div>
+              </div>
+              <span class="text-[10px] bg-pink-50 text-pink-700 font-semibold px-2 py-0.5 rounded-full border border-pink-200">Gigi Pertama</span>
+            </div>
+            
+            <!-- Photo Display -->
+            <div class="relative rounded-xl overflow-hidden bg-gradient-to-tr from-pink-100 to-rose-50 border border-pastel-100 flex items-center justify-center h-48">
+              <div class="text-center p-4">
+                <span class="text-5xl block mb-2">👶✨</span>
+                <p class="text-xs font-semibold text-slate-700">Aisyah pandai gelak nampak gigi arnab!</p>
+                <p class="text-[10px] text-slate-500 italic mt-0.5">"Amir sempat snap masa bagi mandi petang tadi"</p>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center text-[11px] text-slate-500 pt-1 border-t border-slate-100">
+              <span>Dimuat naik oleh: <strong>Amir (Ayah) 👨</strong></span>
+              <span class="text-rose-500 flex items-center space-x-1">❤️ <span>Disukai Sarah</span></span>
+            </div>
+          </div>
+
+          <!-- Memory 2: 6 Bulan (Fasa Pertama Makan Puri) -->
+          <div class="bg-white p-3.5 rounded-2xl border border-pastel-200 shadow-sm space-y-2.5">
+            <div class="flex justify-between items-start">
+              <div class="flex items-center space-x-2">
+                <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs">6M</div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-800">Hari Pertama Suap Puri Labu (Comot Habis!)</h4>
+                  <p class="text-[10px] text-slate-500">15 September 2026 (Umur 6 Bulan)</p>
+                </div>
+              </div>
+              <span class="text-[10px] bg-amber-50 text-amber-700 font-semibold px-2 py-0.5 rounded-full border border-amber-200">Milestone Makan</span>
+            </div>
+
+            <div class="relative rounded-xl overflow-hidden bg-gradient-to-tr from-amber-100 to-orange-50 border border-amber-100 flex items-center justify-center h-44">
+              <div class="text-center p-4">
+                <span class="text-5xl block mb-2">🥣🎃</span>
+                <p class="text-xs font-semibold text-slate-700">Comot satu muka dengan puri labu manis</p>
+                <p class="text-[10px] text-slate-500 italic mt-0.5">"Habis semangkuk kecil, takde alahan langsung!"</p>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center text-[11px] text-slate-500 pt-1 border-t border-slate-100">
+              <span>Dimuat naik oleh: <strong>Sarah (Ibu) 👩</strong></span>
+              <span class="text-rose-500 flex items-center space-x-1">❤️ <span>Disukai Amir</span></span>
+            </div>
+          </div>
+
+          <!-- Memory 3: Hari Pertama Lahir (Newborn) -->
+          <div class="bg-white p-3.5 rounded-2xl border border-pastel-200 shadow-sm space-y-2.5">
+            <div class="flex justify-between items-start">
+              <div class="flex items-center space-x-2">
+                <div class="w-7 h-7 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs">0M</div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-800">Selamat Datang ke Dunia, Baby Aisyah!</h4>
+                  <p class="text-[10px] text-slate-500">15 Mac 2026, 4:15 Petang (Berat: 3.1kg)</p>
+                </div>
+              </div>
+              <span class="text-[10px] bg-purple-50 text-purple-700 font-semibold px-2 py-0.5 rounded-full border border-purple-200">Hari Kelahiran</span>
+            </div>
+
+            <div class="relative rounded-xl overflow-hidden bg-gradient-to-tr from-purple-100 to-pink-50 border border-purple-100 flex items-center justify-center h-44">
+              <div class="text-center p-4">
+                <span class="text-5xl block mb-2">🎀👶</span>
+                <p class="text-xs font-semibold text-slate-700">Momen pertama kali diletakkan di dada ibu</p>
+                <p class="text-[10px] text-slate-500 italic mt-0.5">Hospital Serdang • Alhamdulillah selamat kedua-duanya</p>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center text-[11px] text-slate-500 pt-1 border-t border-slate-100">
+              <span>Dimuat naik oleh: <strong>Amir (Ayah) 👨</strong></span>
+              <span class="text-rose-500">❤️ Memori Abadi</span>
+            </div>
+          </div>
+
+          <!-- Memory 4: Scan 4D Semasa Hamil -->
+          <div class="bg-white p-3.5 rounded-2xl border border-pastel-200 shadow-sm space-y-2.5">
+            <div class="flex justify-between items-start">
+              <div class="flex items-center space-x-2">
+                <div class="w-7 h-7 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-xs">🤰</div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-800">Rakaman Detail 4D Scan (Minggu 24)</h4>
+                  <p class="text-[10px] text-slate-500">Klinik Pakar Wanita Bangi</p>
+                </div>
+              </div>
+              <span class="text-[10px] bg-rose-50 text-rose-700 font-semibold px-2 py-0.5 rounded-full border border-rose-200">Scan Ultrasound</span>
+            </div>
+
+            <div class="relative rounded-xl overflow-hidden bg-slate-900 border border-slate-800 flex items-center justify-center h-40 text-white">
+              <div class="text-center p-4">
+                <span class="text-4xl block mb-1">📟💛</span>
+                <p class="text-xs font-bold text-amber-300">Gambar Scan 4D Wajah Aisyah</p>
+                <p class="text-[10px] text-slate-400">Hidung mancung ikut ayah, bibir ikut ibu!</p>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center text-[11px] text-slate-500 pt-1 border-t border-slate-100">
+              <span>Dimuat naik oleh: <strong>Sarah (Ibu) 👩</strong></span>
+              <span class="text-rose-500">❤️ Disimpan Bersama</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- [CHILD TAB: VAKSIN] -->
+      <div id="view-child-vaccine" class="hidden space-y-3">
+        <div class="bg-white p-3.5 rounded-2xl border border-pastel-200 shadow-sm flex items-center justify-between">
+          <div>
+            <h3 class="text-xs font-bold text-slate-800">Status Imunisasi Kebangsaan KKM</h3>
+            <p class="text-[11px] text-slate-500">4 daripada 7 temujanji vaksin telah selesai</p>
+          </div>
+          <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">57% Selesai</span>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div class="bg-white p-3.5 rounded-2xl border border-emerald-200 shadow-sm flex justify-between items-center">
+            <div>
+              <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded">Masa Lahir (0 Bulan)</span>
+              <p class="font-bold text-slate-800">BCG & Hepatitis B (Dos 1)</p>
+              <p class="text-[11px] text-slate-500">Hospital Bersalin • 15 Mac 2026</p>
+            </div>
+            <span class="text-emerald-600 font-bold text-xs flex items-center space-x-1">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span>Selesai</span>
+            </span>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-emerald-200 shadow-sm flex justify-between items-center">
+            <div>
+              <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded">Umur 2 Bulan</span>
+              <p class="font-bold text-slate-800">DTaP-IPV-HepB-Hib (Dos 1) + Pneumokokal (Dos 1)</p>
+              <p class="text-[11px] text-slate-500">KK Bandar Baru Bangi • 18 Mei 2026</p>
+            </div>
+            <span class="text-emerald-600 font-bold text-xs flex items-center space-x-1">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span>Selesai</span>
+            </span>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-emerald-200 shadow-sm flex justify-between items-center">
+            <div>
+              <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded">Umur 3 Bulan</span>
+              <p class="font-bold text-slate-800">DTaP-IPV-HepB-Hib (Dos 2)</p>
+              <p class="text-[11px] text-slate-500">KK Bandar Baru Bangi • 19 Jun 2026</p>
+            </div>
+            <span class="text-emerald-600 font-bold text-xs flex items-center space-x-1">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span>Selesai</span>
+            </span>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-emerald-200 shadow-sm flex justify-between items-center">
+            <div>
+              <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded">Umur 5 Bulan</span>
+              <p class="font-bold text-slate-800">DTaP-IPV-HepB-Hib (Dos 3) + Pneumokokal (Dos 2)</p>
+              <p class="text-[11px] text-slate-500">KK Bandar Baru Bangi • 20 Ogos 2026</p>
+            </div>
+            <span class="text-emerald-600 font-bold text-xs flex items-center space-x-1">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span>Selesai</span>
+            </span>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border-2 border-pastel-300 shadow-sm flex justify-between items-center bg-pastel-50/20">
+            <div>
+              <div class="flex items-center space-x-1.5">
+                <span class="text-[10px] bg-pastel-100 text-pastel-700 font-bold px-2 py-0.5 rounded">Umur 9 Bulan (Akan Datang)</span>
+                <span class="text-[10px] text-rose-500 font-bold animate-pulse">⏳ 2 Minggu Lagi</span>
+              </div>
+              <p class="font-bold text-slate-800">Campak / MMR (Dos 1)</p>
+              <p class="text-[11px] text-slate-500">15 Disember 2026 di KK</p>
+            </div>
+            <button onclick="markVaccineDone('MMR Dos 1')" class="px-3 py-1.5 rounded-xl bg-pastel-500 text-white font-bold text-xs hover:bg-pastel-600 shadow-sm">
+              Tanda Selesai
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- [CHILD TAB: MAKANAN] -->
+      <div id="view-child-food" class="hidden space-y-3">
+        <div class="bg-tealsoft-50 border border-tealsoft-100 p-3 rounded-2xl text-xs space-y-1 text-teal-900">
+          <p class="font-bold">Panduan KKM: Peraturan 3 Hari (3-Day Rule)</p>
+          <p class="text-[11px] text-teal-800">Beri 1 makanan baru selama 3 hari berturut-turut untuk kenal pasti alergi.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border-2 border-amber-300 shadow-sm space-y-2">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Sedang Diuji (Hari ke-2 dari 3)</span>
+              <h4 class="text-sm font-bold text-slate-800 mt-1">🍳 Kuning Telur Rebus (Lumat)</h4>
+            </div>
+            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">Tiada Ruam ✅</span>
+          </div>
+          <div class="flex space-x-2 pt-1 border-t border-slate-100">
+            <button onclick="showToast('Status: Hari ke-2 tiada ruam direkodkan!')" class="flex-1 py-1.5 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-lg border border-emerald-200">
+              ✓ Lulus Hari Ini
+            </button>
+            <button onclick="reportAllergyPrompt('Kuning Telur')" class="flex-1 py-1.5 bg-rose-50 text-rose-700 font-bold text-xs rounded-lg border border-rose-200">
+              ⚠️ Ada Reaksi Ruam
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- [CHILD TAB: MILESTONE] -->
+      <div id="view-child-milestone" class="hidden space-y-3">
+        <div class="bg-white p-4 rounded-2xl border border-purple-200 shadow-sm space-y-2.5">
+          <span class="text-xs font-bold text-purple-900">Perkembangan Umur 6 - 9 Bulan</span>
+          <div class="space-y-2 text-xs">
+            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 rounded-xl cursor-pointer">
+              <input type="checkbox" checked onchange="toggleMilestone('Duduk')" class="rounded text-pastel-500">
+              <span class="font-bold text-slate-800">Boleh duduk stabil tanpa sokongan</span>
+            </label>
+            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 rounded-xl cursor-pointer">
+              <input type="checkbox" checked onchange="toggleMilestone('Pindah objek')" class="rounded text-pastel-500">
+              <span class="font-bold text-slate-800">Memindahkan objek tangan ke tangan</span>
+            </label>
+            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 rounded-xl cursor-pointer">
+              <input type="checkbox" onchange="toggleMilestone('Merangkak')" class="rounded text-pastel-500">
+              <span class="font-bold text-slate-800">Mula merangkak ke hadapan (Sedang dilatih)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FLOATING QUICK BUTTON: SIMPAN KENANGAN (Sentiasa Muncul di Skrin) -->
+  <aside class="fixed bottom-5 right-4 z-40">
+    <button onclick="openModal('modal-add-memory')" 
+      class="bg-gradient-to-r from-pastel-500 to-rose-500 hover:from-pastel-600 hover:to-rose-600 text-white font-extrabold text-xs py-2.5 px-4 rounded-full shadow-2xl flex items-center space-x-2 border-2 border-white transition-all transform hover:scale-105 active:scale-95">
+      <span class="text-base">📸</span>
+      <span>+ Simpan Kenangan Baru</span>
+    </button>
+  </aside>
+
+  <!-- ================= MODAL: TAMBAH MEMORI / FOTO BARU ================= -->
+  <div id="modal-add-memory" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-pastel-200">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base font-bold text-slate-800">Simpan Kenangan Baru</h3>
+        <button onclick="closeModal('modal-add-memory')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveMemory(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Tajuk Memori</label>
+          <input type="text" id="inp-mem-title" required placeholder="Cth: Pertama Kali Berjalan / Makan Sendiri" class="w-full p-2.5 border border-pastel-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold mb-1">Kategori</label>
+            <select id="inp-mem-cat" class="w-full p-2.5 border border-pastel-200 rounded-xl outline-none">
+              <option value="Milestone Perkembangan">Milestone Perkembangan</option>
+              <option value="Gambar Bulanan">Gambar Bulanan (1-36 Bulan)</option>
+              <option value="Makan Pertama Kali">Makan Pertama Kali</option>
+              <option value="Hari Jadi">Hari Jadi</option>
+              <option value="Scan Ultrasound">Scan Ultrasound</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Tarikh</label>
+            <input type="date" id="inp-mem-date" required class="w-full p-2.5 border border-pastel-200 rounded-xl outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">Pilih Gambar dari Telefon / Komputer</label>
+          <input type="file" id="inp-mem-file" accept="image/*" class="w-full p-2 border border-dashed border-pastel-300 rounded-xl text-slate-500 bg-pastel-50/50 cursor-pointer">
+          <p class="text-[10px] text-slate-400 mt-1">Format: JPG, PNG. Boleh upload gambar scan atau gambar comel anak.</p>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">Catatan / Mesej Kasih Sayang Ibu & Ayah</label>
+          <textarea id="inp-mem-notes" rows="2" placeholder="Cth: Hari ni Aisyah dah pandai sebut 'Abah' masa nak tidur!" class="w-full p-2.5 border border-pastel-200 rounded-xl outline-none"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-pastel-500 text-white font-bold rounded-xl mt-2 hover:bg-pastel-600 transition shadow-sm flex items-center justify-center space-x-1.5">
+          <i data-lucide="heart" class="w-4 h-4 fill-white"></i>
+          <span>Simpan Ke Album Kenangan</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIK -->
+  <script>
+    let currentRole = 'mother';
+    let currentPhase = 'child'; // Default buka fasa anak untuk tunjuk album kenangan
+    let med1Taken = true;
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      // Set default date picker ke hari ini
+      const today = new Date().toISOString().split('T')[0];
+      const dateEl = document.getElementById('inp-mem-date');
+      if (dateEl) dateEl.value = today;
+      // Default paparan anak
+      switchPhase('child');
+    });
+
+    function switchPhase(phase) {
+      currentPhase = phase;
+      const pregSec = document.getElementById('section-pregnancy');
+      const childSec = document.getElementById('section-child');
+      const btnPreg = document.getElementById('btn-phase-pregnancy');
+      const btnChild = document.getElementById('btn-phase-child');
+
+      if (phase === 'child') {
+        pregSec.classList.add('hidden');
+        childSec.classList.remove('hidden');
+        btnChild.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 bg-pastel-500 text-white shadow-sm";
+        btnPreg.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 text-slate-600 hover:text-slate-900";
+        showToast("Beralih ke Mod Anak: Nur Aisyah (8 Bulan) 👶");
+      } else {
+        childSec.classList.add('hidden');
+        pregSec.classList.remove('hidden');
+        btnPreg.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 bg-pastel-500 text-white shadow-sm";
+        btnChild.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 text-slate-600 hover:text-slate-900";
+        showToast("Beralih ke Mod Kehamilan (Buku Pink) 🤰");
+      }
+      syncDadBanner();
+      lucide.createIcons();
+    }
+
+    function switchRole(role) {
+      currentRole = role;
+      const momBtn = document.getElementById('btn-role-mom');
+      const dadBtn = document.getElementById('btn-role-dad');
+
+      if (role === 'father') {
+        dadBtn.className = "flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all shadow-sm bg-white text-teal-700 border border-teal-200";
+        momBtn.className = "flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 border border-transparent";
+        showToast("Beralih ke paparan Ayah (Amir) 👨");
+      } else {
+        momBtn.className = "flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all shadow-sm bg-white text-pastel-600 border border-pastel-200";
+        dadBtn.className = "flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 border border-transparent";
+        showToast("Beralih ke paparan Ibu (Sarah) 👩");
+      }
+      syncDadBanner();
+    }
+
+    function syncDadBanner() {
+      const dadBannerPreg = document.getElementById('dad-banner-preg');
+      const dadBannerChild = document.getElementById('dad-banner-child');
+      
+      if (currentRole === 'father') {
+        if (currentPhase === 'pregnancy') {
+          dadBannerPreg.classList.remove('hidden');
+          dadBannerChild.classList.add('hidden');
+        } else {
+          dadBannerChild.classList.remove('hidden');
+          dadBannerPreg.classList.add('hidden');
+        }
+      } else {
+        dadBannerPreg.classList.add('hidden');
+        dadBannerChild.classList.add('hidden');
+      }
+    }
+
+    function switchPregSubtab(tab) {
+      const tabs = ['overview', 'appt', 'vitals', 'pantang'];
+      tabs.forEach(t => {
+        document.getElementById('view-preg-' + t).classList.add('hidden');
+        document.getElementById('subtab-preg-' + t).className = "px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap";
+      });
+      document.getElementById('view-preg-' + tab).classList.remove('hidden');
+      document.getElementById('subtab-preg-' + tab).className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
+      lucide.createIcons();
+    }
+
+    function switchChildSubtab(tab) {
+      const tabs = ['memories', 'vaccine', 'food', 'milestone'];
+      tabs.forEach(t => {
+        document.getElementById('view-child-' + t).classList.add('hidden');
+        document.getElementById('subtab-child-' + t).className = "px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap";
+      });
+      document.getElementById('view-child-' + tab).classList.remove('hidden');
+      document.getElementById('subtab-child-' + tab).className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
+      lucide.createIcons();
+    }
+
+    function toggleMed(medId) {
+      med1Taken = !med1Taken;
+      const btn = document.getElementById('med-1-status');
+      if (med1Taken) {
+        btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800";
+        btn.innerText = "✓ Dah Makan";
+        showToast(`${currentRole === 'mother' ? 'Sarah' : 'Amir'} menanda ubat telah diambil.`);
+      } else {
+        btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700";
+        btn.innerText = "Belum Makan";
+        showToast("Status ubat ditukar ke Belum Makan");
+      }
+    }
+
+    function sendNudge(type) {
+      showToast("🔔 Peringatan dihantar ke telefon pasangan!");
+    }
+
+    function markVaccineDone(name) {
+      showToast(`🎉 Suntikan ${name} ditandakan SELESAI di rekod kesihatan Aisyah!`);
+    }
+
+    function toggleMilestone(name) {
+      showToast(`🌟 Milestone "${name}" berjaya dikemaskini dan dikongsi!`);
+    }
+
+    function reportAllergyPrompt(food) {
+      showToast(`⚠️ Alahan untuk ${food} direkodkan! Peringatan dihantar kepada pasangan.`);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const text = document.getElementById('toast-text');
+      text.innerText = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3500);
+      lucide.createIcons();
+    }
+
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // Simpan Memori Foto Baru (Boleh upload foto sebenar)
+    function handleSaveMemory(e) {
+      e.preventDefault();
+      const title = document.getElementById('inp-mem-title').value;
+      const cat = document.getElementById('inp-mem-cat').value;
+      const date = document.getElementById('inp-mem-date').value;
+      const notes = document.getElementById('inp-mem-notes').value || "Tiada catatan tambahan.";
+      const fileInput = document.getElementById('inp-mem-file');
+
+      const container = document.getElementById('memory-timeline-container');
+      const newCard = document.createElement('div');
+      newCard.className = "bg-white p-3.5 rounded-2xl border-2 border-pastel-300 shadow-sm space-y-2.5";
+
+      // Baca fail imej jika ada dipilih
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          createMemoryCard(newCard, title, cat, date, notes, event.target.result);
+          container.prepend(newCard);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        createMemoryCard(newCard, title, cat, date, notes, null);
+        container.prepend(newCard);
+      }
+
+      closeModal('modal-add-memory');
+      showToast(`📸 Kenangan "${title}" berjaya disimpan ke album keluarga!`);
+      // Reset form
+      document.getElementById('inp-mem-title').value = '';
+      document.getElementById('inp-mem-notes').value = '';
+    }
+
+    function createMemoryCard(cardEl, title, cat, date, notes, imgSrc) {
+      let mediaHtml = '';
+      if (imgSrc) {
+        mediaHtml = `
+          <div class="relative rounded-xl overflow-hidden max-h-64 border border-pastel-100 flex items-center justify-center bg-black/5">
+            <img src="${imgSrc}" class="w-full h-auto object-cover rounded-xl" alt="Foto Kenangan">
+          </div>
+        `;
+      } else {
+        mediaHtml = `
+          <div class="relative rounded-xl overflow-hidden bg-gradient-to-tr from-rose-100 to-pink-50 border border-pastel-100 flex items-center justify-center h-36">
+            <div class="text-center p-3">
+              <span class="text-4xl block mb-1">📸✨</span>
+              <p class="text-xs font-semibold text-slate-700">${notes}</p>
+            </div>
+          </div>
+        `;
+      }
+
+      cardEl.innerHTML = `
+        <div class="flex justify-between items-start">
+          <div class="flex items-center space-x-2">
+            <div class="w-7 h-7 rounded-full bg-pastel-100 text-pastel-700 flex items-center justify-center font-bold text-xs">BARU</div>
+            <div>
+              <h4 class="text-xs font-bold text-slate-800">${title}</h4>
+              <p class="text-[10px] text-slate-500">${date}</p>
+            </div>
+          </div>
+          <span class="text-[10px] bg-pastel-50 text-pastel-700 font-semibold px-2 py-0.5 rounded-full border border-pastel-200">${cat}</span>
+        </div>
+        ${mediaHtml}
+        <div class="flex justify-between items-center text-[11px] text-slate-500 pt-1 border-t border-slate-100">
+          <span>Dimuat naik oleh: <strong>${currentRole === 'mother' ? 'Sarah (Ibu) 👩' : 'Amir (Ayah) 👨'}</strong></span>
+          <span class="text-rose-500 flex items-center space-x-1">❤️ <span>Baru Disimpan</span></span>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
