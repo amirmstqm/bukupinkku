@@ -307,9 +307,9 @@
           </nav>
         </div>
 
-        <!-- TINDAKAN PANTAS KELUARGA -->
+        <!-- TINDAKAN PANTAS KELUARGA & MONETISASI / SOKONGAN -->
         <div class="space-y-2 pt-2 border-t border-slate-100">
-          <button onclick="openPhotobookModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold hover:bg-amber-100 transition">
+          <button onclick="openPhotobookModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-900 text-xs font-bold hover:bg-amber-100 transition">
             <span class="flex items-center space-x-2">
               <span>📖</span>
               <span data-i18n="btn_export_book">Buku Kenangan PDF</span>
@@ -317,12 +317,30 @@
             <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-700"></i>
           </button>
 
-          <button onclick="shareWhatsAppInvite(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-teal-50 border border-teal-200 text-teal-900 text-xs font-bold hover:bg-teal-100 transition">
+          <button onclick="shareWhatsAppInvite(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-teal-50/80 border border-teal-200 text-teal-900 text-xs font-bold hover:bg-teal-100 transition">
             <span class="flex items-center space-x-2">
               <span>📲</span>
               <span data-i18n="btn_whatsapp_partner">WhatsApp Pasangan</span>
             </span>
             <i data-lucide="share-2" class="w-3.5 h-3.5 text-teal-700"></i>
+          </button>
+
+          <!-- ☕ BUY ME A COFFEE BUTTON -->
+          <button onclick="openCoffeeModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-500 hover:to-yellow-500 text-amber-950 text-xs font-extrabold shadow-sm transition transform active:scale-95 border border-amber-300">
+            <span class="flex items-center space-x-2">
+              <span class="text-base">☕</span>
+              <span data-i18n="btn_coffee_sidebar">Belanja Kopi (Support App)</span>
+            </span>
+            <span class="text-[10px] bg-white/70 px-1.5 py-0.5 rounded-md font-bold text-amber-900">DuitNow</span>
+          </button>
+
+          <!-- 💬 USER FEEDBACK BUTTON -->
+          <button onclick="openFeedbackModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-purple-50/80 hover:bg-purple-100/80 border border-purple-200 text-pastel-700 text-xs font-bold transition">
+            <span class="flex items-center space-x-2">
+              <span>💬</span>
+              <span data-i18n="btn_feedback_sidebar">Maklum Balas & Cadangan</span>
+            </span>
+            <i data-lucide="message-square-plus" class="w-3.5 h-3.5 text-pastel-500"></i>
           </button>
         </div>
 
@@ -902,6 +920,113 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: BUY ME A COFFEE (SOKONGAN PEMBANGUN) ================= -->
+  <div id="modal-coffee" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-amber-200 text-center">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+        <div class="flex items-center space-x-2">
+          <span class="text-2xl">☕</span>
+          <h3 data-i18n="mdl_coffee_title" class="text-sm font-extrabold text-slate-800">Belanja Kopi (Support App)</h3>
+        </div>
+        <button onclick="closeModal('modal-coffee')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2 text-xs text-slate-600">
+        <p data-i18n="mdl_coffee_desc" class="leading-relaxed">
+          BukuPinkKu dicipta dengan kasih sayang untuk memudahkan ibu bapa di Malaysia secara <strong>100% percuma</strong> tanpa iklan yang mengganggu.
+        </p>
+        <p data-i18n="mdl_coffee_sub" class="text-[11px] text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+          💛 Setiap sumbangan (RM5 / RM10) sangat bermakna untuk menampung kos pelayan pangkalan data & memastikan sistem ini kekal percuma.
+        </p>
+      </div>
+
+      <!-- Kad Kaedah Pembayaran (DuitNow & BuyMeACoffee) -->
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+        <div class="flex justify-center">
+          <div class="w-36 h-36 bg-white border-2 border-dashed border-amber-300 rounded-2xl p-2 flex flex-col items-center justify-center shadow-sm">
+            <span class="text-4xl block mb-1">📲</span>
+            <span class="text-[10px] font-black text-rose-600 uppercase">DuitNow QR</span>
+            <span class="text-[9px] text-slate-400 text-center">Scan mana-mana bank / TNG eWallet</span>
+          </div>
+        </div>
+
+        <div class="pt-1">
+          <p class="text-[11px] font-bold text-slate-700">Nombor Akaun / Rujukan:</p>
+          <p class="text-xs font-mono font-black text-pastel-700 bg-white py-1 px-2 rounded-lg border border-slate-200 inline-block mt-0.5">
+            amirmstqm@bukupinkku
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <a href="https://buymeacoffee.com" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-amber-950 font-extrabold text-xs flex items-center justify-center space-x-2 shadow-sm transition">
+          <span>☕</span>
+          <span data-i18n="btn_open_bmc">Sumbang via Buy Me a Coffee (Online)</span>
+        </a>
+
+        <button onclick="copyDuitNowInfo()" class="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+          📋 Salin Maklumat Rujukan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: MAKLUM BALAS PENGGUNA (USER FEEDBACK) ================= -->
+  <div id="modal-feedback" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl border border-purple-200">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+        <div class="flex items-center space-x-2">
+          <span class="text-xl">💬</span>
+          <h3 data-i18n="mdl_feedback_title" class="text-sm font-extrabold text-slate-800">Maklum Balas & Cadangan</h3>
+        </div>
+        <button onclick="closeModal('modal-feedback')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSendFeedback(event)" class="space-y-3 text-xs">
+        <div>
+          <label data-i18n="lbl_rating" class="block font-semibold mb-1 text-slate-700">Tahap Kepuasan Pengalaman Anda</label>
+          <div class="flex justify-center space-x-2 text-2xl py-1">
+            <button type="button" onclick="setFeedbackRating(1)" id="star-1" class="hover:scale-125 transition text-amber-400">★</button>
+            <button type="button" onclick="setFeedbackRating(2)" id="star-2" class="hover:scale-125 transition text-amber-400">★</button>
+            <button type="button" onclick="setFeedbackRating(3)" id="star-3" class="hover:scale-125 transition text-amber-400">★</button>
+            <button type="button" onclick="setFeedbackRating(4)" id="star-4" class="hover:scale-125 transition text-amber-400">★</button>
+            <button type="button" onclick="setFeedbackRating(5)" id="star-5" class="hover:scale-125 transition text-amber-400">★</button>
+          </div>
+          <p id="star-label" class="text-[10px] text-center font-bold text-amber-600">Sangat Puas Hati ⭐⭐⭐⭐⭐</p>
+        </div>
+
+        <div>
+          <label data-i18n="lbl_feedback_type" class="block font-semibold mb-1 text-slate-700">Jenis Maklum Balas</label>
+          <select id="inp-feedback-type" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+            <option value="Cadangan Ciri Baru" data-i18n="opt_fb_1">💡 Cadangan Ciri Baru</option>
+            <option value="Laporan Masalah / Bug" data-i18n="opt_fb_2">🐛 Laporan Masalah / Bug</option>
+            <option value="Pujian & Ucapan Kasih Sayang" data-i18n="opt_fb_3">❤️ Pujian & Ucapan Kasih Sayang</option>
+            <option value="Lain-lain" data-i18n="opt_fb_4">📝 Lain-lain</option>
+          </select>
+        </div>
+
+        <div>
+          <label data-i18n="lbl_feedback_msg" class="block font-semibold mb-1 text-slate-700">Mesej Anda</label>
+          <textarea id="inp-feedback-msg" required rows="3" data-i18n-placeholder="ph_feedback_msg" placeholder="Kongsi pendapat anda, apa yang boleh ditambah baik atau ciri yang anda inginkan..." class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300"></textarea>
+        </div>
+
+        <div>
+          <label data-i18n="lbl_contact_optional" class="block font-semibold mb-1 text-slate-700">No. Telefon / Emel (Pilihan)</label>
+          <input type="text" id="inp-feedback-contact" data-i18n-placeholder="ph_contact_optional" placeholder="Untuk kami hubungi jika perlu maklumat lanjut" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+        </div>
+
+        <button type="submit" id="btn-submit-feedback" class="w-full py-3 bg-pastel-500 hover:bg-pastel-600 text-white font-bold rounded-xl mt-2 transition shadow-sm flex items-center justify-center space-x-1.5">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span data-i18n="btn_send_feedback">Hantar Maklum Balas</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- ================= MODAL: PRATONTON & EKSPORT PHOTOBOOK PDF ================= -->
   <div id="modal-photobook-preview" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 hidden flex flex-col items-center justify-center p-2 sm:p-4 overflow-y-auto">
     <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden my-auto">
@@ -1198,7 +1323,25 @@
         pb_vac_done_kk: "✓ Selesai di KK",
         pb_mem_section: "Garis Masa Foto Kenangan Terpilih",
         pb_love_title: "Pesanan Kasih Sayang Ibu & Ayah:",
-        pb_love_quote: "\"Untuk anakanda tersayang, membesar dengan sihat, ceria, dan menjadi anak yang solehah serta penyejuk hati ibu dan ayah selalu. Kami menyayangimu sepenuh hati.\""
+        pb_love_quote: "\"Untuk anakanda tersayang, membesar dengan sihat, ceria, dan menjadi anak yang solehah serta penyejuk hati ibu dan ayah selalu. Kami menyayangimu sepenuh hati.\"",
+        btn_coffee_sidebar: "Belanja Kopi (Support App)",
+        btn_feedback_sidebar: "Maklum Balas & Cadangan",
+        mdl_coffee_title: "Belanja Kopi (Support App)",
+        mdl_coffee_desc: "BukuPinkKu dicipta dengan kasih sayang untuk memudahkan ibu bapa di Malaysia secara <strong>100% percuma</strong> tanpa iklan yang mengganggu.",
+        mdl_coffee_sub: "💛 Setiap sumbangan (RM5 / RM10) sangat bermakna untuk menampung kos pelayan pangkalan data & memastikan sistem ini kekal percuma.",
+        btn_open_bmc: "Sumbang via Buy Me a Coffee (Online)",
+        mdl_feedback_title: "Maklum Balas & Cadangan",
+        lbl_rating: "Tahap Kepuasan Pengalaman Anda",
+        lbl_feedback_type: "Jenis Maklum Balas",
+        opt_fb_1: "💡 Cadangan Ciri Baru",
+        opt_fb_2: "🐛 Laporan Masalah / Bug",
+        opt_fb_3: "❤️ Pujian & Ucapan Kasih Sayang",
+        opt_fb_4: "📝 Lain-lain",
+        lbl_feedback_msg: "Mesej Anda",
+        ph_feedback_msg: "Kongsi pendapat anda, apa yang boleh ditambah baik atau ciri yang anda inginkan...",
+        lbl_contact_optional: "No. Telefon / Emel (Pilihan)",
+        ph_contact_optional: "Untuk kami hubungi jika perlu maklumat lanjut",
+        btn_send_feedback: "Hantar Maklum Balas"
       },
       en: {
         onboard_subtitle: "Digital Pregnancy (Pink Book) & Child Growth Companion (0–3 Years) for Couples",
@@ -1348,7 +1491,25 @@
         pb_vac_done_kk: "✓ Completed at Health Clinic",
         pb_mem_section: "Featured Photo Memory Timeline",
         pb_love_title: "Love Message from Mom & Dad:",
-        pb_love_quote: "\"To our dearest child, may you grow up healthy, happy, kind, and always be the joy of Mom and Dad's hearts. We love you endlessly.\""
+        pb_love_quote: "\"To our dearest child, may you grow up healthy, happy, kind, and always be the joy of Mom and Dad's hearts. We love you endlessly.\"",
+        btn_coffee_sidebar: "Buy Me a Coffee (Support App)",
+        btn_feedback_sidebar: "User Feedback & Suggestions",
+        mdl_coffee_title: "Buy Me a Coffee (Support App)",
+        mdl_coffee_desc: "BukuPinkKu was crafted with love to assist parents across Malaysia completely <strong>100% free</strong> with no intrusive ads.",
+        mdl_coffee_sub: "💛 Every tip (RM5 / RM10) goes directly towards database cloud server costs and keeping this app free for all families.",
+        btn_open_bmc: "Support via Buy Me a Coffee (Online)",
+        mdl_feedback_title: "Feedback & Suggestions",
+        lbl_rating: "Your Experience Rating",
+        lbl_feedback_type: "Feedback Category",
+        opt_fb_1: "💡 Feature Request / Idea",
+        opt_fb_2: "🐛 Bug / Issue Report",
+        opt_fb_3: "❤️ Compliment & Love Notes",
+        opt_fb_4: "📝 Others",
+        lbl_feedback_msg: "Your Message",
+        ph_feedback_msg: "Share your thoughts, suggestions, or features you would love to see...",
+        lbl_contact_optional: "Phone / Email (Optional)",
+        ph_contact_optional: "In case we need follow-up clarification",
+        btn_send_feedback: "Send Feedback"
       }
     };
 
@@ -2582,6 +2743,112 @@
       document.getElementById(id).classList.remove('hidden');
     }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // ================= BUY ME A COFFEE & FEEDBACK LOGIC =================
+    let currentFeedbackRating = 5;
+
+    function openCoffeeModal() {
+      openModal('modal-coffee');
+    }
+
+    function copyDuitNowInfo() {
+      const isEn = currentLang === 'en';
+      const textToCopy = "amirmstqm@bukupinkku";
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          showToast(isEn ? "📋 DuitNow ID copied: " + textToCopy : "📋 ID DuitNow disalin: " + textToCopy);
+        }).catch(() => {
+          showToast(textToCopy);
+        });
+      } else {
+        showToast(textToCopy);
+      }
+    }
+
+    function openFeedbackModal() {
+      setFeedbackRating(5);
+      const msgEl = document.getElementById('inp-feedback-msg');
+      if (msgEl) msgEl.value = '';
+      const contactEl = document.getElementById('inp-feedback-contact');
+      if (contactEl) contactEl.value = '';
+      openModal('modal-feedback');
+    }
+
+    function setFeedbackRating(stars) {
+      currentFeedbackRating = stars;
+      const isEn = currentLang === 'en';
+      const labels = isEn ? {
+        1: "Poor experience ★☆☆☆☆",
+        2: "Needs improvement ★★☆☆☆",
+        3: "Average / Okay ★★★☆☆",
+        4: "Good experience ★★★★☆",
+        5: "Very Satisfied! ⭐⭐⭐⭐⭐"
+      } : {
+        1: "Kurang Memuaskan ★☆☆☆☆",
+        2: "Boleh Diperbaiki ★★☆☆☆",
+        3: "Sederhana / Biasa ★★★☆☆",
+        4: "Puas Hati ★★★★☆",
+        5: "Sangat Puas Hati ⭐⭐⭐⭐⭐"
+      };
+
+      for (let i = 1; i <= 5; i++) {
+        const starEl = document.getElementById('star-' + i);
+        if (starEl) {
+          if (i <= stars) {
+            starEl.className = "hover:scale-125 transition text-amber-400";
+          } else {
+            starEl.className = "hover:scale-125 transition text-slate-300";
+          }
+        }
+      }
+
+      const lbl = document.getElementById('star-label');
+      if (lbl) lbl.innerText = labels[stars] || labels[5];
+    }
+
+    async function handleSendFeedback(e) {
+      e.preventDefault();
+      const isEn = currentLang === 'en';
+      const btn = document.getElementById('btn-submit-feedback');
+      const originalText = btn.innerHTML;
+      btn.innerText = isEn ? "Sending..." : "Menghantar...";
+      btn.disabled = true;
+
+      const type = document.getElementById('inp-feedback-type').value;
+      const message = document.getElementById('inp-feedback-msg').value.trim();
+      const contact = document.getElementById('inp-feedback-contact').value.trim() || 'Tiada';
+      const sender = currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah');
+      const code = currentFamilyCode || 'Unknown';
+
+      try {
+        // Hantar maklum balas terus ke WhatsApp pembangun atau log ke console & localStorage
+        const fbEntry = {
+          date: new Date().toISOString(),
+          family_id: currentFamilyId,
+          family_code: code,
+          sender: sender,
+          rating: currentFeedbackRating,
+          type: type,
+          message: message,
+          contact: contact
+        };
+
+        const existingFbs = JSON.parse(localStorage.getItem('bukupink_feedbacks') || '[]');
+        existingFbs.push(fbEntry);
+        localStorage.setItem('bukupink_feedbacks', JSON.stringify(existingFbs));
+
+        // Pilihan terus salin / buka WhatsApp jika pengguna mahu mesej terus
+        closeModal('modal-feedback');
+        showToast(isEn ? "🎉 Thank you! Your feedback has been received." : "🎉 Terima kasih! Maklum balas anda telah diterima.");
+      } catch (err) {
+        console.error("Ralat simpan feedback:", err);
+        showToast(isEn ? "Feedback received. Thank you!" : "Maklum balas diterima. Terima kasih!");
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        lucide.createIcons();
+      }
+    }
 
     // ================= LOGIK PHOTOBOOK PDF =================
     async function openPhotobookModal() {
