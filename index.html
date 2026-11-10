@@ -366,6 +366,11 @@
               <span data-i18n="subtab_child_album">Album & Kenangan</span>
             </button>
 
+            <button onclick="navigateFromSidebar('child', 'growth')" id="nav-child-growth" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="activity" class="w-4 h-4 text-sky-500"></i>
+              <span data-i18n="subtab_child_growth">📏 Tumbesaran Anak</span>
+            </button>
+
             <button onclick="navigateFromSidebar('child', 'vaccine')" id="nav-child-vaccine" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
               <i data-lucide="syringe" class="w-4 h-4 text-teal-500"></i>
               <span data-i18n="subtab_child_vaccine">💉 Vaksin KKM</span>
@@ -860,7 +865,7 @@
           <div class="grid grid-cols-3 gap-2 pt-3 border-t border-sky-200/50 text-center relative z-10 text-xs">
             <div class="bg-white/80 border border-sky-100/80 p-2 rounded-xl shadow-sm">
               <p data-i18n="lbl_percentile" class="text-[10px] font-semibold text-slate-500">Persentil KKM</p>
-              <p class="font-bold text-emerald-700">Normal (Hijau)</p>
+              <p class="font-bold text-emerald-700" id="hero-child-percentile">Normal (Hijau)</p>
             </div>
             <div class="bg-white/80 border border-sky-100/80 p-2 rounded-xl shadow-sm">
               <p data-i18n="lbl_teeth" class="text-[10px] font-semibold text-slate-500">Gigi Tumbuh</p>
@@ -897,6 +902,67 @@
           <!-- TIMELINE CONTAINER -->
           <div class="space-y-3" id="memory-timeline-container">
             <div class="p-4 text-center text-xs text-slate-400">Memuatkan memori foto...</div>
+          </div>
+        </div>
+
+        <!-- [CHILD TAB: REKOD TUMBESARAN] -->
+        <div id="view-child-growth" class="hidden space-y-3.5">
+          <!-- Kad Ringkasan Status & Petunjuk KKM -->
+          <div class="bg-gradient-to-r from-sky-50 to-tealsoft-50 border border-sky-200/80 p-4 rounded-2xl shadow-sm text-xs space-y-3">
+            <div class="flex justify-between items-start">
+              <div class="space-y-0.5">
+                <span class="text-[10px] bg-sky-100 text-sky-900 font-bold px-2 py-0.5 rounded-full" data-i18n="badge_growth_kkm">📊 Carta Tumbesaran WHO / KKM</span>
+                <h3 class="font-bold text-slate-800 text-sm" data-i18n="title_growth_summary">Status Timbangan & Ukuran Terkini</h3>
+                <p class="text-[11px] text-slate-500" id="growth-latest-date-label">Rekod terakhir: Belum ada rekod</p>
+              </div>
+              <button onclick="openAddGrowthModal()" class="bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl whitespace-nowrap shadow-sm flex items-center space-x-1.5 transition transform active:scale-95">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span data-i18n="btn_add_growth">+ Log Ukuran KK</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2.5 pt-2 border-t border-sky-100 text-center">
+              <div class="bg-white/90 border border-sky-100 p-2.5 rounded-xl shadow-2xs">
+                <p class="text-[10px] font-semibold text-slate-500" data-i18n="lbl_weight">Berat Badan</p>
+                <p class="text-base font-black text-sky-800" id="growth-summary-weight">-</p>
+                <span class="text-[10px] text-slate-400 font-medium" id="growth-summary-weight-diff">-</span>
+              </div>
+              <div class="bg-white/90 border border-sky-100 p-2.5 rounded-xl shadow-2xs">
+                <p class="text-[10px] font-semibold text-slate-500" data-i18n="lbl_height">Panjang / Tinggi</p>
+                <p class="text-base font-black text-sky-800" id="growth-summary-height">-</p>
+                <span class="text-[10px] text-slate-400 font-medium">cm</span>
+              </div>
+              <div class="bg-white/90 border border-sky-100 p-2.5 rounded-xl shadow-2xs">
+                <p class="text-[10px] font-semibold text-slate-500" data-i18n="lbl_head_circ">Ukur Lilit Kepala</p>
+                <p class="text-base font-black text-sky-800" id="growth-summary-head">-</p>
+                <span class="text-[10px] text-slate-400 font-medium">cm</span>
+              </div>
+            </div>
+
+            <!-- Petunjuk Persentil KKM -->
+            <div id="growth-percentile-card" class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="text-base" id="growth-percentile-icon">🟢</span>
+                <div>
+                  <p class="font-bold text-emerald-900 text-[11px]" id="growth-percentile-title">Status: Normal (Jalur Hijau KKM)</p>
+                  <p class="text-[10px] text-emerald-700" id="growth-percentile-desc">Tumbesaran anak sihat & seimbang mengikut graf piawaian Kementerian Kesihatan Malaysia.</p>
+                </div>
+              </div>
+              <span id="growth-percentile-badge" class="bg-white text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full border border-emerald-300">Persentil 50th</span>
+            </div>
+          </div>
+
+          <!-- History List Container -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center px-1">
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider" data-i18n="hdr_growth_history">Buku Rekod Timbangan & Pemeriksaan</h4>
+              <span id="growth-records-count" class="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-full">0 Rekod</span>
+            </div>
+            <div id="growth-records-container" class="space-y-2.5">
+              <div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">
+                Memuatkan rekod timbangan anak...
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1047,6 +1113,87 @@
         <button type="submit" id="btn-save-memory" class="w-full py-3 bg-pastel-500 text-white font-bold rounded-xl mt-2 hover:bg-pastel-600 transition shadow-sm flex items-center justify-center space-x-1.5">
           <i data-lucide="cloud-upload" class="w-4 h-4"></i>
           <span data-i18n="btn_save_cloud">Simpan Ke Cloud Supabase</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: TAMBAH REKOD TUMBESARAN KK -->
+  <div id="modal-add-growth" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center">
+        <h3 id="title-modal-growth" data-i18n="mdl_growth_title" class="text-base font-bold text-slate-800">📏 Rekod Timbangan & Ukuran KK</h3>
+        <button onclick="closeModal('modal-add-growth')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveGrowthLog(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label data-i18n="lbl_growth_date" class="block font-semibold mb-1">Tarikh Timbangan</label>
+            <input type="date" id="inp-growth-date" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+          </div>
+          <div>
+            <label data-i18n="lbl_growth_age" class="block font-semibold mb-1">Umur Anak</label>
+            <select id="inp-growth-age-months" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+              <option value="0">Lahir (Newborn)</option>
+              <option value="1">1 Bulan</option>
+              <option value="2">2 Bulan</option>
+              <option value="3">3 Bulan</option>
+              <option value="4">4 Bulan</option>
+              <option value="5">5 Bulan</option>
+              <option value="6">6 Bulan</option>
+              <option value="7">7 Bulan</option>
+              <option value="8">8 Bulan</option>
+              <option value="9">9 Bulan</option>
+              <option value="10">10 Bulan</option>
+              <option value="11">11 Bulan</option>
+              <option value="12">12 Bulan (1 Tahun)</option>
+              <option value="15">15 Bulan</option>
+              <option value="18">18 Bulan</option>
+              <option value="21">21 Bulan</option>
+              <option value="24">24 Bulan (2 Tahun)</option>
+              <option value="30">30 Bulan</option>
+              <option value="36">36 Bulan (3 Tahun)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label data-i18n="lbl_growth_weight" class="block font-semibold mb-1">Berat (kg)</label>
+            <input type="number" id="inp-growth-weight" step="0.05" min="1" max="30" required placeholder="Cth: 7.8" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+          </div>
+          <div>
+            <label data-i18n="lbl_growth_height" class="block font-semibold mb-1">Tinggi (cm)</label>
+            <input type="number" id="inp-growth-height" step="0.1" min="30" max="130" placeholder="Cth: 68.5" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+          </div>
+          <div>
+            <label data-i18n="lbl_growth_head" class="block font-semibold mb-1">Lilit Kepala (cm)</label>
+            <input type="number" id="inp-growth-head" step="0.1" min="20" max="60" placeholder="Cth: 43.0" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+          </div>
+        </div>
+
+        <div>
+          <label data-i18n="lbl_growth_status" class="block font-semibold mb-1">Penilaian / Jalur Carta KKM</label>
+          <select id="inp-growth-status" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+            <option value="auto">⚡ Auto (Kira Automatik ikut Umur & Berat)</option>
+            <option value="normal">🟢 Normal (Jalur Hijau KKM)</option>
+            <option value="underweight_mild">🟡 Perlu Perhatian / Kurang Berat (Kuning Bawah)</option>
+            <option value="underweight_severe">🔴 Kurang Berat Ketara (Merah)</option>
+            <option value="overweight">🟡 Berat Berlebihan / Tumbesaran Pantas (Kuning Atas)</option>
+          </select>
+        </div>
+
+        <div>
+          <label data-i18n="lbl_growth_notes" class="block font-semibold mb-1">Catatan Jururawat / Klinik Kesihatan</label>
+          <textarea id="inp-growth-notes" rows="2" placeholder="Cth: Berat naik cantik mengikut carta KKM. Teruskan penyusuan ibu." class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300"></textarea>
+        </div>
+
+        <button type="submit" id="btn-save-growth" class="w-full py-3 bg-pastel-500 text-white font-bold rounded-xl mt-1 hover:bg-pastel-600 transition shadow-sm flex items-center justify-center space-x-1.5">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span data-i18n="btn_save_growth">Simpan Rekod Timbangan</span>
         </button>
       </form>
     </div>
@@ -1944,6 +2091,21 @@
         lbl_teeth: "Gigi Tumbuh",
         lbl_feeding_stage: "Fasa Makan",
         subtab_child_album: "Album & Kenangan",
+        subtab_child_growth: "📏 Tumbesaran Anak",
+        badge_growth_kkm: "📊 Carta Tumbesaran WHO / KKM",
+        title_growth_summary: "Status Timbangan & Ukuran Terkini",
+        btn_add_growth: "+ Log Ukuran KK",
+        lbl_head_circ: "Ukur Lilit Kepala",
+        hdr_growth_history: "Buku Rekod Timbangan & Pemeriksaan",
+        mdl_growth_title: "📏 Rekod Timbangan & Ukuran KK",
+        lbl_growth_date: "Tarikh Timbangan",
+        lbl_growth_age: "Umur Anak",
+        lbl_growth_weight: "Berat (kg)",
+        lbl_growth_height: "Tinggi (cm)",
+        lbl_growth_head: "Lilit Kepala (cm)",
+        lbl_growth_status: "Penilaian / Jalur Carta KKM",
+        lbl_growth_notes: "Catatan Jururawat / Klinik Kesihatan",
+        btn_save_growth: "Simpan Rekod Timbangan",
         subtab_child_vaccine: "💉 Vaksin KKM",
         subtab_child_food: "🥣 Makanan & 3-Day Rule",
         subtab_child_milestone: "🌟 Milestone",
@@ -2233,6 +2395,21 @@
         lbl_teeth: "Teeth Count",
         lbl_feeding_stage: "Feeding Stage",
         subtab_child_album: "Album & Memories",
+        subtab_child_growth: "📏 Child Growth",
+        badge_growth_kkm: "📊 WHO / MOH Growth Standards",
+        title_growth_summary: "Latest Weigh-in & Measurements",
+        btn_add_growth: "+ Log KK Measurement",
+        lbl_head_circ: "Head Circumference",
+        hdr_growth_history: "Weigh-in & Clinic Checkup Records",
+        mdl_growth_title: "📏 Clinic Weigh-in & Growth Log",
+        lbl_growth_date: "Weigh-in Date",
+        lbl_growth_age: "Child Age",
+        lbl_growth_weight: "Weight (kg)",
+        lbl_growth_height: "Height (cm)",
+        lbl_growth_head: "Head Circ (cm)",
+        lbl_growth_status: "Assessment / MOH Chart Zone",
+        lbl_growth_notes: "Nurse / Health Clinic Notes",
+        btn_save_growth: "Save Weigh-in Record",
         subtab_child_vaccine: "💉 Vaccinations",
         subtab_child_food: "🥣 Solids & 3-Day Rule",
         subtab_child_milestone: "🌟 Milestones",
@@ -2821,7 +2998,8 @@
           loadTtcLetters(),
           loadVaccines(),
           loadFoodTests(),
-          loadMilestones()
+          loadMilestones(),
+          loadGrowthLogs()
         ]);
       } catch (err) {
         console.warn("Ralat memuatkan data:", err);
@@ -2922,6 +3100,73 @@
     let editingAllergyId = null;
     let editingMemoryId = null;
 
+    // MUAT TURUN KALENDAR JANJI TEMU (.ICS)
+    function downloadAppointmentICS(title, dateStr, timeStr, clinicStr, notesStr) {
+      if (!dateStr) return;
+      const isEn = currentLang === 'en';
+      const cleanDate = dateStr.replace(/-/g, '');
+      let startDT, endDT;
+      const hasTime = timeStr && /^\d{1,2}:\d{2}/.test(timeStr.trim());
+
+      if (hasTime) {
+        const parts = timeStr.trim().split(':');
+        const hh = parts[0].padStart(2, '0');
+        const mm = (parts[1] || '00').slice(0, 2);
+        startDT = `${cleanDate}T${hh}${mm}00`;
+        let nextHour = ((parseInt(hh, 10) + 1) % 24).toString().padStart(2, '0');
+        endDT = `${cleanDate}T${nextHour}${mm}00`;
+      } else {
+        startDT = cleanDate;
+        endDT = cleanDate;
+      }
+
+      const uid = 'bukupinkku-' + Date.now() + '@bukupinkku.my';
+      const now = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      const summary = (title || (isEn ? 'Clinic Visit' : 'Temujanji KK')) + (clinicStr ? ` - ${clinicStr}` : '');
+      const description = (notesStr ? `${notesStr}\n\n` : '') + 'Dicipta melalui BukuPinkKu (https://bukupinkku.my)';
+      const location = clinicStr || (isEn ? 'Health Clinic (KK)' : 'Klinik Kesihatan (KK)');
+
+      const icsLines = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//BukuPinkKu//MY//MS',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'BEGIN:VEVENT',
+        `UID:${uid}`,
+        `DTSTAMP:${now}`,
+        hasTime ? `DTSTART:${startDT}` : `DTSTART;VALUE=DATE:${startDT}`,
+        hasTime ? `DTEND:${endDT}` : `DTEND;VALUE=DATE:${endDT}`,
+        `SUMMARY:${summary.replace(/\n/g, ' ')}`,
+        `DESCRIPTION:${description.replace(/\n/g, '\\n')}`,
+        `LOCATION:${location.replace(/\n/g, ' ')}`,
+        'STATUS:CONFIRMED',
+        'BEGIN:VALARM',
+        'TRIGGER:-PT1D',
+        'ACTION:DISPLAY',
+        `DESCRIPTION:${isEn ? 'Reminder: Clinic Appointment Tomorrow' : 'Peringatan Temujanji KK Esok'}`,
+        'END:VALARM',
+        'BEGIN:VALARM',
+        'TRIGGER:-PT2H',
+        'ACTION:DISPLAY',
+        `DESCRIPTION:${isEn ? 'Reminder: Clinic Appointment Soon' : 'Peringatan Temujanji KK Sebentar Lagi'}`,
+        'END:VALARM',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ];
+
+      const icsBlob = new Blob([icsLines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+      const downloadUrl = URL.createObjectURL(icsBlob);
+      const tempLink = document.createElement('a');
+      tempLink.href = downloadUrl;
+      tempLink.download = `Temujanji-${(title || 'Klinik').replace(/[^a-zA-Z0-9]/g, '_')}-${dateStr}.ics`;
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
+      URL.revokeObjectURL(downloadUrl);
+      showToast(isEn ? "📅 Calendar (.ics) file downloaded! Open to save to Google / Apple / Samsung Calendar." : "📅 Fail kalendar (.ics) dimuat turun! Buka fail untuk simpan ke Google / Apple / Samsung Calendar.");
+    }
+
     // LOAD APPOINTMENTS
     async function loadAppointments() {
       const { data, error } = await db
@@ -2948,6 +3193,9 @@
       data.forEach(item => {
         const card = document.createElement('div');
         card.className = "bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-xs";
+        const escapedTitle = (item.title || '').replace(/'/g, "\\'");
+        const escapedClinic = (item.clinic_name || '').replace(/'/g, "\\'");
+        const escapedNotes = (item.notes || '').replace(/'/g, "\\'");
         card.innerHTML = `
           <div class="flex justify-between items-start">
             <div>
@@ -2957,9 +3205,13 @@
             </div>
             <span class="font-bold text-pastel-600">${item.appointment_date} ${item.appointment_time || ''}</span>
           </div>
-          <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-500">
-            <span>${item.notes || (isEn ? 'Attend together' : 'Hadir bersama')}</span>
-            <div class="flex items-center space-x-1.5">
+          <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-500 gap-2">
+            <span class="truncate max-w-[150px]">${item.notes || (isEn ? 'Attend together' : 'Hadir bersama')}</span>
+            <div class="flex items-center space-x-1.5 shrink-0">
+              <button onclick="downloadAppointmentICS('${escapedTitle}', '${item.appointment_date}', '${item.appointment_time || ''}', '${escapedClinic}', '${escapedNotes}')" class="px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold border border-sky-200 transition flex items-center space-x-1" title="${isEn ? 'Add to Calendar' : 'Muat Turun ke Kalendar'}">
+                <span>📅</span>
+                <span>${isEn ? 'Calendar' : 'Kalendar'}</span>
+              </button>
               <button onclick="editAppointment('${item.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 hover:text-pastel-700 font-semibold border border-slate-200 transition">
                 ✏️ ${isEn ? 'Edit' : 'Edit'}
               </button>
@@ -2981,7 +3233,14 @@
           : `Pemeriksaan: <strong>${data[0].title}</strong> di ${data[0].clinic_name || 'Klinik Kesihatan'}`;
         if (quickActions) {
           quickActions.classList.remove('hidden');
+          const topTitle = (data[0].title || '').replace(/'/g, "\\'");
+          const topClinic = (data[0].clinic_name || '').replace(/'/g, "\\'");
+          const topNotes = (data[0].notes || '').replace(/'/g, "\\'");
           quickActions.innerHTML = `
+            <button onclick="event.stopPropagation(); downloadAppointmentICS('${topTitle}', '${data[0].appointment_date}', '${data[0].appointment_time || ''}', '${topClinic}', '${topNotes}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold border border-sky-200 transition flex items-center space-x-1">
+              <span>📅</span>
+              <span>${isEn ? 'Calendar (.ICS)' : 'Kalendar (.ICS)'}</span>
+            </button>
             <button onclick="event.stopPropagation(); sendNudge('appt')" class="text-[11px] px-2.5 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold border border-teal-200 transition">
               🔔 ${isEn ? 'Remind Partner' : 'Ingatkan Pasangan'}
             </button>
@@ -3165,7 +3424,7 @@
       const isEn = currentLang === 'en';
       const container = document.getElementById('memory-timeline-container');
       const filtered = (data || []).filter(item => 
-        !['Warkah Buat Bakal Anak', 'Vaksin KKM', 'Milestone', 'Ujian Makanan'].includes(item.category)
+        !['Warkah Buat Bakal Anak', 'Vaksin KKM', 'Milestone', 'Ujian Makanan', 'Tumbesaran'].includes(item.category)
       );
       if (error || filtered.length === 0) {
         cachedMemories = [];
@@ -3990,7 +4249,7 @@
       const allNavIds = [
         'nav-ttc-fertility', 'nav-ttc-opk', 'nav-ttc-supplements', 'nav-ttc-doa', 'nav-ttc-letters',
         'nav-preg-overview', 'nav-preg-appt', 'nav-preg-vitals', 'nav-preg-pantang',
-        'nav-child-memories', 'nav-child-vaccine', 'nav-child-food', 'nav-child-milestone'
+        'nav-child-memories', 'nav-child-growth', 'nav-child-vaccine', 'nav-child-food', 'nav-child-milestone'
       ];
 
       allNavIds.forEach(id => {
@@ -4089,7 +4348,7 @@
     }
 
     function switchChildSubtab(tab) {
-      const tabs = ['memories', 'vaccine', 'food', 'milestone'];
+      const tabs = ['memories', 'growth', 'vaccine', 'food', 'milestone'];
       tabs.forEach(t => {
         const viewEl = document.getElementById('view-child-' + t);
         if (viewEl) viewEl.classList.add('hidden');
@@ -4101,6 +4360,7 @@
       const activeSubtab = document.getElementById('subtab-child-' + tab);
       if (activeSubtab) activeSubtab.className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
       updateSidebarActiveMenu('child', tab);
+      if (tab === 'growth') renderGrowthLogs();
       if (tab === 'vaccine') renderVaccines();
       if (tab === 'food') renderFoodTests();
       if (tab === 'milestone') renderMilestones();
@@ -4852,6 +5112,387 @@
       lucide.createIcons();
     }
 
+    // ==========================================
+    // PENJEJAK TUMBESARAN BAYI (BERAT & TINGGI KKM)
+    // ==========================================
+
+    // Median berat mengikut piawaian WHO / KKM (Kanak-kanak Malaysia)
+    const WHO_WEIGHT_MEDIAN = {
+      0: 3.3, 1: 4.5, 2: 5.6, 3: 6.4, 4: 7.0, 5: 7.5,
+      6: 7.9, 7: 8.3, 8: 8.6, 9: 8.9, 10: 9.2, 11: 9.4,
+      12: 9.6, 15: 10.3, 18: 10.9, 21: 11.5, 24: 12.2, 30: 13.3, 36: 14.3
+    };
+
+    function getGrowthStorageKey() {
+      return 'bukupink_growth_logs_' + (currentFamilyId || 'default');
+    }
+
+    function getSavedGrowthLogs() {
+      try {
+        const raw = localStorage.getItem(getGrowthStorageKey());
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveGrowthLogsState(logs) {
+      localStorage.setItem(getGrowthStorageKey(), JSON.stringify(logs));
+    }
+
+    async function loadGrowthLogs() {
+      let logs = getSavedGrowthLogs();
+      if (db && currentFamilyId) {
+        try {
+          const { data, error } = await db
+            .from('baby_memories')
+            .select('*')
+            .eq('family_id', currentFamilyId)
+            .eq('category', 'Tumbesaran')
+            .order('memory_date', { ascending: false });
+
+          if (!error && data && data.length > 0) {
+            const cloudLogs = [];
+            data.forEach(item => {
+              if (item.notes) {
+                try {
+                  const p = JSON.parse(item.notes);
+                  cloudLogs.push({
+                    id: item.id,
+                    cloudId: item.id,
+                    date: item.memory_date,
+                    ageMonths: p.ageMonths !== undefined ? p.ageMonths : 0,
+                    weight: p.weight || 0,
+                    height: p.height || 0,
+                    headCirc: p.headCirc || 0,
+                    status: p.status || 'normal',
+                    notes: p.notes || ''
+                  });
+                } catch (e) {}
+              }
+            });
+            if (cloudLogs.length > 0) {
+              logs = cloudLogs;
+              saveGrowthLogsState(logs);
+            }
+          }
+        } catch (e) {
+          console.warn("Growth sync warning:", e);
+        }
+      }
+      renderGrowthLogs();
+    }
+
+    function calculatePercentileStatus(ageMonths, weight) {
+      const isEn = currentLang === 'en';
+      const ageNum = parseInt(ageMonths, 10) || 0;
+      const keys = Object.keys(WHO_WEIGHT_MEDIAN).map(k => parseInt(k, 10));
+      let closest = keys[0];
+      let minDiff = Math.abs(ageNum - closest);
+      keys.forEach(k => {
+        const diff = Math.abs(ageNum - k);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closest = k;
+        }
+      });
+      const median = WHO_WEIGHT_MEDIAN[closest];
+      const ratio = weight / median;
+
+      if (ratio < 0.75) {
+        return {
+          code: 'underweight_severe',
+          icon: '🔴',
+          title: isEn ? 'Severely Underweight (Red Zone)' : 'Kurang Berat Ketara (Zon Merah)',
+          desc: isEn ? 'Weight is below healthy threshold. Please consult health clinic nurse/doctor.' : 'Berat berada di bawah jalur normal. Sila dapatkan nasihat jururawat/doktor Klinik Kesihatan.',
+          badge: isEn ? '< 3rd Centile' : '< Persentil Ke-3',
+          badgeColor: 'bg-rose-50 text-rose-700 border-rose-200',
+          cardColor: 'bg-rose-50 border-rose-200',
+          heroStatus: isEn ? 'Underweight (Red)' : 'Kurang Berat (Merah)',
+          heroColor: 'text-rose-600'
+        };
+      } else if (ratio < 0.88) {
+        return {
+          code: 'underweight_mild',
+          icon: '🟡',
+          title: isEn ? 'Mildly Underweight (Yellow Zone)' : 'Perlu Pemantauan (Zon Kuning Bawah)',
+          desc: isEn ? 'Slightly below median. Ensure adequate feedings and track next weigh-in.' : 'Sedikit bawah median. Pastikan susu/makanan mencukupi & pantau timbangan seterusnya.',
+          badge: isEn ? '3rd - 15th Centile' : 'Persentil 3 - 15',
+          badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
+          cardColor: 'bg-amber-50 border-amber-200',
+          heroStatus: isEn ? 'Caution (Yellow)' : 'Pantau (Kuning)',
+          heroColor: 'text-amber-600'
+        };
+      } else if (ratio > 1.25) {
+        return {
+          code: 'overweight',
+          icon: '🟡',
+          title: isEn ? 'Rapid Growth / High Percentile (Yellow Zone)' : 'Tumbesaran Pantas (Zon Kuning Atas)',
+          desc: isEn ? 'Weight is above median. Normal for some breastfed infants; monitor motor development.' : 'Berat melebihi purata. Lazim bagi sesetengah bayi susu ibu penuh; pantau perkembangan motor anak.',
+          badge: isEn ? '> 85th Centile' : '> Persentil Ke-85',
+          badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
+          cardColor: 'bg-amber-50 border-amber-200',
+          heroStatus: isEn ? 'Rapid Growth (Yellow)' : 'Pantas (Kuning)',
+          heroColor: 'text-amber-600'
+        };
+      } else {
+        return {
+          code: 'normal',
+          icon: '🟢',
+          title: isEn ? 'Normal Growth (Green MOH Zone)' : 'Normal (Jalur Hijau KKM)',
+          desc: isEn ? 'Baby growth is thriving and balanced according to WHO / MOH growth curves.' : 'Tumbesaran anak sihat & seimbang mengikut graf piawaian Kementerian Kesihatan Malaysia.',
+          badge: isEn ? '15th - 85th Centile' : 'Persentil 15 - 85 (Ideal)',
+          badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+          cardColor: 'bg-emerald-50 border-emerald-200',
+          heroStatus: isEn ? 'Normal (Green)' : 'Normal (Hijau)',
+          heroColor: 'text-emerald-700'
+        };
+      }
+    }
+
+    function openAddGrowthModal() {
+      const today = new Date().toISOString().split('T')[0];
+      const dateInp = document.getElementById('inp-growth-date');
+      if (dateInp) dateInp.value = today;
+
+      const ageSelect = document.getElementById('inp-growth-age-months');
+      const birthSub = document.getElementById('hero-child-sub');
+      if (ageSelect && birthSub && birthSub.innerText) {
+        const match = birthSub.innerText.match(/\d{4}-\d{2}-\d{2}/);
+        if (match) {
+          const bDate = new Date(match[0]);
+          const now = new Date();
+          const monthsDiff = Math.max(0, Math.floor((now - bDate) / (1000 * 60 * 60 * 24 * 30.4375)));
+          const options = Array.from(ageSelect.options).map(o => parseInt(o.value, 10));
+          let bestOpt = 0;
+          let minDiff = 999;
+          options.forEach(val => {
+            const d = Math.abs(val - monthsDiff);
+            if (d < minDiff) { minDiff = d; bestOpt = val; }
+          });
+          ageSelect.value = String(bestOpt);
+        }
+      }
+
+      const weightInp = document.getElementById('inp-growth-weight');
+      if (weightInp) weightInp.value = '';
+      const heightInp = document.getElementById('inp-growth-height');
+      if (heightInp) heightInp.value = '';
+      const headInp = document.getElementById('inp-growth-head');
+      if (headInp) headInp.value = '';
+      const statusSelect = document.getElementById('inp-growth-status');
+      if (statusSelect) statusSelect.value = 'auto';
+      const notesInp = document.getElementById('inp-growth-notes');
+      if (notesInp) notesInp.value = '';
+
+      openModal('modal-add-growth');
+    }
+
+    async function handleSaveGrowthLog(e) {
+      e.preventDefault();
+      const isEn = currentLang === 'en';
+      const date = document.getElementById('inp-growth-date').value;
+      const ageMonths = parseInt(document.getElementById('inp-growth-age-months').value, 10) || 0;
+      const weight = parseFloat(document.getElementById('inp-growth-weight').value);
+      const height = parseFloat(document.getElementById('inp-growth-height').value) || 0;
+      const headCirc = parseFloat(document.getElementById('inp-growth-head').value) || 0;
+      const rawStatus = document.getElementById('inp-growth-status').value;
+      const notes = document.getElementById('inp-growth-notes').value.trim();
+
+      const assessment = (rawStatus === 'auto')
+        ? calculatePercentileStatus(ageMonths, weight).code
+        : rawStatus;
+
+      const newRecord = {
+        id: 'growth_' + Date.now(),
+        date,
+        ageMonths,
+        weight,
+        height,
+        headCirc,
+        status: assessment,
+        notes
+      };
+
+      const logs = getSavedGrowthLogs();
+      logs.unshift(newRecord);
+      logs.sort((a, b) => new Date(b.date) - new Date(a.date));
+      saveGrowthLogsState(logs);
+
+      closeModal('modal-add-growth');
+      showToast(isEn ? `✅ Weigh-in record for ${weight} kg saved!` : `✅ Rekod timbangan ${weight} kg berjaya disimpan!`);
+      renderGrowthLogs();
+
+      if (db && currentFamilyId) {
+        try {
+          const { data, error } = await db.from('baby_memories').insert({
+            family_id: currentFamilyId,
+            title: `Tumbesaran ${ageMonths} Bulan: ${weight} kg`,
+            category: 'Tumbesaran',
+            memory_date: date,
+            notes: JSON.stringify({
+              ageMonths,
+              weight,
+              height,
+              headCirc,
+              status: assessment,
+              notes
+            }),
+            uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
+          }).select().single();
+
+          if (!error && data) {
+            newRecord.cloudId = data.id;
+            saveGrowthLogsState(logs);
+          }
+        } catch (err) {
+          console.warn("Supabase growth insert error:", err);
+        }
+      }
+    }
+
+    async function deleteGrowthLog(id) {
+      const isEn = currentLang === 'en';
+      if (!confirm(isEn ? "Are you sure you want to delete this weigh-in record?" : "Adakah anda pasti mahu memadam rekod timbangan ini?")) return;
+
+      let logs = getSavedGrowthLogs();
+      const target = logs.find(x => x.id === id || x.cloudId === id);
+      logs = logs.filter(x => x.id !== id && x.cloudId !== id);
+      saveGrowthLogsState(logs);
+      renderGrowthLogs();
+
+      if (target && target.cloudId && db && currentFamilyId) {
+        try {
+          await db.from('baby_memories').delete().eq('id', target.cloudId);
+        } catch (e) {
+          console.warn("Supabase growth delete error:", e);
+        }
+      }
+      showToast(isEn ? "🗑️ Weigh-in record deleted." : "🗑️ Rekod timbangan dipadam.");
+    }
+
+    function renderGrowthLogs() {
+      const isEn = currentLang === 'en';
+      const container = document.getElementById('growth-records-container');
+      const countEl = document.getElementById('growth-records-count');
+      const latestDateEl = document.getElementById('growth-latest-date-label');
+      const sumWeightEl = document.getElementById('growth-summary-weight');
+      const sumWeightDiffEl = document.getElementById('growth-summary-weight-diff');
+      const sumHeightEl = document.getElementById('growth-summary-height');
+      const sumHeadEl = document.getElementById('growth-summary-head');
+      const percCard = document.getElementById('growth-percentile-card');
+      const percIcon = document.getElementById('growth-percentile-icon');
+      const percTitle = document.getElementById('growth-percentile-title');
+      const percDesc = document.getElementById('growth-percentile-desc');
+      const percBadge = document.getElementById('growth-percentile-badge');
+
+      const heroWeight = document.getElementById('hero-child-weight');
+      const heroHeight = document.getElementById('hero-child-height');
+      const heroPercentile = document.getElementById('hero-child-percentile');
+
+      const logs = getSavedGrowthLogs();
+      logs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      if (countEl) countEl.innerText = `${logs.length} ${isEn ? 'Records' : 'Rekod'}`;
+
+      if (logs.length === 0) {
+        if (latestDateEl) latestDateEl.innerText = isEn ? "Last recorded: No records yet" : "Rekod terakhir: Belum ada rekod";
+        if (sumWeightEl) sumWeightEl.innerText = "-";
+        if (sumWeightDiffEl) sumWeightDiffEl.innerText = "-";
+        if (sumHeightEl) sumHeightEl.innerText = "-";
+        if (sumHeadEl) sumHeadEl.innerText = "-";
+        if (container) {
+          container.innerHTML = `
+            <div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200 space-y-1.5">
+              <span class="text-2xl">📏</span>
+              <p class="font-bold text-slate-700">${isEn ? "No Weigh-in Records Yet" : "Belum Ada Rekod Timbangan Anak"}</p>
+              <p class="text-[11px] text-slate-400">${isEn ? "Tap '+ Log KK Measurement' to record your baby's clinic checkup weight and height." : "Klik butang '+ Log Ukuran KK' untuk mula catat berat, tinggi dan ukur lilit kepala anak."}</p>
+            </div>
+          `;
+        }
+        return;
+      }
+
+      const latest = logs[0];
+      const prev = logs[1] || null;
+
+      if (latestDateEl) {
+        latestDateEl.innerText = isEn
+          ? `Last checkup: ${latest.date} (${latest.ageMonths === 0 ? 'Birth' : latest.ageMonths + ' Months'})`
+          : `Pemeriksaan: ${latest.date} (${latest.ageMonths === 0 ? 'Masa Lahir' : latest.ageMonths + ' Bulan'})`;
+      }
+      if (sumWeightEl) sumWeightEl.innerText = latest.weight ? `${latest.weight} kg` : '-';
+      if (sumHeightEl) sumHeightEl.innerText = latest.height ? `${latest.height}` : '-';
+      if (sumHeadEl) sumHeadEl.innerText = latest.headCirc ? `${latest.headCirc}` : '-';
+
+      if (sumWeightDiffEl) {
+        if (prev && prev.weight) {
+          const diff = (latest.weight - prev.weight).toFixed(2);
+          const sign = diff >= 0 ? `+${diff}` : `${diff}`;
+          sumWeightDiffEl.innerText = `${sign} kg ${isEn ? 'vs last' : 'drpd lepas'}`;
+          sumWeightDiffEl.className = diff >= 0 ? "text-[10px] text-emerald-600 font-bold" : "text-[10px] text-rose-600 font-bold";
+        } else {
+          sumWeightDiffEl.innerText = isEn ? "First record" : "Rekod pertama";
+          sumWeightDiffEl.className = "text-[10px] text-slate-400 font-medium";
+        }
+      }
+
+      const percInfo = calculatePercentileStatus(latest.ageMonths, latest.weight);
+      if (percCard) percCard.className = `${percInfo.cardColor} p-2.5 rounded-xl flex items-center justify-between border`;
+      if (percIcon) percIcon.innerText = percInfo.icon;
+      if (percTitle) percTitle.innerText = percInfo.title;
+      if (percDesc) percDesc.innerText = percInfo.desc;
+      if (percBadge) {
+        percBadge.innerText = percInfo.badge;
+        percBadge.className = `${percInfo.badgeColor} text-[10px] font-extrabold px-2 py-0.5 rounded-full border`;
+      }
+
+      if (heroWeight && latest.weight) heroWeight.innerText = latest.weight;
+      if (heroHeight && latest.height) heroHeight.innerText = `Tinggi: ${latest.height} cm`;
+      if (heroPercentile) {
+        heroPercentile.innerText = percInfo.heroStatus;
+        heroPercentile.className = `font-bold ${percInfo.heroColor}`;
+      }
+
+      if (container) {
+        container.innerHTML = '';
+        logs.forEach(item => {
+          const card = document.createElement('div');
+          card.className = "bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-xs";
+          const p = calculatePercentileStatus(item.ageMonths, item.weight);
+          const ageLabel = item.ageMonths === 0 ? (isEn ? 'At Birth' : 'Masa Lahir') : `${item.ageMonths} ${isEn ? 'Months' : 'Bulan'}`;
+
+          card.innerHTML = `
+            <div class="flex justify-between items-start">
+              <div>
+                <div class="flex items-center space-x-1.5">
+                  <span class="bg-sky-50 text-sky-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md border border-sky-200">
+                    👶 ${ageLabel}
+                  </span>
+                  <span class="${p.badgeColor} text-[10px] font-bold px-2 py-0.5 rounded-md border">
+                    ${p.icon} ${p.heroStatus}
+                  </span>
+                </div>
+                <p class="font-black text-slate-800 text-sm mt-1.5">${item.weight} kg <span class="text-xs font-normal text-slate-500">| ${item.height ? item.height + ' cm' : '- cm'} | Lilit: ${item.headCirc ? item.headCirc + ' cm' : '-'}</span></p>
+              </div>
+              <span class="text-[11px] font-semibold text-slate-400">${item.date}</span>
+            </div>
+
+            ${item.notes ? `<p class="text-[11px] text-slate-600 bg-slate-50 p-2 rounded-xl border border-slate-100 italic">"${item.notes}"</p>` : ''}
+
+            <div class="pt-1.5 border-t border-slate-100 flex justify-between items-center text-[10px] text-slate-400">
+              <span>${isEn ? 'Verified MOH record' : 'Rekod Buku Pink / Kesihatan Kanak-Kanak'}</span>
+              <button onclick="deleteGrowthLog('${item.id}')" class="px-2 py-0.5 rounded-md bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
+                🗑️ ${isEn ? 'Delete' : 'Padam'}
+              </button>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }
+      lucide.createIcons();
+    }
+
     function showToast(message) {
       const toast = document.getElementById('toast');
       const text = document.getElementById('toast-text');
@@ -4910,6 +5551,19 @@
           if (previewContainer) previewContainer.classList.add('hidden');
           const titleEl = document.getElementById('title-modal-memory');
           if (titleEl) titleEl.innerText = isEn ? "Save New Memory (Cloud)" : "Simpan Kenangan Baru (Cloud)";
+        } else if (id === 'modal-add-growth') {
+          const dateInp = document.getElementById('inp-growth-date');
+          if (dateInp) dateInp.value = today;
+          const weightInp = document.getElementById('inp-growth-weight');
+          if (weightInp) weightInp.value = '';
+          const heightInp = document.getElementById('inp-growth-height');
+          if (heightInp) heightInp.value = '';
+          const headInp = document.getElementById('inp-growth-head');
+          if (headInp) headInp.value = '';
+          const statusSelect = document.getElementById('inp-growth-status');
+          if (statusSelect) statusSelect.value = 'auto';
+          const notesInp = document.getElementById('inp-growth-notes');
+          if (notesInp) notesInp.value = '';
         }
       }
 
@@ -5015,7 +5669,20 @@
       }
     }
 
-    function handleSaveOpkLog(e) {
+    function getOpkStorageKey() {
+      return 'bukupink_opk_logs_' + (currentFamilyId || 'default');
+    }
+
+    function sharePeakOpkWhatsApp(date) {
+      const isEn = currentLang === 'en';
+      const msg = isEn
+        ? `Salam sayang! ❤️ Today's OPK fertility test shows PEAK OVULATION 🔥 (${date || 'Today'})! The next 24–36 hours are our golden fertile window. Let's make time for each other! 🤲✨ - from BukuPinkKu (https://bukupinkku.my)`
+        : `Salam sayang! ❤️ Keputusan ujian OPK hari ini PUNCAK (Peak Ovulation 🔥)! 24–36 jam seterusnya adalah waktu keemasan paling subur kita. Jom sama-sama berusaha malam ini ya! 🤲✨ - dari BukuPinkKu (https://bukupinkku.my)`;
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+      showToast(isEn ? "📲 WhatsApp opened to notify your partner of Peak Fertility!" : "📲 WhatsApp dibuka untuk khabarkan waktu subur puncak kepada pasangan!");
+    }
+
+    async function handleSaveOpkLog(e) {
       e.preventDefault();
       const isEn = currentLang === 'en';
       const result = document.getElementById('inp-opk-result').value;
@@ -5023,13 +5690,44 @@
       const date = document.getElementById('inp-opk-date').value;
       const notes = document.getElementById('inp-opk-notes').value || (isEn ? 'No notes' : 'Tiada catatan');
 
-      const logs = JSON.parse(localStorage.getItem('bukupink_opk_logs') || '[]');
-      logs.unshift({ id: 'opk-' + Date.now(), result, temp, date, notes });
-      localStorage.setItem('bukupink_opk_logs', JSON.stringify(logs));
+      const key = getOpkStorageKey();
+      let logs = JSON.parse(localStorage.getItem(key) || localStorage.getItem('bukupink_opk_logs') || '[]');
+      const newEntry = { id: 'opk-' + Date.now(), result, temp, date, notes };
+      logs.unshift(newEntry);
+      localStorage.setItem(key, JSON.stringify(logs));
+
+      // Sync ke Supabase baby_memories jika ada
+      if (db && currentFamilyId) {
+        try {
+          await db.from('baby_memories').insert({
+            family_id: currentFamilyId,
+            title: `Log OPK: ${result}`,
+            category: 'Ujian OPK',
+            memory_date: date,
+            notes: `Suhu BBT: ${temp}°C | Catatan: ${notes}`,
+            uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
+          });
+        } catch (err) {
+          console.warn("OPK sync to Supabase:", err);
+        }
+      }
 
       closeModal('modal-add-opk');
       showToast(isEn ? "📊 OPK test reading logged!" : "📊 Rekod ujian OPK berjaya disimpan!");
       loadOpkLogs();
+
+      // Jika Puncak / Peak Ovulasi, tawarkan notifikasi WhatsApp ke suami
+      const isPeak = result.includes('Puncak') || result.includes('Peak') || result.includes('🔥');
+      if (isPeak) {
+        setTimeout(() => {
+          const ask = confirm(isEn
+            ? "🔥 PEAK OVULATION detected! Next 24-36 hours is your peak fertility window. Would you like to send a gentle WhatsApp nudge to your partner now?"
+            : "🔥 PUNCAK OVULASI dikesan! 24-36 jam seterusnya adalah waktu keemasan paling subur. Mahu hantar pesanan WhatsApp mesra kepada pasangan sekarang?");
+          if (ask) {
+            sharePeakOpkWhatsApp(date);
+          }
+        }, 300);
+      }
     }
 
     function loadOpkLogs() {
@@ -5037,7 +5735,8 @@
       const container = document.getElementById('opk-logs-list');
       if (!container) return;
 
-      const logs = JSON.parse(localStorage.getItem('bukupink_opk_logs') || '[]');
+      const key = getOpkStorageKey();
+      const logs = JSON.parse(localStorage.getItem(key) || localStorage.getItem('bukupink_opk_logs') || '[]');
       if (logs.length === 0) {
         container.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">${isEn ? "No OPK tests logged yet. Tap '+ Log New Test'." : "Belum ada ujian OPK direkodkan. Klik '+ Log Ujian Baru'."}</div>`;
         return;
@@ -5048,17 +5747,20 @@
         if (s.includes('Puncak') || s.includes('Peak') || s.includes('🔥')) {
           return {
             label: isEn ? "Peak Ovulation 🔥" : "Puncak Ovulasi 🔥",
-            cls: "bg-rose-100 text-rose-700 border border-rose-300"
+            cls: "bg-rose-100 text-rose-700 border border-rose-300",
+            isPeak: true
           };
         } else if (s.includes('Tinggi') || s.includes('High')) {
           return {
             label: isEn ? "High Surge 📈" : "Tinggi (Subur) 📈",
-            cls: "bg-purple-100 text-purple-700 border border-purple-200"
+            cls: "bg-purple-100 text-purple-700 border border-purple-200",
+            isPeak: false
           };
         } else {
           return {
             label: isEn ? "Low / Negative" : "Rendah / Negatif",
-            cls: "bg-slate-100 text-slate-700"
+            cls: "bg-slate-100 text-slate-700",
+            isPeak: false
           };
         }
       }
@@ -5066,13 +5768,19 @@
       container.innerHTML = logs.map(item => {
         const badge = formatOpkBadge(item.result);
         return `
-          <div class="p-3 flex justify-between items-center text-xs">
-            <div>
-              <div class="flex items-center space-x-1.5">
+          <div class="p-3 flex justify-between items-center text-xs hover:bg-slate-50/70 transition">
+            <div class="space-y-0.5">
+              <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
                 <span class="font-bold text-slate-800">${item.date}</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badge.cls}">${badge.label}</span>
+                ${badge.isPeak ? `
+                  <button onclick="sharePeakOpkWhatsApp('${item.date}')" class="px-2 py-0.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[10px] rounded-md border border-rose-200 flex items-center space-x-1 transition shadow-2xs">
+                    <span>📲</span>
+                    <span>${isEn ? 'Nudge Partner' : 'Khabarkan ke Pasangan'}</span>
+                  </button>
+                ` : ''}
               </div>
-              <p class="text-[11px] text-slate-500 mt-0.5">${isEn ? 'BBT' : 'Suhu BBT'}: ${item.temp}°C | ${item.notes}</p>
+              <p class="text-[11px] text-slate-500">${isEn ? 'BBT' : 'Suhu BBT'}: ${item.temp}°C | ${item.notes}</p>
             </div>
             <button onclick="deleteOpkLog('${item.id}')" title="${isEn ? 'Delete' : 'Padam'}" class="text-rose-500 hover:text-rose-700 p-1">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
@@ -5085,10 +5793,11 @@
 
     function deleteOpkLog(id) {
       const isEn = currentLang === 'en';
-      let logs = JSON.parse(localStorage.getItem('bukupink_opk_logs') || '[]');
+      const key = getOpkStorageKey();
+      let logs = JSON.parse(localStorage.getItem(key) || localStorage.getItem('bukupink_opk_logs') || '[]');
       logs = logs.filter(x => x.id !== id);
-      localStorage.setItem('bukupink_opk_logs', JSON.stringify(logs));
-      showToast(isEn ? "Test log deleted." : "Log ujian dipadam.");
+      localStorage.setItem(key, JSON.stringify(logs));
+      showToast(isEn ? "🗑️ OPK log entry deleted." : "🗑️ Rekod ujian OPK dipadam.");
       loadOpkLogs();
     }
 

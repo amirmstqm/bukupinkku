@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bukupinkku-v29';
+const CACHE_NAME = 'bukupinkku-v30';
 const ASSETS_TO_CACHE = [
   './manifest.json',
   './apple-touch-icon.png',
