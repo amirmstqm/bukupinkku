@@ -1017,9 +1017,26 @@
         </div>
 
         <div>
-          <label data-i18n="lbl_choose_photo" class="block font-semibold mb-1">Pilih Gambar dari Telefon / Komputer</label>
-          <input type="file" id="inp-mem-file" accept="image/*" class="w-full p-2 border border-dashed border-pastel-300 rounded-xl text-slate-500 bg-pastel-50/50 cursor-pointer">
-          <p data-i18n="hint_cloud_photo" class="text-[10px] text-slate-400 mt-1">Disimpan ke pangkalan data cloud keluarga anda.</p>
+          <label data-i18n="lbl_choose_photo" class="block font-semibold mb-1 text-slate-700">Pilih Gambar dari Telefon / Komputer</label>
+          <input type="file" id="inp-mem-file" accept="image/*" onchange="handleMemoryFileSelect(event)" class="w-full p-2 border border-dashed border-pastel-300 rounded-xl text-slate-500 bg-pastel-50/50 cursor-pointer file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-pastel-100 file:text-pastel-700 hover:file:bg-pastel-200">
+          
+          <!-- LIVE PREVIEW & COMPRESSION BADGE -->
+          <div id="mem-preview-container" class="hidden mt-2 relative rounded-xl border border-slate-200 p-2 bg-slate-50 space-y-1.5">
+            <div class="relative max-h-44 rounded-lg overflow-hidden bg-black/5 flex items-center justify-center">
+              <img id="mem-preview-img" src="" alt="Preview" class="max-h-44 w-auto object-contain rounded-lg">
+              <button type="button" onclick="clearMemoryFile()" class="absolute top-1.5 right-1.5 bg-black/70 hover:bg-black/90 text-white rounded-full p-1 text-[11px] transition" title="Padam gambar">
+                ✕
+              </button>
+            </div>
+            <div class="flex justify-between items-center text-[10px] px-1">
+              <span id="mem-preview-compression" class="font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                ⚡ Auto-dioptimumkan
+              </span>
+              <span id="mem-preview-size" class="text-slate-500 font-medium"></span>
+            </div>
+          </div>
+
+          <p data-i18n="hint_cloud_photo" class="text-[10px] text-slate-400 mt-1">Gambar dimampatkan secara automatik sebelum disimpan ke Cloud agar pantas & jimat ruang.</p>
         </div>
 
         <div>
@@ -1611,6 +1628,38 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: FULLSCREEN PHOTO LIGHTBOX ================= -->
+  <div id="modal-photo-lightbox" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex flex-col items-center justify-center p-3 sm:p-6 transition-all" onclick="closePhotoLightbox()">
+    <div class="relative max-w-2xl w-full flex flex-col items-center space-y-3" onclick="event.stopPropagation()">
+      <!-- Top Bar -->
+      <div class="w-full flex justify-between items-center text-white px-2">
+        <div>
+          <h3 id="lightbox-title" class="text-sm font-bold truncate max-w-[220px] sm:max-w-md">Kenangan Bayi</h3>
+          <p id="lightbox-date" class="text-[11px] text-slate-300"></p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <a id="lightbox-download" href="#" download="bukupinkku-memori.jpg" class="p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition flex items-center space-x-1.5 text-xs shadow-sm" title="Muat Turun Foto">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span data-i18n="btn_download_photo" class="hidden sm:inline text-[11px] font-semibold">Muat Turun</span>
+          </a>
+          <button onclick="closePhotoLightbox()" class="p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Image Display -->
+      <div class="w-full max-h-[70vh] flex items-center justify-center overflow-hidden rounded-2xl bg-black/40 border border-white/10 shadow-2xl">
+        <img id="lightbox-img" src="" alt="Kenangan" class="max-h-[70vh] w-auto max-w-full object-contain rounded-2xl">
+      </div>
+
+      <!-- Bottom Notes -->
+      <div id="lightbox-notes-container" class="w-full bg-white/10 backdrop-blur-md rounded-2xl p-3 text-white text-xs text-center border border-white/15">
+        <p id="lightbox-notes" class="leading-relaxed"></p>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= MODAL: PRATONTON & EKSPORT PHOTOBOOK PDF ================= -->
   <div id="modal-photobook-preview" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 hidden flex flex-col items-center justify-center p-2 sm:p-4 overflow-y-auto">
     <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden my-auto">
@@ -1961,7 +2010,9 @@
         lbl_date: "Tarikh",
         lbl_time: "Masa",
         lbl_choose_photo: "Pilih Gambar dari Telefon / Komputer",
-        hint_cloud_photo: "Disimpan ke pangkalan data cloud keluarga anda.",
+        hint_cloud_photo: "Gambar dimampatkan secara automatik sebelum disimpan ke Cloud agar pantas & jimat ruang.",
+        btn_zoom_photo: "Lihat Foto Penuh",
+        btn_download_photo: "Muat Turun",
         lbl_parent_notes: "Catatan Kasih Sayang Ibu & Ayah",
         ph_mem_notes: "Cth: Hari ni dah pandai sebut 'Abah'!",
         btn_save_cloud: "Simpan Ke Cloud Supabase",
@@ -2248,7 +2299,9 @@
         lbl_date: "Date",
         lbl_time: "Time",
         lbl_choose_photo: "Choose Photo from Phone / Computer",
-        hint_cloud_photo: "Saved securely to your family cloud vault.",
+        hint_cloud_photo: "Photos are automatically compressed before saving to Cloud for speed and space saving.",
+        btn_zoom_photo: "View Full Photo",
+        btn_download_photo: "Download",
         lbl_parent_notes: "Love Notes from Mom & Dad",
         ph_mem_notes: "E.g., Today baby said 'Dada' for the first time!",
         btn_save_cloud: "Save to Cloud Vault",
@@ -3444,6 +3497,103 @@
       loadAllergies();
     }
 
+    // ==========================================
+    // CIRI TEKNIKAL: AUTO-COMPRESSION & MUAT NAIK GAMBAR
+    // ==========================================
+    let currentMemoryPendingImage = null;
+
+    function compressImageFile(file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onerror = reject;
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > maxWidth) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+              }
+            } else {
+              if (height > maxHeight) {
+                width = Math.round((width * maxHeight) / height);
+                height = maxHeight;
+              }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+            resolve(compressedDataUrl);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    async function handleMemoryFileSelect(e) {
+      const isEn = currentLang === 'en';
+      const file = e.target.files && e.target.files[0];
+      const previewContainer = document.getElementById('mem-preview-container');
+      const previewImg = document.getElementById('mem-preview-img');
+      const previewComp = document.getElementById('mem-preview-compression');
+      const previewSize = document.getElementById('mem-preview-size');
+
+      if (!file) {
+        currentMemoryPendingImage = null;
+        if (previewContainer) previewContainer.classList.add('hidden');
+        return;
+      }
+
+      const origSize = file.size;
+      try {
+        const compressedDataUrl = await compressImageFile(file, 1200, 1200, 0.8);
+        currentMemoryPendingImage = compressedDataUrl;
+
+        const head = 'data:image/jpeg;base64,';
+        const compBytes = Math.round((compressedDataUrl.length - head.length) * 3 / 4);
+        const percentSaved = Math.max(0, Math.round(((origSize - compBytes) / origSize) * 100));
+
+        if (previewImg) previewImg.src = compressedDataUrl;
+        if (previewContainer) previewContainer.classList.remove('hidden');
+        if (previewComp) {
+          previewComp.innerText = percentSaved > 0 
+            ? (isEn ? `⚡ ${percentSaved}% size reduced` : `⚡ Jimat ${percentSaved}% saiz fail`)
+            : (isEn ? `⚡ Optimized` : `⚡ Dioptimumkan`);
+        }
+        if (previewSize) {
+          previewSize.innerText = `${formatBytes(origSize)} ➔ ${formatBytes(compBytes)}`;
+        }
+      } catch (err) {
+        console.warn("Gagal compress imej:", err);
+      }
+    }
+
+    function clearMemoryFile() {
+      const fileEl = document.getElementById('inp-mem-file');
+      if (fileEl) fileEl.value = '';
+      currentMemoryPendingImage = '';
+      const previewContainer = document.getElementById('mem-preview-container');
+      if (previewContainer) previewContainer.classList.add('hidden');
+    }
+
     function editMemory(id) {
       const item = cachedMemories.find(x => x.id === id);
       if (!item) return;
@@ -3455,6 +3605,24 @@
       document.getElementById('inp-mem-notes').value = item.notes || '';
       const titleEl = document.getElementById('title-modal-memory');
       if (titleEl) titleEl.innerText = isEn ? "✏️ Edit Memory (Cloud)" : "✏️ Kemaskini Kenangan (Cloud)";
+
+      // Paparkan gambar sedia ada dalam pratonton jika ada
+      const previewContainer = document.getElementById('mem-preview-container');
+      const previewImg = document.getElementById('mem-preview-img');
+      const previewComp = document.getElementById('mem-preview-compression');
+      const previewSize = document.getElementById('mem-preview-size');
+
+      if (item.image_url) {
+        currentMemoryPendingImage = item.image_url;
+        if (previewImg) previewImg.src = item.image_url;
+        if (previewContainer) previewContainer.classList.remove('hidden');
+        if (previewComp) previewComp.innerText = isEn ? "📷 Existing Photo" : "📷 Gambar Sedia Ada";
+        if (previewSize) previewSize.innerText = "";
+      } else {
+        currentMemoryPendingImage = null;
+        if (previewContainer) previewContainer.classList.add('hidden');
+      }
+
       openModal('modal-add-memory', true);
     }
 
@@ -3480,15 +3648,51 @@
       const uploader = currentUserName || (currentRole === 'mother' ? (isEn ? 'Mom' : 'Ibu') : (isEn ? 'Dad' : 'Ayah'));
 
       const btn = document.getElementById('btn-save-memory');
-      btn.innerText = isEn ? "Saving to Cloud..." : "Menyimpan ke Cloud...";
+      btn.innerText = isEn ? "Optimizing & Saving..." : "Mengoptimum & Menyimpan...";
 
-      let base64Image = null;
-      if (fileInput.files && fileInput.files[0]) {
-        base64Image = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = (ev) => resolve(ev.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
+      let finalImageUrl = null;
+      if (currentMemoryPendingImage) {
+        finalImageUrl = currentMemoryPendingImage;
+      } else if (fileInput.files && fileInput.files[0]) {
+        try {
+          finalImageUrl = await compressImageFile(fileInput.files[0], 1200, 1200, 0.8);
+        } catch (err) {
+          finalImageUrl = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => resolve(ev.target.result);
+            reader.readAsDataURL(fileInput.files[0]);
+          });
+        }
+      }
+
+      // Percubaan muat naik ke Supabase Storage Bucket jika aktif
+      if (finalImageUrl && finalImageUrl.startsWith('data:image') && db && db.storage && currentFamilyId) {
+        try {
+          const parts = finalImageUrl.split(',');
+          const mime = (parts[0].match(/:(.*?);/) || [])[1] || 'image/jpeg';
+          const byteStr = atob(parts[1]);
+          const ab = new ArrayBuffer(byteStr.length);
+          const ia = new Uint8Array(ab);
+          for (let i = 0; i < byteStr.length; i++) {
+            ia[i] = byteStr.charCodeAt(i);
+          }
+          const blob = new Blob([ab], { type: mime });
+          const fileExt = mime.split('/')[1] || 'jpg';
+          const fileName = `${currentFamilyId}/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+
+          const { data: uploadData, error: uploadErr } = await db.storage
+            .from('baby_memories')
+            .upload(fileName, blob, { contentType: mime, upsert: true });
+
+          if (!uploadErr && uploadData) {
+            const { data: publicData } = db.storage.from('baby_memories').getPublicUrl(fileName);
+            if (publicData && publicData.publicUrl) {
+              finalImageUrl = publicData.publicUrl;
+            }
+          }
+        } catch (storageErr) {
+          console.warn("Storage upload bypassed, fallback to optimized compressed Base64:", storageErr);
+        }
       }
 
       if (db && currentFamilyId) {
@@ -3499,7 +3703,9 @@
             memory_date: date,
             notes: notes
           };
-          if (base64Image) updatePayload.image_url = base64Image;
+          if (finalImageUrl !== null) {
+            updatePayload.image_url = finalImageUrl || null;
+          }
           await db.from('baby_memories').update(updatePayload).eq('id', editingMemoryId);
         } else {
           await db.from('baby_memories').insert({
@@ -3508,7 +3714,7 @@
             category: cat,
             memory_date: date,
             notes: notes,
-            image_url: base64Image,
+            image_url: finalImageUrl,
             uploaded_by: uploader
           });
         }
@@ -3516,6 +3722,7 @@
 
       const wasEditing = !!editingMemoryId;
       editingMemoryId = null;
+      currentMemoryPendingImage = null;
       btn.innerHTML = `<i data-lucide="cloud-upload" class="w-4 h-4"></i><span data-i18n="btn_save_cloud">${isEn ? 'Save to Cloud Vault' : 'Simpan Ke Cloud Supabase'}</span>`;
       closeModal('modal-add-memory');
       showToast(wasEditing
@@ -3524,6 +3731,8 @@
       document.getElementById('inp-mem-title').value = '';
       document.getElementById('inp-mem-notes').value = '';
       if (fileInput) fileInput.value = '';
+      const previewContainer = document.getElementById('mem-preview-container');
+      if (previewContainer) previewContainer.classList.add('hidden');
       loadBabyMemories();
     }
 
@@ -3649,8 +3858,14 @@
       let mediaHtml = '';
       if (imgSrc) {
         mediaHtml = `
-          <div class="relative rounded-xl overflow-hidden max-h-64 border border-pastel-100 flex items-center justify-center bg-black/5">
-            <img src="${imgSrc}" class="w-full h-auto object-cover rounded-xl" alt="${title}">
+          <div class="relative rounded-xl overflow-hidden max-h-64 border border-pastel-100 flex items-center justify-center bg-black/5 cursor-pointer group" onclick="openPhotoLightbox('${imgSrc}', '${encodeURIComponent(title || '')}', '${encodeURIComponent(date || '')}', '${encodeURIComponent(notes || '')}')" title="${isEn ? 'Click to zoom photo' : 'Klik untuk lihat foto penuh'}">
+            <img src="${imgSrc}" class="w-full h-auto object-cover rounded-xl transition duration-300 group-hover:scale-102" alt="${title}" loading="lazy">
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <span class="bg-black/70 backdrop-blur-xs text-white text-[11px] font-semibold px-3 py-1.5 rounded-full flex items-center space-x-1.5 shadow-md transform translate-y-1 group-hover:translate-y-0 transition">
+                <i data-lucide="zoom-in" class="w-3.5 h-3.5 text-white"></i>
+                <span data-i18n="btn_zoom_photo">${isEn ? 'View Full Photo' : 'Lihat Foto Penuh'}</span>
+              </span>
+            </div>
           </div>
         `;
       } else {
@@ -3690,6 +3905,44 @@
           ` : `<span class="text-emerald-600 font-medium">${isEn ? '✓ Saved in Cloud' : '✓ Tersimpan di Cloud'}</span>`}
         </div>
       `;
+    }
+
+    // ==========================================
+    // CIRI TEKNIKAL: FULLSCREEN PHOTO LIGHTBOX
+    // ==========================================
+    function openPhotoLightbox(src, encTitle, encDate, encNotes) {
+      const isEn = currentLang === 'en';
+      const title = decodeURIComponent(encTitle || '');
+      const date = decodeURIComponent(encDate || '');
+      const notes = decodeURIComponent(encNotes || '');
+      const modal = document.getElementById('modal-photo-lightbox');
+      const img = document.getElementById('lightbox-img');
+      const titleEl = document.getElementById('lightbox-title');
+      const dateEl = document.getElementById('lightbox-date');
+      const notesEl = document.getElementById('lightbox-notes');
+      const dlLink = document.getElementById('lightbox-download');
+
+      if (img) img.src = src;
+      if (titleEl) titleEl.innerText = title || (isEn ? 'Baby Memory' : 'Kenangan Bayi');
+      if (dateEl) dateEl.innerText = date || '';
+      if (notesEl) {
+        notesEl.innerText = notes || (isEn ? 'Precious moment saved in BukuPinkKu.' : 'Momen indah tersimpan di BukuPinkKu.');
+      }
+      if (dlLink) {
+        dlLink.href = src;
+        const cleanName = (title || 'kenangan_bukupinkku').toLowerCase().replace(/[^a-z0-9]/g, '_');
+        dlLink.download = `${cleanName}.jpg`;
+      }
+
+      if (modal) {
+        modal.classList.remove('hidden');
+        lucide.createIcons();
+      }
+    }
+
+    function closePhotoLightbox() {
+      const modal = document.getElementById('modal-photo-lightbox');
+      if (modal) modal.classList.add('hidden');
     }
 
     // SIDEBAR DRAWER TOGGLE & NAVIGATION
@@ -4647,11 +4900,14 @@
           if (titleEl) titleEl.innerText = isEn ? "Test New Food (3-Day Rule)" : "Uji Makanan Baru (3-Day Rule)";
         } else if (id === 'modal-add-memory') {
           editingMemoryId = null;
+          currentMemoryPendingImage = null;
           document.getElementById('inp-mem-title').value = '';
           document.getElementById('inp-mem-date').value = today;
           document.getElementById('inp-mem-notes').value = '';
           const fileEl = document.getElementById('inp-mem-file');
           if (fileEl) fileEl.value = '';
+          const previewContainer = document.getElementById('mem-preview-container');
+          if (previewContainer) previewContainer.classList.add('hidden');
           const titleEl = document.getElementById('title-modal-memory');
           if (titleEl) titleEl.innerText = isEn ? "Save New Memory (Cloud)" : "Simpan Kenangan Baru (Cloud)";
         }
