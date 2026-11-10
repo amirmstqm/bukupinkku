@@ -1394,7 +1394,8 @@
 
         <div>
           <label data-i18n="lbl_contact_optional" class="block font-semibold mb-1 text-slate-700">No. Telefon / Emel (Pilihan)</label>
-          <input type="text" id="inp-feedback-contact" data-i18n-placeholder="ph_contact_optional" placeholder="Untuk kami hubungi jika perlu maklumat lanjut" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+          <input type="text" id="inp-feedback-contact" data-i18n-placeholder="ph_contact_optional" placeholder="Cth: 012-3456789 atau nama@gmail.com" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+          <p data-i18n="hint_contact_feedback" class="text-[10px] text-slate-400 mt-1">Tinggalkan no. telefon atau emel jika anda mahu kami hubungi semula.</p>
         </div>
 
         <button type="submit" id="btn-submit-feedback" class="w-full py-3 bg-pastel-500 hover:bg-pastel-600 text-white font-bold rounded-xl mt-2 transition shadow-sm flex items-center justify-center space-x-1.5">
@@ -1778,7 +1779,8 @@
         lbl_feedback_msg: "Mesej Anda",
         ph_feedback_msg: "Kongsi pendapat anda, apa yang boleh ditambah baik atau ciri yang anda inginkan...",
         lbl_contact_optional: "No. Telefon / Emel (Pilihan)",
-        ph_contact_optional: "Untuk kami hubungi jika perlu maklumat lanjut",
+        ph_contact_optional: "Cth: 012-3456789 atau nama@gmail.com",
+        hint_contact_feedback: "Tinggalkan no. telefon atau emel jika anda mahu kami hubungi semula.",
         btn_send_feedback: "Hantar Maklum Balas"
       },
       en: {
@@ -2006,7 +2008,8 @@
         lbl_feedback_msg: "Your Message",
         ph_feedback_msg: "Share your thoughts, suggestions, or features you would love to see...",
         lbl_contact_optional: "Phone / Email (Optional)",
-        ph_contact_optional: "In case we need follow-up clarification",
+        ph_contact_optional: "E.g., 012-3456789 or name@gmail.com",
+        hint_contact_feedback: "Leave your phone or email if you wish to receive a reply.",
         btn_send_feedback: "Send Feedback"
       }
     };
@@ -3727,7 +3730,6 @@
       const code = currentFamilyCode || 'Unknown';
 
       try {
-        // Hantar maklum balas terus ke WhatsApp pembangun atau log ke console & localStorage
         const fbEntry = {
           date: new Date().toISOString(),
           family_id: currentFamilyId,
@@ -3739,13 +3741,31 @@
           contact: contact
         };
 
+        // 1. Simpan ke Pangkalan Data Supabase Pusat Anda
+        if (db) {
+          try {
+            await db.from('feedbacks').insert({
+              family_id: currentFamilyId || null,
+              family_code: code,
+              sender_name: sender,
+              rating: currentFeedbackRating,
+              category: type,
+              message: message,
+              contact_info: contact,
+              created_at: new Date().toISOString()
+            });
+          } catch (dbErr) {
+            console.warn("Supabase feedback insert note:", dbErr);
+          }
+        }
+
+        // 2. Simpan salinan sandaran ke localStorage
         const existingFbs = JSON.parse(localStorage.getItem('bukupink_feedbacks') || '[]');
         existingFbs.push(fbEntry);
         localStorage.setItem('bukupink_feedbacks', JSON.stringify(existingFbs));
 
-        // Pilihan terus salin / buka WhatsApp jika pengguna mahu mesej terus
         closeModal('modal-feedback');
-        showToast(isEn ? "🎉 Thank you! Your feedback has been received." : "🎉 Terima kasih! Maklum balas anda telah diterima.");
+        showToast(isEn ? "🎉 Thank you! Your message has been received safely." : "🎉 Terima kasih! Maklum balas anda telah disimpan dengan selamat.");
       } catch (err) {
         console.error("Ralat simpan feedback:", err);
         showToast(isEn ? "Feedback received. Thank you!" : "Maklum balas diterima. Terima kasih!");
