@@ -879,7 +879,7 @@
   <script>
     const SUPABASE_URL = "https://xelaxnijoezaogabsiiw.supabase.co";
     const SUPABASE_KEY = "sb_publishable_KLK22eCvcPqGb2wece84Yw_ANKtLE6p";
-    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    const db = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
     // ACTIVE SESSION STATE (Disimpan dalam localStorage supaya refresh tak hilang)
     let currentFamilyId = localStorage.getItem('bukupink_family_id');
@@ -997,31 +997,37 @@
       const generatedCode = `PINK-${randomDigits}`;
 
       try {
-        // 1. Simpan keluarga baru ke Supabase
-        const { data: familyData, error: famErr } = await supabase
-          .from('families')
-          .insert({
-            family_name: `Keluarga ${momName}`,
-            invite_code: generatedCode
-          })
-          .select()
-          .single();
+        let newFamilyId = 'local-' + Date.now();
 
-        if (famErr) throw famErr;
+        if (db) {
+          // 1. Simpan keluarga baru ke Supabase
+          const { data: familyData, error: famErr } = await db
+            .from('families')
+            .insert({
+              family_name: `Keluarga ${momName}`,
+              invite_code: generatedCode
+            })
+            .select()
+            .single();
 
-        const newFamilyId = familyData.id;
+          if (!famErr && familyData) {
+            newFamilyId = familyData.id;
 
-        // 2. Simpan anak / kandungan ke Supabase
-        await supabase
-          .from('children')
-          .insert({
-            family_id: newFamilyId,
-            nickname: status === 'born' ? childName : babyNickname,
-            status: status,
-            edd_date: eddDate,
-            birth_date: birthDate,
-            blood_type: 'O+'
-          });
+            // 2. Simpan anak / kandungan ke Supabase
+            await db
+              .from('children')
+              .insert({
+                family_id: newFamilyId,
+                nickname: status === 'born' ? childName : babyNickname,
+                status: status,
+                edd_date: eddDate,
+                birth_date: birthDate,
+                blood_type: 'O+'
+              });
+          } else if (famErr) {
+            console.warn("Supabase insert warning:", famErr);
+          }
+        }
 
         // 3. Simpan sesi aktif ke localStorage
         localStorage.setItem('bukupink_family_id', newFamilyId);
@@ -1059,7 +1065,7 @@
       submitBtn.innerText = "Menyemak kod pasangan...";
 
       try {
-        const { data: familyData, error } = await supabase
+        const { data: familyData, error } = await db
           .from('families')
           .select('*')
           .eq('invite_code', enteredCode)
@@ -1134,7 +1140,7 @@
 
     // LOAD ALL SUPABASE DATA UNTUK KELUARGA SEMASA
     async function loadAllSupabaseData() {
-      if (!supabase || !currentFamilyId) return;
+      if (!db || !currentFamilyId) return;
       try {
         await Promise.all([
           loadChildInfo(),
@@ -1150,7 +1156,7 @@
 
     // LOAD CHILD / PREGNANCY INFO
     async function loadChildInfo() {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from('children')
         .select('*')
         .eq('family_id', currentFamilyId)
@@ -1184,7 +1190,7 @@
 
     // LOAD APPOINTMENTS
     async function loadAppointments() {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from('appointments')
         .select('*')
         .eq('family_id', currentFamilyId)
@@ -1225,7 +1231,7 @@
 
     // LOAD HEALTH VITALS
     async function loadHealthVitals() {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from('health_vitals')
         .select('*')
         .eq('family_id', currentFamilyId)
@@ -1263,7 +1269,7 @@
 
     // LOAD ALLERGIES
     async function loadAllergies() {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from('allergies')
         .select('*')
         .eq('family_id', currentFamilyId)
@@ -1293,7 +1299,7 @@
 
     // LOAD BABY MEMORIES
     async function loadBabyMemories() {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from('baby_memories')
         .select('*')
         .eq('family_id', currentFamilyId)
@@ -1336,8 +1342,8 @@
         });
       }
 
-      if (supabase && currentFamilyId) {
-        await supabase.from('baby_memories').insert({
+      if (db && currentFamilyId) {
+        await db.from('baby_memories').insert({
           family_id: currentFamilyId,
           title: title,
           category: cat,
@@ -1364,8 +1370,8 @@
       const date = document.getElementById('inp-appt-date').value;
       const time = document.getElementById('inp-appt-time').value;
 
-      if (supabase && currentFamilyId) {
-        await supabase.from('appointments').insert({
+      if (db && currentFamilyId) {
+        await db.from('appointments').insert({
           family_id: currentFamilyId,
           title: title,
           clinic_name: clinic,
@@ -1387,8 +1393,8 @@
       const bp = document.getElementById('inp-vital-bp').value || '120/80';
       const weight = document.getElementById('inp-vital-weight').value || '58.5';
 
-      if (supabase && currentFamilyId) {
-        await supabase.from('health_vitals').insert({
+      if (db && currentFamilyId) {
+        await db.from('health_vitals').insert({
           family_id: currentFamilyId,
           hb_reading: hb,
           blood_pressure: bp,
@@ -1411,8 +1417,8 @@
       const symp = document.getElementById('inp-allergy-symp').value || 'Tiada catatan';
       const uploader = currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah');
 
-      if (supabase && currentFamilyId) {
-        await supabase.from('allergies').insert({
+      if (db && currentFamilyId) {
+        await db.from('allergies').insert({
           family_id: currentFamilyId,
           item_name: name,
           category: cat,
@@ -1566,9 +1572,9 @@
       openModal('modal-photobook-preview');
 
       let memories = [];
-      if (supabase && currentFamilyId) {
+      if (db && currentFamilyId) {
         try {
-          const { data, error } = await supabase
+          const { data, error } = await db
             .from('baby_memories')
             .select('*')
             .eq('family_id', currentFamilyId)
