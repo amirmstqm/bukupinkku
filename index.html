@@ -442,14 +442,6 @@
           </div>
         </div>
 
-        <!-- SUB-TABS HAMIL -->
-        <div class="flex space-x-2 border-b border-slate-200 pb-2 overflow-x-auto text-xs font-semibold">
-          <button onclick="switchPregSubtab('overview')" id="subtab-preg-overview" data-i18n="subtab_preg_dash" class="px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap">Dashboard Hamil</button>
-          <button onclick="switchPregSubtab('appt')" id="subtab-preg-appt" data-i18n="subtab_preg_appt" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">Janji Temu KK</button>
-          <button onclick="switchPregSubtab('vitals')" id="subtab-preg-vitals" data-i18n="subtab_preg_vitals" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">Bacaan Vital (HB/BP)</button>
-          <button onclick="switchPregSubtab('pantang')" id="subtab-preg-pantang" data-i18n="subtab_preg_allergy" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">Pantang & Alahan</button>
-        </div>
-
         <!-- VIEW 1: OVERVIEW HAMIL -->
         <div id="view-preg-overview" class="space-y-3">
           <div onclick="openModal('modal-add-appointment')" class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2 cursor-pointer hover:border-pastel-400 transition">
@@ -582,17 +574,6 @@
               <p class="font-bold text-pastel-700">Solid Food</p>
             </div>
           </div>
-        </div>
-
-        <!-- SUB-TABS ANAK -->
-        <div class="flex space-x-2 border-b border-slate-200 pb-2 overflow-x-auto text-xs font-semibold">
-          <button onclick="switchChildSubtab('memories')" id="subtab-child-memories" class="px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap flex items-center space-x-1 shadow-sm">
-            <span>📸</span>
-            <span data-i18n="subtab_child_album">Album & Kenangan</span>
-          </button>
-          <button onclick="switchChildSubtab('vaccine')" id="subtab-child-vaccine" data-i18n="subtab_child_vaccine" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">💉 Vaksin KKM</button>
-          <button onclick="switchChildSubtab('food')" id="subtab-child-food" data-i18n="subtab_child_food" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">🥣 Makanan & 3-Day Rule</button>
-          <button onclick="switchChildSubtab('milestone')" id="subtab-child-milestone" data-i18n="subtab_child_milestone" class="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap">🌟 Milestone</button>
         </div>
 
         <!-- [CHILD TAB: ALBUM & KENANGAN] -->
@@ -2481,11 +2462,15 @@
     function switchPregSubtab(tab) {
       const tabs = ['overview', 'appt', 'vitals', 'pantang'];
       tabs.forEach(t => {
-        document.getElementById('view-preg-' + t).classList.add('hidden');
-        document.getElementById('subtab-preg-' + t).className = "px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap";
+        const viewEl = document.getElementById('view-preg-' + t);
+        if (viewEl) viewEl.classList.add('hidden');
+        const subtabEl = document.getElementById('subtab-preg-' + t);
+        if (subtabEl) subtabEl.className = "px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap";
       });
-      document.getElementById('view-preg-' + tab).classList.remove('hidden');
-      document.getElementById('subtab-preg-' + tab).className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
+      const activeView = document.getElementById('view-preg-' + tab);
+      if (activeView) activeView.classList.remove('hidden');
+      const activeSubtab = document.getElementById('subtab-preg-' + tab);
+      if (activeSubtab) activeSubtab.className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
       updateSidebarActiveMenu('pregnancy', tab);
       lucide.createIcons();
     }
@@ -2493,11 +2478,15 @@
     function switchChildSubtab(tab) {
       const tabs = ['memories', 'vaccine', 'food', 'milestone'];
       tabs.forEach(t => {
-        document.getElementById('view-child-' + t).classList.add('hidden');
-        document.getElementById('subtab-child-' + t).className = "px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap";
+        const viewEl = document.getElementById('view-child-' + t);
+        if (viewEl) viewEl.classList.add('hidden');
+        const subtabEl = document.getElementById('subtab-child-' + t);
+        if (subtabEl) subtabEl.className = "px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap";
       });
-      document.getElementById('view-child-' + tab).classList.remove('hidden');
-      document.getElementById('subtab-child-' + tab).className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
+      const activeView = document.getElementById('view-child-' + tab);
+      if (activeView) activeView.classList.remove('hidden');
+      const activeSubtab = document.getElementById('subtab-child-' + tab);
+      if (activeSubtab) activeSubtab.className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
       updateSidebarActiveMenu('child', tab);
       lucide.createIcons();
     }
