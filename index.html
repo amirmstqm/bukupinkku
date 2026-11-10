@@ -308,7 +308,7 @@
             </button>
 
             <button onclick="navigateFromSidebar('ttc', 'letters')" id="nav-ttc-letters" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
-              <i data-lucide="mail-heart" class="w-4 h-4 text-rose-500"></i>
+              <span class="text-base">💌</span>
               <span data-i18n="subtab_ttc_letters">Warkah Buat Bakal Anak</span>
             </button>
           </nav>
@@ -532,30 +532,6 @@
           </div>
         </div>
 
-        <!-- NAVIGASI SUBTAB TTC CEPAT -->
-        <div class="flex space-x-2 overflow-x-auto pb-1 text-xs no-scrollbar">
-          <button id="pill-ttc-fertility" onclick="switchTtcSubtab('fertility')" class="px-3 py-1.5 rounded-xl font-bold text-white bg-pastel-500 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5">
-            <span>🌸</span>
-            <span data-i18n="subtab_ttc_ovulation">Waktu Subur</span>
-          </button>
-          <button id="pill-ttc-opk" onclick="switchTtcSubtab('opk')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-600 bg-white border border-slate-200 hover:text-slate-900 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5">
-            <span>🔬</span>
-            <span data-i18n="subtab_ttc_opk">Log OPK & Suhu</span>
-          </button>
-          <button id="pill-ttc-supplements" onclick="switchTtcSubtab('supplements')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-600 bg-white border border-slate-200 hover:text-slate-900 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5">
-            <span>💊</span>
-            <span data-i18n="subtab_ttc_supps">Suplemen</span>
-          </button>
-          <button id="pill-ttc-doa" onclick="switchTtcSubtab('doa')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-600 bg-white border border-slate-200 hover:text-slate-900 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5">
-            <span>🤲</span>
-            <span data-i18n="subtab_ttc_doa">Sudut Doa</span>
-          </button>
-          <button id="pill-ttc-letters" onclick="switchTtcSubtab('letters')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-600 bg-white border border-slate-200 hover:text-slate-900 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5">
-            <span>💌</span>
-            <span data-i18n="subtab_ttc_letters">Warkah Bakal Anak</span>
-          </button>
-        </div>
-
         <!-- VIEW 1: SUB-TAB WAKTU SUBUR -->
         <div id="view-ttc-fertility" class="space-y-3">
           <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2">
@@ -696,12 +672,12 @@
               </div>
               <button onclick="openAddLetterModal()" class="text-xs font-bold text-white bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm whitespace-nowrap active:scale-95 transition">
                 <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                <span data-i18n="btn_write_letter">+ Tulis Warkah</span>
+                <span data-i18n="btn_write_letter">Tulis Warkah</span>
               </button>
             </div>
             <div class="flex items-center space-x-1.5 text-[10px] text-slate-500 pt-1 border-t border-rose-100">
               <i data-lucide="book-heart" class="w-3.5 h-3.5 text-rose-500"></i>
-              <span>Semua warkah ini akan diabadikan ke dalam <strong>Photobook PDF</strong> album keluarga kita.</span>
+              <span data-i18n="desc_ttc_letters_book">Semua warkah ini akan diabadikan ke dalam <strong>Photobook PDF</strong> album keluarga kita.</span>
             </div>
           </div>
 
@@ -1326,13 +1302,13 @@
           <label class="block font-bold text-slate-700 text-[11px]" data-i18n="lbl_letter_template">✨ Inspirasi Ayat (Klik Untuk Guna):</label>
           <div class="flex flex-wrap gap-1.5">
             <button type="button" onclick="applyLetterTemplate('mom')" class="text-[10px] bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold px-2.5 py-1 rounded-lg border border-rose-200 transition">
-              🌸 Luahan Ibu
+              <span data-i18n="tpl_btn_mom">🌸 Luahan Ibu</span>
             </button>
             <button type="button" onclick="applyLetterTemplate('dad')" class="text-[10px] bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold px-2.5 py-1 rounded-lg border border-sky-200 transition">
-              👨 Janji Ayah
+              <span data-i18n="tpl_btn_dad">👨 Janji Ayah</span>
             </button>
             <button type="button" onclick="applyLetterTemplate('doa')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold px-2.5 py-1 rounded-lg border border-amber-200 transition">
-              🤲 Doa Hati
+              <span data-i18n="tpl_btn_doa">🤲 Doa Hati</span>
             </button>
           </div>
         </div>
@@ -1341,7 +1317,7 @@
         <div>
           <div class="flex justify-between items-center mb-1">
             <label class="block font-bold text-slate-700" data-i18n="lbl_letter_body">Isi Warkah / Doa</label>
-            <span class="text-[10px] text-slate-400">Tersimpan kekal</span>
+            <span class="text-[10px] text-slate-400" data-i18n="lbl_letter_saved_perm">Tersimpan kekal</span>
           </div>
           <textarea id="inp-letter-body" rows="5" required placeholder="Tuliskan luahan rasa cinta, doa, dan kata-kata harapan buat bakal zuriat anda..." data-i18n-placeholder="ph_letter_body" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 text-xs leading-relaxed"></textarea>
         </div>
@@ -1708,8 +1684,10 @@
         subtab_ttc_letters: "Warkah Buat Bakal Anak",
         hdr_ttc_letters: "Warkah Buat Bakal Anak",
         sub_ttc_letters: "Ruang doa & luahan rindu tulus daripada Ibu & Ayah sebelum kehadiranmu ke dunia.",
-        btn_write_letter: "+ Tulis Warkah",
+        btn_write_letter: "Tulis Warkah",
         letters_empty_state: "Belum ada warkah ditulis. Luahkan doa dan harapan pertama anda buat zuriat tercinta. Kata-kata ini akan menjadi kenangan paling bernilai apabila dia lahir nanti.",
+        empty_letters_title: "Belum Ada Warkah Ditulis",
+        btn_write_first_letter: "Tulis Warkah Pertama",
         mdl_letter_title: "Warkah Buat Bakal Anak",
         mdl_letter_desc: "Tuliskan doa, luahan rindu, atau janji kasih sayang untuk dibaca oleh anak kita suatu hari nanti.",
         lbl_letter_author: "Warkah Daripada:",
@@ -1719,9 +1697,14 @@
         ph_letter_title: "Cth: Menantimu Dengan Sejuta Kasih Sayang...",
         lbl_letter_date: "Tarikh",
         lbl_letter_template: "✨ Inspirasi Ayat (Klik Untuk Guna):",
+        tpl_btn_mom: "🌸 Luahan Ibu",
+        tpl_btn_dad: "👨 Janji Ayah",
+        tpl_btn_doa: "🤲 Doa Hati",
         lbl_letter_body: "Isi Warkah / Doa",
+        lbl_letter_saved_perm: "Tersimpan kekal",
         ph_letter_body: "Tuliskan luahan rasa cinta, doa, dan kata-kata harapan buat bakal zuriat anda...",
         btn_save_letter: "💌 Simpan Warkah Kasih",
+        desc_ttc_letters_book: "Semua warkah ini akan diabadikan ke dalam <strong>Photobook PDF</strong> album keluarga kita.",
         hero_ttc_title: "Ikhtiar Zuriat Comel",
         hero_ttc_sub: "Peluang persenyawaan tinggi dalam jendela subur ini",
         ttc_badge_recommended: "Rekomendasi",
@@ -1951,23 +1934,30 @@
         subtab_ttc_opk: "OPK Test & BBT Logs",
         subtab_ttc_supps: "Couple's Fertility Vitamins",
         subtab_ttc_doa: "Daily Prayers & Motivation",
-        subtab_ttc_letters: "Letters to Future Baby",
-        hdr_ttc_letters: "Letters to Our Future Baby",
+        subtab_ttc_letters: "Letter to Future Baby",
+        hdr_ttc_letters: "Letter to Our Future Baby",
         sub_ttc_letters: "A space for heartfelt prayers and loving words from Mom & Dad before you enter this world.",
-        btn_write_letter: "+ Write Letter",
+        btn_write_letter: "Write Letter",
         letters_empty_state: "No letters written yet. Share your prayers and heartfelt hopes for your future child. These words will be treasured forever.",
+        empty_letters_title: "No Letters Written Yet",
+        btn_write_first_letter: "Write First Letter",
         mdl_letter_title: "Letter to Future Baby",
         mdl_letter_desc: "Write down prayers, longing, and promises of love for your future child to read one day.",
         lbl_letter_author: "Letter From:",
         opt_author_mom: "Mom",
         opt_author_dad: "Dad",
         lbl_letter_title: "Letter Title",
-        ph_letter_title: "E.g.: Waiting for You with Boundless Love...",
+        ph_letter_title: "E.g.: Waiting for you with boundless love...",
         lbl_letter_date: "Date",
         lbl_letter_template: "✨ Writing Inspiration (Tap to Use):",
+        tpl_btn_mom: "🌸 Mom's Note",
+        tpl_btn_dad: "👨 Dad's Promise",
+        tpl_btn_doa: "🤲 Heartfelt Prayer",
         lbl_letter_body: "Letter Content / Prayer",
+        lbl_letter_saved_perm: "Permanently saved",
         ph_letter_body: "Express your deepest prayers and love for your future baby...",
         btn_save_letter: "💌 Save Loving Letter",
+        desc_ttc_letters_book: "All letters will be immortalized in your family <strong>Photobook PDF</strong> album.",
         hero_ttc_title: "Fertility & Conception Journey",
         hero_ttc_sub: "Higher chance of conception during this fertile window",
         ttc_badge_recommended: "Recommended",
@@ -2242,6 +2232,9 @@
 
       // Kira semula dan kemaskini teks waktu subur mengikut bahasa aktif
       calculateTtcDates();
+      if (currentPhase === 'ttc') {
+        loadTtcLetters();
+      }
 
       if (currentFamilyId) {
         loadAllSupabaseData();
@@ -3125,7 +3118,7 @@
             </div>
             <button onclick="openAddLetterModal()" class="inline-flex items-center space-x-1.5 px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold text-xs rounded-xl shadow-xs hover:from-rose-600 hover:to-pink-600 transition active:scale-95">
               <i data-lucide="pen-tool" class="w-3.5 h-3.5"></i>
-              <span>${isEn ? "+ Write First Letter" : "+ Tulis Warkah Pertama"}</span>
+              <span>${isEn ? "Write First Letter" : "Tulis Warkah Pertama"}</span>
             </button>
           </div>
         `;
@@ -3621,21 +3614,13 @@
 
     function switchTtcSubtab(tab) {
       const tabs = ['fertility', 'opk', 'supplements', 'doa', 'letters'];
-      const activePillClass = "px-3 py-1.5 rounded-xl font-bold text-white bg-pastel-500 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5";
-      const inactivePillClass = "px-3 py-1.5 rounded-xl font-semibold text-slate-600 bg-white border border-slate-200 hover:text-slate-900 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5";
-
       tabs.forEach(t => {
         const viewEl = document.getElementById('view-ttc-' + t);
         if (viewEl) viewEl.classList.add('hidden');
-        const pillEl = document.getElementById('pill-ttc-' + t);
-        if (pillEl) pillEl.className = inactivePillClass;
       });
 
       const activeView = document.getElementById('view-ttc-' + tab);
       if (activeView) activeView.classList.remove('hidden');
-
-      const activePill = document.getElementById('pill-ttc-' + tab);
-      if (activePill) activePill.className = activePillClass;
 
       updateSidebarActiveMenu('ttc', tab);
       if (tab === 'letters') {
@@ -4297,7 +4282,7 @@
           `}
           <div class="text-[10px] text-slate-400 flex justify-between items-center pt-1 border-t border-slate-100">
             <span>📅 ${m.memory_date}</span>
-            <span>BukuPinkKu Digital Vault</span>
+            <span>${isEn ? 'BukuPinkKu Digital Vault' : 'Simpanan Digital BukuPinkKu'}</span>
           </div>
         </div>
       `;}).join('');
