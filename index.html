@@ -306,6 +306,11 @@
               <i data-lucide="heart-handshake" class="w-4 h-4 text-amber-500"></i>
               <span data-i18n="subtab_ttc_doa">Sudut Doa & Motivasi</span>
             </button>
+
+            <button onclick="navigateFromSidebar('ttc', 'letters')" id="nav-ttc-letters" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="mail-heart" class="w-4 h-4 text-rose-500"></i>
+              <span data-i18n="subtab_ttc_letters">Warkah Buat Bakal Anak</span>
+            </button>
           </nav>
         </div>
 
@@ -527,6 +532,30 @@
           </div>
         </div>
 
+        <!-- NAVIGASI SUBTAB TTC CEPAT -->
+        <div class="flex space-x-2 overflow-x-auto pb-1 text-xs no-scrollbar">
+          <button id="pill-ttc-fertility" onclick="switchTtcSubtab('fertility')" class="px-3 py-1.5 rounded-xl font-bold text-white bg-pastel-500 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5">
+            <span>🌸</span>
+            <span data-i18n="subtab_ttc_ovulation">Waktu Subur</span>
+          </button>
+          <button id="pill-ttc-opk" onclick="switchTtcSubtab('opk')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-600 bg-white border border-slate-200 hover:text-slate-900 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5">
+            <span>🔬</span>
+            <span data-i18n="subtab_ttc_opk">Log OPK & Suhu</span>
+          </button>
+          <button id="pill-ttc-supplements" onclick="switchTtcSubtab('supplements')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-600 bg-white border border-slate-200 hover:text-slate-900 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5">
+            <span>💊</span>
+            <span data-i18n="subtab_ttc_supps">Suplemen</span>
+          </button>
+          <button id="pill-ttc-doa" onclick="switchTtcSubtab('doa')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-600 bg-white border border-slate-200 hover:text-slate-900 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5">
+            <span>🤲</span>
+            <span data-i18n="subtab_ttc_doa">Sudut Doa</span>
+          </button>
+          <button id="pill-ttc-letters" onclick="switchTtcSubtab('letters')" class="px-3 py-1.5 rounded-xl font-semibold text-slate-600 bg-white border border-slate-200 hover:text-slate-900 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5">
+            <span>💌</span>
+            <span data-i18n="subtab_ttc_letters">Warkah Bakal Anak</span>
+          </button>
+        </div>
+
         <!-- VIEW 1: SUB-TAB WAKTU SUBUR -->
         <div id="view-ttc-fertility" class="space-y-3">
           <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2">
@@ -651,6 +680,34 @@
             <div class="p-3 bg-white/80 rounded-2xl border border-rose-100 text-[11px] text-rose-900 font-medium italic text-center leading-relaxed">
               <span data-i18n="desc_ttc_motivation_2">"Rezeki zuriat bukan perlumbaan siapa cepat, tetapi tentang ketentuan yang paling tepat. Terus saling menguatkan, memeluk jiwa, dan menyayangi antara suami isteri." 🌸</span>
             </div>
+          </div>
+        </div>
+
+        <!-- VIEW 5: WARKAH BUAT BAKAL ANAK -->
+        <div id="view-ttc-letters" class="hidden space-y-3">
+          <div class="bg-gradient-to-br from-[#fff1f2] via-[#fff7fa] to-[#fdf4f8] border border-rose-200/80 p-4 rounded-3xl space-y-2 shadow-xs">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="text-xl">💌</span>
+                <div>
+                  <h3 data-i18n="hdr_ttc_letters" class="text-xs font-black text-rose-950 uppercase tracking-wide">Warkah Buat Bakal Anak</h3>
+                  <p data-i18n="sub_ttc_letters" class="text-[11px] text-rose-700/80">Ruang doa & luahan rindu tulus daripada Ibu & Ayah sebelum kehadiranmu ke dunia.</p>
+                </div>
+              </div>
+              <button onclick="openAddLetterModal()" class="text-xs font-bold text-white bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm whitespace-nowrap active:scale-95 transition">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span data-i18n="btn_write_letter">+ Tulis Warkah</span>
+              </button>
+            </div>
+            <div class="flex items-center space-x-1.5 text-[10px] text-slate-500 pt-1 border-t border-rose-100">
+              <i data-lucide="book-heart" class="w-3.5 h-3.5 text-rose-500"></i>
+              <span>Semua warkah ini akan diabadikan ke dalam <strong>Photobook PDF</strong> album keluarga kita.</span>
+            </div>
+          </div>
+
+          <!-- SENARAI WARKAH -->
+          <div id="ttc-letters-container" class="space-y-3">
+            <!-- Populated by loadTtcLetters() -->
           </div>
         </div>
 
@@ -1218,6 +1275,84 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: TULIS WARKAH BUAT BAKAL ANAK ================= -->
+  <div id="modal-add-letter" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-rose-200 max-h-[92vh] overflow-y-auto">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <span class="text-xl">💌</span>
+          <h3 class="text-base font-bold text-slate-800" data-i18n="mdl_letter_title">Warkah Buat Bakal Anak</h3>
+        </div>
+        <button onclick="closeModal('modal-add-letter')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <p class="text-[11px] text-slate-500 leading-relaxed" data-i18n="mdl_letter_desc">
+        Tuliskan doa, luahan rindu, atau janji kasih sayang untuk dibaca oleh anak kita suatu hari nanti.
+      </p>
+
+      <form onsubmit="handleSaveTtcLetter(event)" class="space-y-3 text-xs">
+        <!-- PILIH PENULIS -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-1.5" data-i18n="lbl_letter_author">Warkah Daripada:</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="btn-author-mom" onclick="selectLetterAuthor('Ibu')" class="py-2 px-3 rounded-xl border border-rose-300 bg-rose-100/80 text-rose-800 font-bold flex items-center justify-center space-x-1.5 transition shadow-xs">
+              <span>🌸</span>
+              <span data-i18n="opt_author_mom">Ibu</span>
+            </button>
+            <button type="button" id="btn-author-dad" onclick="selectLetterAuthor('Ayah')" class="py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold flex items-center justify-center space-x-1.5 transition">
+              <span>👨</span>
+              <span data-i18n="opt_author_dad">Ayah</span>
+            </button>
+          </div>
+          <input type="hidden" id="inp-letter-author" value="Ibu">
+        </div>
+
+        <!-- TAJUK WARKAH -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-1" data-i18n="lbl_letter_title">Tajuk Warkah</label>
+          <input type="text" id="inp-letter-title" required placeholder="Cth: Menantimu Dengan Sejuta Kasih Sayang..." data-i18n-placeholder="ph_letter_title" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400">
+        </div>
+
+        <!-- TARIKH -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-1" data-i18n="lbl_letter_date">Tarikh</label>
+          <input type="date" id="inp-letter-date" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400">
+        </div>
+
+        <!-- TEMPLAT SIAP CONTOH AYAT -->
+        <div class="space-y-1.5 pt-1">
+          <label class="block font-bold text-slate-700 text-[11px]" data-i18n="lbl_letter_template">✨ Inspirasi Ayat (Klik Untuk Guna):</label>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="applyLetterTemplate('mom')" class="text-[10px] bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold px-2.5 py-1 rounded-lg border border-rose-200 transition">
+              🌸 Luahan Ibu
+            </button>
+            <button type="button" onclick="applyLetterTemplate('dad')" class="text-[10px] bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold px-2.5 py-1 rounded-lg border border-sky-200 transition">
+              👨 Janji Ayah
+            </button>
+            <button type="button" onclick="applyLetterTemplate('doa')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold px-2.5 py-1 rounded-lg border border-amber-200 transition">
+              🤲 Doa Hati
+            </button>
+          </div>
+        </div>
+
+        <!-- ISI WARKAH -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="block font-bold text-slate-700" data-i18n="lbl_letter_body">Isi Warkah / Doa</label>
+            <span class="text-[10px] text-slate-400">Tersimpan kekal</span>
+          </div>
+          <textarea id="inp-letter-body" rows="5" required placeholder="Tuliskan luahan rasa cinta, doa, dan kata-kata harapan buat bakal zuriat anda..." data-i18n-placeholder="ph_letter_body" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:border-rose-400 text-xs leading-relaxed"></textarea>
+        </div>
+
+        <button type="submit" data-i18n="btn_save_letter" class="w-full py-3 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold rounded-xl shadow-sm transition active:scale-98">
+          💌 Simpan Warkah Kasih
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- ================= MODAL: SAMBUTAN BFP (SAYA DAH HAMIL!) ================= -->
   <div id="modal-bfp-celebrate" onclick="handleBfpBackdropClick(event)" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-all duration-300">
     <div id="modal-bfp-box" onclick="event.stopPropagation()" class="bg-gradient-to-b from-[#fffdf5] via-[#fff7fa] to-[#fdf2f8] rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border-2 border-amber-300 text-center relative overflow-hidden transform scale-100 transition-all">
@@ -1570,6 +1705,23 @@
         subtab_ttc_opk: "Log Ujian OPK & Suhu",
         subtab_ttc_supps: "Vitamin & Suplemen Pasangan",
         subtab_ttc_doa: "Sudut Doa & Motivasi",
+        subtab_ttc_letters: "Warkah Buat Bakal Anak",
+        hdr_ttc_letters: "Warkah Buat Bakal Anak",
+        sub_ttc_letters: "Ruang doa & luahan rindu tulus daripada Ibu & Ayah sebelum kehadiranmu ke dunia.",
+        btn_write_letter: "+ Tulis Warkah",
+        letters_empty_state: "Belum ada warkah ditulis. Luahkan doa dan harapan pertama anda buat zuriat tercinta. Kata-kata ini akan menjadi kenangan paling bernilai apabila dia lahir nanti.",
+        mdl_letter_title: "Warkah Buat Bakal Anak",
+        mdl_letter_desc: "Tuliskan doa, luahan rindu, atau janji kasih sayang untuk dibaca oleh anak kita suatu hari nanti.",
+        lbl_letter_author: "Warkah Daripada:",
+        opt_author_mom: "Ibu",
+        opt_author_dad: "Ayah",
+        lbl_letter_title: "Tajuk Warkah",
+        ph_letter_title: "Cth: Menantimu Dengan Sejuta Kasih Sayang...",
+        lbl_letter_date: "Tarikh",
+        lbl_letter_template: "✨ Inspirasi Ayat (Klik Untuk Guna):",
+        lbl_letter_body: "Isi Warkah / Doa",
+        ph_letter_body: "Tuliskan luahan rasa cinta, doa, dan kata-kata harapan buat bakal zuriat anda...",
+        btn_save_letter: "💌 Simpan Warkah Kasih",
         hero_ttc_title: "Ikhtiar Zuriat Comel",
         hero_ttc_sub: "Peluang persenyawaan tinggi dalam jendela subur ini",
         ttc_badge_recommended: "Rekomendasi",
@@ -1799,6 +1951,23 @@
         subtab_ttc_opk: "OPK Test & BBT Logs",
         subtab_ttc_supps: "Couple's Fertility Vitamins",
         subtab_ttc_doa: "Daily Prayers & Motivation",
+        subtab_ttc_letters: "Letters to Future Baby",
+        hdr_ttc_letters: "Letters to Our Future Baby",
+        sub_ttc_letters: "A space for heartfelt prayers and loving words from Mom & Dad before you enter this world.",
+        btn_write_letter: "+ Write Letter",
+        letters_empty_state: "No letters written yet. Share your prayers and heartfelt hopes for your future child. These words will be treasured forever.",
+        mdl_letter_title: "Letter to Future Baby",
+        mdl_letter_desc: "Write down prayers, longing, and promises of love for your future child to read one day.",
+        lbl_letter_author: "Letter From:",
+        opt_author_mom: "Mom",
+        opt_author_dad: "Dad",
+        lbl_letter_title: "Letter Title",
+        ph_letter_title: "E.g.: Waiting for You with Boundless Love...",
+        lbl_letter_date: "Date",
+        lbl_letter_template: "✨ Writing Inspiration (Tap to Use):",
+        lbl_letter_body: "Letter Content / Prayer",
+        ph_letter_body: "Express your deepest prayers and love for your future baby...",
+        btn_save_letter: "💌 Save Loving Letter",
         hero_ttc_title: "Fertility & Conception Journey",
         hero_ttc_sub: "Higher chance of conception during this fertile window",
         ttc_badge_recommended: "Recommended",
@@ -2434,7 +2603,8 @@
           loadAppointments(),
           loadHealthVitals(),
           loadAllergies(),
-          loadBabyMemories()
+          loadBabyMemories(),
+          loadTtcLetters()
         ]);
       } catch (err) {
         console.warn("Ralat memuatkan data:", err);
@@ -2769,6 +2939,7 @@
         .from('baby_memories')
         .select('*')
         .eq('family_id', currentFamilyId)
+        .neq('category', 'Warkah Buat Bakal Anak')
         .order('memory_date', { ascending: false });
 
       const isEn = currentLang === 'en';
@@ -2787,6 +2958,245 @@
         createMemoryCard(card, item.title, item.category, item.memory_date, item.notes, item.image_url, item.uploaded_by, item.id);
         container.appendChild(card);
       });
+    }
+
+    // ================= WARKAH BUAT BAKAL ANAK (TTC) =================
+    let cachedTtcLetters = [];
+
+    function openAddLetterModal() {
+      const isEn = currentLang === 'en';
+      const role = localStorage.getItem('bukupink_user_name') || currentUserName || '';
+      const isDad = role.toLowerCase().includes('suami') || role.toLowerCase().includes('ayah') || currentRole === 'father';
+      selectLetterAuthor(isDad ? 'Ayah' : 'Ibu');
+
+      const dateEl = document.getElementById('inp-letter-date');
+      if (dateEl && !dateEl.value) {
+        dateEl.value = new Date().toISOString().split('T')[0];
+      }
+      openModal('modal-add-letter');
+    }
+
+    function selectLetterAuthor(author) {
+      const inp = document.getElementById('inp-letter-author');
+      if (inp) inp.value = author;
+
+      const btnMom = document.getElementById('btn-author-mom');
+      const btnDad = document.getElementById('btn-author-dad');
+      if (btnMom && btnDad) {
+        if (author === 'Ibu') {
+          btnMom.className = "py-2 px-3 rounded-xl border border-rose-300 bg-rose-100/90 text-rose-800 font-bold flex items-center justify-center space-x-1.5 transition shadow-xs";
+          btnDad.className = "py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold flex items-center justify-center space-x-1.5 transition";
+        } else {
+          btnMom.className = "py-2 px-3 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold flex items-center justify-center space-x-1.5 transition";
+          btnDad.className = "py-2 px-3 rounded-xl border border-sky-300 bg-sky-100/90 text-sky-800 font-bold flex items-center justify-center space-x-1.5 transition shadow-xs";
+        }
+      }
+    }
+
+    function applyLetterTemplate(type) {
+      const isEn = currentLang === 'en';
+      const titleEl = document.getElementById('inp-letter-title');
+      const bodyEl = document.getElementById('inp-letter-body');
+      if (!titleEl || !bodyEl) return;
+
+      if (type === 'mom') {
+        selectLetterAuthor('Ibu');
+        titleEl.value = isEn ? "Waiting for You with Boundless Love, Little One" : "Menantimu Dengan Sejuta Kasih Sayang, Anakku";
+        bodyEl.value = isEn
+          ? "Dearest future baby,\n\nEven before you are here in my arms, you have lived inside my sweetest prayers every single day. Mom takes good care of herself and keeps her heart full of patience, knowing that God will bless us with you at the perfect, most beautiful time. We are waiting for you with boundless love and gentle arms ready to hold you."
+          : "Wahai anakku sayang,\n\nWalau dirimu belum hadir di depan mata, namamu sudah lama mekar di dalam setiap doa ibu. Setiap hari ibu menjaga diri dan hati, menanti saat terindah Allah mengizinkanmu berdegup di dalam rahim ibu. Ibu dan ayah sabar menantimu dengan cinta yang melimpah dan pelukan hangat.";
+      } else if (type === 'dad') {
+        selectLetterAuthor('Ayah');
+        titleEl.value = isEn ? "Dad's Lifelong Promise to You" : "Janji & Doa Ayah Buat Putera/Puteri Tercinta";
+        bodyEl.value = isEn
+          ? "To our precious future child,\n\nMom and Dad are doing our very best every day to prepare a warm and loving home for your arrival. Dad promises to be your greatest protector, teacher, and biggest supporter in life. We pray you grow into a kind, healthy, and blessed child. See you soon at the most perfect divine moment."
+          : "Buat zuriat ayah yang dikasihi,\n\nAyah dan ibu sedang berusaha sehabis baik untuk membina sebuah keluarga yang bahagia menyambut kehadiranmu. Ayah berjanji akan menjadi pelindung terbaik, memimpinmu dengan penuh kasih sayang dan teladan yang baik. Hadirlah pada waktu yang paling indah menurut takdir Allah, sayang.";
+      } else if (type === 'doa') {
+        titleEl.value = isEn ? "A Sincere Prayer for a Blessed Child" : "Doa Ketetapan Jiwa & Keberkatan Zuriat";
+        bodyEl.value = isEn
+          ? "O God, the Most Gracious and Most Merciful,\n\nWe place our heartfelt hopes and dreams into Your loving hands. Grant us a righteous, healthy, and kind-hearted child who will bring coolness to our eyes, peace to our home, and goodness to this world. Bless our journey with patience and gratitude. Amin."
+          : "Wahai Tuhan yang Maha Mengasihani,\n\nKami titipkan impian zuriat ini ke dalam genggaman rahmat-Mu. Jadikanlah anak kami kelak penyejuk mata (penawar duka), anak yang soleh/solehah, dan insan yang berbakti kepada agama dan ibu bapa. Lapangkanlah dada kami sepanjang ikhtiar ini. Amin ya Rabbal 'Alamin.";
+      }
+    }
+
+    async function handleSaveTtcLetter(event) {
+      event.preventDefault();
+      const isEn = currentLang === 'en';
+      const author = document.getElementById('inp-letter-author').value || 'Ibu';
+      const title = document.getElementById('inp-letter-title').value.trim();
+      const date = document.getElementById('inp-letter-date').value || new Date().toISOString().split('T')[0];
+      const body = document.getElementById('inp-letter-body').value.trim();
+
+      if (!title || !body) {
+        showToast(isEn ? "Please fill in title and letter content." : "Sila lengkapkan tajuk dan isi warkah.");
+        return;
+      }
+
+      const newLetter = {
+        id: 'letter-' + Date.now(),
+        family_id: currentFamilyId || 'DEMO',
+        title: title,
+        category: 'Warkah Buat Bakal Anak',
+        memory_date: date,
+        notes: body,
+        uploaded_by: author,
+        created_at: new Date().toISOString()
+      };
+
+      // 1. Simpan ke Supabase baby_memories
+      if (db && currentFamilyId) {
+        try {
+          const { data, error } = await db.from('baby_memories').insert({
+            family_id: currentFamilyId,
+            title: title,
+            category: 'Warkah Buat Bakal Anak',
+            memory_date: date,
+            notes: body,
+            uploaded_by: author
+          }).select();
+          if (!error && data && data[0]) {
+            newLetter.id = data[0].id;
+          }
+        } catch (e) {
+          console.warn("Supabase insert letter fallback:", e);
+        }
+      }
+
+      // 2. Simpan cache setempat
+      const localKey = 'bukupink_ttc_letters_' + (currentFamilyId || 'default');
+      let localList = [];
+      try {
+        localList = JSON.parse(localStorage.getItem(localKey) || '[]');
+      } catch (e) { localList = []; }
+      localList.unshift(newLetter);
+      localStorage.setItem(localKey, JSON.stringify(localList));
+
+      closeModal('modal-add-letter');
+      document.getElementById('inp-letter-title').value = '';
+      document.getElementById('inp-letter-body').value = '';
+
+      showToast(isEn ? "💌 Letter saved with love!" : "💌 Warkah kasih berjaya disimpan!");
+      await loadTtcLetters();
+    }
+
+    async function loadTtcLetters() {
+      const isEn = currentLang === 'en';
+      const container = document.getElementById('ttc-letters-container');
+      if (!container) return;
+
+      let letters = [];
+
+      // Dapatkan daripada Supabase
+      if (db && currentFamilyId) {
+        try {
+          const { data, error } = await db
+            .from('baby_memories')
+            .select('*')
+            .eq('family_id', currentFamilyId)
+            .eq('category', 'Warkah Buat Bakal Anak')
+            .order('created_at', { ascending: false });
+          if (!error && data && data.length > 0) {
+            letters = data;
+          }
+        } catch (e) {
+          console.warn("Error fetching ttc letters from Supabase:", e);
+        }
+      }
+
+      // Fallback ke localStorage jika belum ada data cloud / offline
+      if (letters.length === 0) {
+        const localKey = 'bukupink_ttc_letters_' + (currentFamilyId || 'default');
+        try {
+          letters = JSON.parse(localStorage.getItem(localKey) || '[]');
+        } catch (e) { letters = []; }
+      }
+
+      cachedTtcLetters = letters;
+
+      if (letters.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-3xl p-6 border border-dashed border-rose-200 text-center space-y-3 shadow-xs">
+            <span class="text-4xl block">💌</span>
+            <div class="space-y-1">
+              <h4 class="font-extrabold text-slate-800 text-sm">${isEn ? "No Letters Written Yet" : "Belum Ada Warkah Ditulis"}</h4>
+              <p class="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed" data-i18n="letters_empty_state">
+                ${isEn ? "Share your prayers and heartfelt hopes for your future child. These words will be treasured forever." : "Luahkan doa dan harapan pertama anda buat zuriat tercinta. Kata-kata ini akan menjadi kenangan paling bernilai apabila dia lahir nanti."}
+              </p>
+            </div>
+            <button onclick="openAddLetterModal()" class="inline-flex items-center space-x-1.5 px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold text-xs rounded-xl shadow-xs hover:from-rose-600 hover:to-pink-600 transition active:scale-95">
+              <i data-lucide="pen-tool" class="w-3.5 h-3.5"></i>
+              <span>${isEn ? "+ Write First Letter" : "+ Tulis Warkah Pertama"}</span>
+            </button>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = letters.map(item => {
+        const author = item.uploaded_by || 'Ibu';
+        const isMom = author.toLowerCase().includes('ibu') || author.toLowerCase().includes('mom');
+        const badgeColor = isMom 
+          ? 'bg-rose-50 text-rose-700 border-rose-200' 
+          : 'bg-sky-50 text-sky-700 border-sky-200';
+        const authorLabel = isMom 
+          ? (isEn ? '🌸 From Mom' : '🌸 Daripada Ibu') 
+          : (isEn ? '👨 From Dad' : '👨 Daripada Ayah');
+
+        return `
+          <div class="bg-white rounded-2xl p-4 border border-rose-100 shadow-xs space-y-2.5 relative overflow-hidden transition hover:shadow-sm">
+            <div class="flex justify-between items-start">
+              <div class="flex items-center space-x-2">
+                <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${badgeColor}">
+                  ${authorLabel}
+                </span>
+                <span class="text-[10px] text-slate-400 flex items-center space-x-1">
+                  <i data-lucide="calendar" class="w-3 h-3"></i>
+                  <span>${item.memory_date}</span>
+                </span>
+              </div>
+              <button onclick="deleteTtcLetter('${item.id}')" title="${isEn ? 'Delete Letter' : 'Padam Warkah'}" class="text-slate-300 hover:text-rose-500 transition p-1 rounded-lg hover:bg-rose-50">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+            <div class="space-y-1.5">
+              <h4 class="font-bold text-slate-800 text-xs sm:text-sm flex items-center space-x-1.5">
+                <span>✨</span>
+                <span>${item.title}</span>
+              </h4>
+              <div class="bg-gradient-to-r from-rose-50/40 via-amber-50/20 to-purple-50/30 p-3.5 rounded-xl border border-rose-100/70 text-xs text-slate-700 italic font-serif leading-relaxed whitespace-pre-line">
+                "${item.notes}"
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    async function deleteTtcLetter(id) {
+      const isEn = currentLang === 'en';
+      if (!confirm(isEn ? "Are you sure you want to delete this letter?" : "Adakah anda pasti mahu memadam warkah ini?")) return;
+
+      if (db && currentFamilyId && !String(id).startsWith('letter-')) {
+        try {
+          await db.from('baby_memories').delete().eq('id', id);
+        } catch (e) {
+          console.warn("Error deleting letter from Supabase:", e);
+        }
+      }
+
+      // Padam dari localStorage
+      const localKey = 'bukupink_ttc_letters_' + (currentFamilyId || 'default');
+      try {
+        let localList = JSON.parse(localStorage.getItem(localKey) || '[]');
+        localList = localList.filter(x => x.id !== id);
+        localStorage.setItem(localKey, JSON.stringify(localList));
+      } catch (e) {}
+
+      showToast(isEn ? "🗑️ Letter deleted." : "🗑️ Warkah telah dipadam.");
+      await loadTtcLetters();
     }
 
     // ================= EDIT & DELETE FUNCTIONS =================
@@ -3155,7 +3565,7 @@
       const inactiveClass = "w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900";
 
       const allNavIds = [
-        'nav-ttc-fertility', 'nav-ttc-opk', 'nav-ttc-supplements', 'nav-ttc-doa',
+        'nav-ttc-fertility', 'nav-ttc-opk', 'nav-ttc-supplements', 'nav-ttc-doa', 'nav-ttc-letters',
         'nav-preg-overview', 'nav-preg-appt', 'nav-preg-vitals', 'nav-preg-pantang',
         'nav-child-memories', 'nav-child-vaccine', 'nav-child-food', 'nav-child-milestone'
       ];
@@ -3196,6 +3606,7 @@
         if (btnTtc) btnTtc.className = activeBtnClass;
         updateSidebarActiveMenu('ttc', 'fertility');
         calculateTtcDates();
+        loadTtcLetters();
       } else if (phase === 'child') {
         if (childSec) childSec.classList.remove('hidden');
         if (btnChild) btnChild.className = activeBtnClass;
@@ -3209,14 +3620,27 @@
     }
 
     function switchTtcSubtab(tab) {
-      const tabs = ['fertility', 'opk', 'supplements', 'doa'];
+      const tabs = ['fertility', 'opk', 'supplements', 'doa', 'letters'];
+      const activePillClass = "px-3 py-1.5 rounded-xl font-bold text-white bg-pastel-500 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5";
+      const inactivePillClass = "px-3 py-1.5 rounded-xl font-semibold text-slate-600 bg-white border border-slate-200 hover:text-slate-900 whitespace-nowrap shadow-xs transition flex items-center space-x-1.5";
+
       tabs.forEach(t => {
         const viewEl = document.getElementById('view-ttc-' + t);
         if (viewEl) viewEl.classList.add('hidden');
+        const pillEl = document.getElementById('pill-ttc-' + t);
+        if (pillEl) pillEl.className = inactivePillClass;
       });
+
       const activeView = document.getElementById('view-ttc-' + tab);
       if (activeView) activeView.classList.remove('hidden');
+
+      const activePill = document.getElementById('pill-ttc-' + tab);
+      if (activePill) activePill.className = activePillClass;
+
       updateSidebarActiveMenu('ttc', tab);
+      if (tab === 'letters') {
+        loadTtcLetters();
+      }
       lucide.createIcons();
     }
 
@@ -3840,18 +4264,30 @@
         ];
       }
 
-      container.innerHTML = memories.map((m, idx) => `
-        <div class="p-3.5 rounded-2xl border border-slate-200 bg-white shadow-sm space-y-2">
+      container.innerHTML = memories.map((m, idx) => {
+        const isLetter = m.category === 'Warkah Buat Bakal Anak';
+        return `
+        <div class="p-3.5 rounded-2xl border ${isLetter ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200 bg-white'} shadow-sm space-y-2">
           <div class="flex items-center justify-between text-xs">
             <div class="flex items-center space-x-2">
-              <span class="w-6 h-6 rounded-full bg-pastel-100 text-pastel-700 font-bold flex items-center justify-center text-[10px]">#${idx + 1}</span>
+              <span class="w-6 h-6 rounded-full ${isLetter ? 'bg-rose-100 text-rose-700' : 'bg-pastel-100 text-pastel-700'} font-bold flex items-center justify-center text-[10px]">#${idx + 1}</span>
               <strong class="text-slate-800 font-bold text-xs">${m.title}</strong>
             </div>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-pastel-50 text-pastel-600 font-medium border border-pastel-200">${m.category || (isEn ? 'Memory' : 'Memori')}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full ${isLetter ? 'bg-rose-100 text-rose-700 border border-rose-200 font-bold' : 'bg-pastel-50 text-pastel-600 font-medium border border-pastel-200'}">
+              ${isLetter ? (isEn ? '💌 Letter to Future Baby' : '💌 Warkah Bakal Anak') : (m.category || (isEn ? 'Memory' : 'Memori'))}
+            </span>
           </div>
           ${m.image_url ? `
             <div class="w-full max-h-56 rounded-xl overflow-hidden border border-pastel-100 flex items-center justify-center bg-black/5">
               <img src="${m.image_url}" class="w-full h-auto object-cover rounded-xl" alt="${m.title}">
+            </div>
+          ` : isLetter ? `
+            <div class="p-3.5 rounded-xl bg-gradient-to-r from-rose-50 via-amber-50/30 to-pink-50 border border-rose-200/80 text-left">
+              <div class="flex items-center space-x-1.5 text-[11px] font-bold text-rose-800 mb-1">
+                <span>✍️</span>
+                <span>${m.uploaded_by ? (isEn ? 'Written with love by ' + m.uploaded_by : 'Ditulis dengan penuh kasih oleh ' + m.uploaded_by) : (isEn ? 'From Mom & Dad' : 'Daripada Ibu & Ayah')}</span>
+              </div>
+              <p class="text-xs text-slate-700 italic font-serif leading-relaxed whitespace-pre-line">"${m.notes || ''}"</p>
             </div>
           ` : `
             <div class="p-3 rounded-xl bg-gradient-to-r from-pastel-50 to-purple-50 border border-pastel-100 text-center">
@@ -3864,7 +4300,7 @@
             <span>BukuPinkKu Digital Vault</span>
           </div>
         </div>
-      `).join('');
+      `;}).join('');
 
       lucide.createIcons();
     }
