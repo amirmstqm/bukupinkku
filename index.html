@@ -109,15 +109,35 @@
 
         <div>
           <label data-i18n="lbl_current_status" class="block font-bold text-slate-700 mb-1">Status Semasa</label>
-          <div class="grid grid-cols-2 gap-2">
-            <label class="flex items-center space-x-2 p-2.5 border border-slate-200 rounded-xl bg-slate-50/70 cursor-pointer">
-              <input type="radio" name="pregnancy_status" value="pregnancy" checked onchange="togglePregnancyFields('pregnancy')" class="text-pastel-500">
-              <span data-i18n="opt_pregnant" class="font-bold text-slate-800">Sedang Hamil 🤰</span>
+          <div class="grid grid-cols-3 gap-1.5">
+            <label class="flex flex-col items-center justify-center p-2 border border-slate-200 rounded-xl bg-slate-50/70 cursor-pointer text-center">
+              <input type="radio" name="pregnancy_status" value="ttc" onchange="togglePregnancyFields('ttc')" class="text-pastel-500 mb-1">
+              <span class="text-base">🌸</span>
+              <span data-i18n="opt_ttc" class="font-bold text-[11px] text-slate-800">TTC / Ikhtiar</span>
             </label>
-            <label class="flex items-center space-x-2 p-2.5 border border-slate-200 rounded-xl bg-slate-50/70 cursor-pointer">
-              <input type="radio" name="pregnancy_status" value="born" onchange="togglePregnancyFields('born')" class="text-pastel-500">
-              <span data-i18n="opt_born" class="font-bold text-slate-800">Anak Dah Lahir 👶</span>
+            <label class="flex flex-col items-center justify-center p-2 border border-slate-200 rounded-xl bg-slate-50/70 cursor-pointer text-center">
+              <input type="radio" name="pregnancy_status" value="pregnancy" checked onchange="togglePregnancyFields('pregnancy')" class="text-pastel-500 mb-1">
+              <span class="text-base">🤰</span>
+              <span data-i18n="opt_pregnant" class="font-bold text-[11px] text-slate-800">Hamil</span>
             </label>
+            <label class="flex flex-col items-center justify-center p-2 border border-slate-200 rounded-xl bg-slate-50/70 cursor-pointer text-center">
+              <input type="radio" name="pregnancy_status" value="born" onchange="togglePregnancyFields('born')" class="text-pastel-500 mb-1">
+              <span class="text-base">👶</span>
+              <span data-i18n="opt_born" class="font-bold text-[11px] text-slate-800">Dah Lahir</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Bahagian TTC (Ikhtiar Hamil) -->
+        <div id="field-ttc" class="hidden space-y-3 p-3 bg-pink-50/60 rounded-2xl border border-pink-100">
+          <div>
+            <label data-i18n="lbl_lmp_date" class="block font-bold text-slate-700 mb-1">Tarikh Hari Pertama Haid Terakhir (LMP)</label>
+            <input type="date" id="reg-lmp-date" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+          </div>
+          <div>
+            <label data-i18n="lbl_cycle_len" class="block font-bold text-slate-700 mb-1">Purata Panjang Kitaran Haid (Hari)</label>
+            <input type="number" id="reg-cycle-length" value="28" min="21" max="45" placeholder="Cth: 28 hari" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <p data-i18n="hint_cycle_len" class="text-[10px] text-slate-400 mt-0.5">Kebiasaan kitaran normal wanita adalah antara 26 – 32 hari.</p>
           </div>
         </div>
 
@@ -245,8 +265,38 @@
       </div>
 
       <!-- Senarai Menu Navigasi Sidebar -->
-      <div class="flex-1 overflow-y-auto px-3 py-2 space-y-6">
+      <div class="flex-1 overflow-y-auto px-3 py-2 space-y-5">
         
+        <!-- SEKSYEN: FASA TTC (IKHTIAR HAMIL) -->
+        <div class="space-y-1">
+          <p class="px-3 text-[10px] font-bold text-rose-500 uppercase tracking-wider flex items-center justify-between">
+            <span data-i18n="tab_phase_ttc">Fasa TTC (Ikhtiar Hamil)</span>
+            <span class="text-xs">🌸</span>
+          </p>
+
+          <nav class="space-y-1 pt-1">
+            <button onclick="navigateFromSidebar('ttc', 'fertility')" id="nav-ttc-fertility" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="calendar-heart" class="w-4 h-4 text-rose-500"></i>
+              <span data-i18n="subtab_ttc_ovulation">Waktu Subur & Ovulasi</span>
+            </button>
+
+            <button onclick="navigateFromSidebar('ttc', 'opk')" id="nav-ttc-opk" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="test-tube-2" class="w-4 h-4 text-purple-500"></i>
+              <span data-i18n="subtab_ttc_opk">Log Ujian OPK & Suhu</span>
+            </button>
+
+            <button onclick="navigateFromSidebar('ttc', 'supplements')" id="nav-ttc-supplements" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="pill" class="w-4 h-4 text-teal-500"></i>
+              <span data-i18n="subtab_ttc_supps">Vitamin & Suplemen Pasangan</span>
+            </button>
+
+            <button onclick="navigateFromSidebar('ttc', 'doa')" id="nav-ttc-doa" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="heart-handshake" class="w-4 h-4 text-amber-500"></i>
+              <span data-i18n="subtab_ttc_doa">Sudut Doa & Motivasi</span>
+            </button>
+          </nav>
+        </div>
+
         <!-- SEKSYEN: FASA KEHAMILAN (BUKU PINK) -->
         <div class="space-y-1">
           <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
@@ -401,18 +451,173 @@
         </button>
       </div>
 
-      <!-- FASA TOGGLE: HAMIL vs ANAK LAHIR -->
+      <!-- FASA TOGGLE: TTC vs HAMIL vs ANAK LAHIR -->
       <div class="bg-white p-1.5 rounded-2xl border border-slate-200 flex items-center shadow-sm">
+        <button id="btn-phase-ttc" onclick="switchPhase('ttc')"
+          class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1 text-slate-600 hover:text-slate-900">
+          <span>🌸</span>
+          <span data-i18n="tab_phase_ttc">Ikhtiar (TTC)</span>
+        </button>
         <button id="btn-phase-pregnancy" onclick="switchPhase('pregnancy')"
-          class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 bg-pastel-500 text-white shadow-sm">
+          class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1 bg-pastel-500 text-white shadow-sm">
           <span>🤰</span>
-          <span data-i18n="tab_phase_preg">Fasa Hamil (Buku Pink)</span>
+          <span data-i18n="tab_phase_preg">Hamil</span>
         </button>
         <button id="btn-phase-child" onclick="switchPhase('child')"
-          class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 text-slate-600 hover:text-slate-900">
+          class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1 text-slate-600 hover:text-slate-900">
           <span>👶</span>
-          <span data-i18n="tab_phase_child">Fasa Anak (0 - 3 Tahun)</span>
+          <span data-i18n="tab_phase_child">Anak (0-3T)</span>
         </button>
+      </div>
+
+      <!-- [0] FASA TTC (IKHTIAR HAMIL) -->
+      <div id="section-ttc" class="hidden space-y-4">
+        
+        <!-- HERO CARD TTC: KALENDAR & WAKTU SUBUR -->
+        <div class="bg-gradient-to-br from-[#fff1f2] via-[#fdf4f8] to-[#faf5ff] rounded-3xl p-5 text-slate-800 shadow-sm relative overflow-hidden border border-rose-200/80">
+          <div class="absolute -right-6 -bottom-6 w-36 h-36 bg-rose-100/50 rounded-full blur-2xl"></div>
+          <div class="flex justify-between items-start mb-3 relative z-10">
+            <div>
+              <span id="hero-ttc-status-badge" class="inline-block bg-white/90 border border-rose-200 text-[11px] font-bold px-2.5 py-1 rounded-full mb-1.5 text-rose-700 shadow-sm">
+                🌸 Waktu Paling Subur (Hari ke-14)
+              </span>
+              <h2 id="hero-ttc-name" class="text-xl font-extrabold text-slate-800">Ikhtiar Zuriat Comel</h2>
+              <p class="text-xs text-slate-600 font-medium mt-0.5" id="hero-ttc-sub">Peluang persenyawaan tinggi dalam 3 hari ini</p>
+            </div>
+            <div class="text-right bg-white/80 border border-rose-100 px-3 py-1.5 rounded-2xl shadow-sm">
+              <p class="text-2xl font-black text-rose-600" id="ttc-days-to-ovulation">2</p>
+              <p data-i18n="lbl_days_to_ovul" class="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Hari ke Ovulasi</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 pt-3 border-t border-rose-200/50 text-center relative z-10 text-xs">
+            <div class="bg-white/80 border border-rose-100 p-2 rounded-xl shadow-sm">
+              <p data-i18n="lbl_fertile_window" class="text-[10px] font-semibold text-slate-500">Jendela Subur</p>
+              <p id="ttc-fertile-display" class="font-bold text-rose-700">12 - 17 Nov</p>
+            </div>
+            <div class="bg-white/80 border border-rose-100 p-2 rounded-xl shadow-sm">
+              <p data-i18n="lbl_next_period" class="text-[10px] font-semibold text-slate-500">Jangkaan Haid</p>
+              <p id="ttc-period-display" class="font-bold text-slate-800">28 Nov 2026</p>
+            </div>
+            <div class="bg-white/80 border border-rose-100 p-2 rounded-xl shadow-sm">
+              <p data-i18n="lbl_cycle_days" class="text-[10px] font-semibold text-slate-500">Panjang Kitaran</p>
+              <p id="ttc-cycle-display" class="font-bold text-purple-700">28 Hari</p>
+            </div>
+          </div>
+
+          <!-- BUTANG CELEBRATE / BERTUKAR KE FASA HAMIL (BFP MOMENT) -->
+          <div class="pt-3 border-t border-rose-200/50 flex justify-between items-center relative z-10">
+            <button onclick="openModal('modal-ttc-settings')" class="text-[11px] font-bold text-rose-700 hover:text-rose-900 flex items-center space-x-1">
+              <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+              <span data-i18n="btn_edit_cycle">Kemaskini Kitaran / LMP</span>
+            </button>
+            <button onclick="celebratePregnancySuccess()" class="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold text-[11px] px-3.5 py-1.5 rounded-xl shadow-sm flex items-center space-x-1.5 transition transform active:scale-95">
+              <span>🎉</span>
+              <span data-i18n="btn_i_am_pregnant">Saya Dah Hamil (BFP)!</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- VIEW 1: SUB-TAB WAKTU SUBUR -->
+        <div id="view-ttc-fertility" class="space-y-3">
+          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
+                <i data-lucide="sparkles" class="w-4 h-4 text-rose-500"></i>
+                <span data-i18n="hdr_bd_tips">Tips Waktu Bersama Pasangan (Baby Dance)</span>
+              </span>
+              <span class="text-[10px] bg-rose-50 text-rose-700 font-bold px-2 py-0.5 rounded-full border border-rose-200">Rekomendasi</span>
+            </div>
+            <p data-i18n="desc_bd_tips" class="text-xs text-slate-600 leading-relaxed">
+              Sperma boleh bertahan 3 – 5 hari di dalam rahim, manakala ovum bertahan 12 – 24 jam selepas ovulasi. Bersama pada hari subur selang 1-2 hari memberikan peluang persenyawaan terbaik.
+            </p>
+          </div>
+        </div>
+
+        <!-- VIEW 2: LOG OPK & SUHU BASAL -->
+        <div id="view-ttc-opk" class="hidden space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 data-i18n="hdr_opk_logs" class="text-xs font-bold text-slate-700 uppercase">Log Ujian Kesuburan (OPK & Suhu)</h3>
+            <button onclick="openModal('modal-add-opk')" class="text-xs font-bold text-white bg-pastel-500 hover:bg-pastel-600 px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span data-i18n="btn_log_opk">Log Ujian Baru</span>
+            </button>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 overflow-hidden shadow-sm" id="opk-logs-list">
+            <div class="p-4 text-center text-xs text-slate-400">Belum ada ujian OPK direkodkan. Klik '+ Log Ujian Baru'.</div>
+          </div>
+        </div>
+
+        <!-- VIEW 3: SUPLEMEN PASANGAN -->
+        <div id="view-ttc-supplements" class="hidden space-y-3">
+          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <h3 data-i18n="hdr_supps_couple" class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
+                <i data-lucide="pill" class="w-4 h-4 text-teal-600"></i>
+                <span>Senarai Semak Vitamin & Suplemen Pasangan</span>
+              </h3>
+              <button onclick="sendNudge('ubat')" data-i18n="btn_remind_partner" class="text-[11px] font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg">
+                Ingatkan Pasangan 🔔
+              </button>
+            </div>
+
+            <div class="space-y-2 text-xs">
+              <!-- Isteri -->
+              <div class="p-3 rounded-xl bg-pink-50/60 border border-pink-100 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] bg-pink-200 text-pink-900 font-bold px-1.5 py-0.5 rounded">Untuk Isteri</span>
+                  <p class="font-bold text-slate-800 mt-1">Asid Folik 5mg / CoQ10 / Inositol</p>
+                  <p class="text-[10px] text-slate-500">Membantu kualiti ovum & pembentukan tiub neural</p>
+                </div>
+                <button onclick="toggleTtcMed('wife')" id="btn-ttc-med-wife" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800">
+                  ✓ Dah Ambil
+                </button>
+              </div>
+
+              <!-- Suami -->
+              <div class="p-3 rounded-xl bg-sky-50/60 border border-sky-100 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] bg-sky-200 text-sky-900 font-bold px-1.5 py-0.5 rounded">Untuk Suami</span>
+                  <p class="font-bold text-slate-800 mt-1">Zinc & Selenium / Multivitamin Lelaki</p>
+                  <p class="text-[10px] text-slate-500">Meningkatkan bilangan & motiliti sperma sihat</p>
+                </div>
+                <button onclick="toggleTtcMed('husband')" id="btn-ttc-med-husband" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700">
+                  Belum Ambil
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 4: SUDUT DOA & MOTIVASI IKHTIAR -->
+        <div id="view-ttc-doa" class="hidden space-y-3">
+          <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 p-4 rounded-2xl space-y-2 text-xs">
+            <div class="flex items-center space-x-2">
+              <span class="text-xl">🤲</span>
+              <h3 class="font-bold text-amber-950">Doa Memohon Zuriat Yang Baik (Surah Ali 'Imran: 38)</h3>
+            </div>
+            <p class="font-serif text-sm text-slate-850 leading-relaxed text-right font-medium py-1">
+              رَبِّ هَبْ لِي مِن لَّدُنكَ ذُرِّيَّةً طَيِّبَةً ۖ إِنَّكَ سَمِيعُ الدُّعَاءِ
+            </p>
+            <p class="text-slate-700 italic text-[11px]">
+              "Wahai Tuhanku! Kurniakanlah kepadaku dari sisi-Mu zuriat keturunan yang baik; sesungguhnya Engkau sentiasa Mendengar doa."
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-r from-rose-50 to-purple-50 border border-rose-200 p-4 rounded-2xl space-y-2 text-xs">
+            <div class="flex items-center space-x-2">
+              <span class="text-xl">💌</span>
+              <h3 class="font-bold text-rose-950">Doa Nabi Zakaria a.s. (Surah Al-Anbiya': 89)</h3>
+            </div>
+            <p class="font-serif text-sm text-slate-850 leading-relaxed text-right font-medium py-1">
+              رَبِّ لَا تَذَرْنِي فَرْدًا وَأَنتَ خَيْرُ الْوَارِثِينَ
+            </p>
+            <p class="text-slate-700 italic text-[11px]">
+              "Wahai Tuhanku! Janganlah Engkau biarkan daku seorang diri, dan Engkaulah jua sebaik-baik yang mewarisi."
+            </p>
+          </div>
+        </div>
+
       </div>
 
       <!-- [A] FASA KEHAMILAN -->
@@ -912,6 +1117,71 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: KEMASKINI KITARAN HAID TTC ================= -->
+  <div id="modal-ttc-settings" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-rose-200">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base font-bold text-slate-800">Kemaskini Kitaran Haid & Ovulasi</h3>
+        <button onclick="closeModal('modal-ttc-settings')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form onsubmit="handleSaveTtcSettings(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Tarikh Hari Pertama Haid Terakhir (LMP)</label>
+          <input type="date" id="inp-ttc-lmp" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Panjang Kitaran Haid (Hari)</label>
+          <input type="number" id="inp-ttc-cycle" value="28" min="21" max="45" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+          <p class="text-[10px] text-slate-400 mt-1">Kitaran biasa wanita ialah antara 26 – 32 hari.</p>
+        </div>
+        <button type="submit" class="w-full py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold rounded-xl mt-2 shadow-sm transition">
+          Simpan & Kira Waktu Subur
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: LOG UJIAN OPK & SUHU BASAL ================= -->
+  <div id="modal-add-opk" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-purple-200">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base font-bold text-slate-800">Log Ujian OPK & Suhu</h3>
+        <button onclick="closeModal('modal-add-opk')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form onsubmit="handleSaveOpkLog(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Keputusan Ujian OPK (Garisan)</label>
+          <select id="inp-opk-result" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+            <option value="Negatif / Samar (Low)">Negatif / Garisan Samar (Fasa Rendah)</option>
+            <option value="Tinggi (High)">Garisan Semakin Terang (High)</option>
+            <option value="Puncak / Positif (Peak 🔥)">PUNCAK / POSITIF (Peak - Ovulasi 24-36 jam lagi! 🔥)</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold mb-1">Suhu Basal BBT (°C)</label>
+            <input type="number" step="0.1" id="inp-opk-temp" placeholder="Cth: 36.4" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Tarikh Ujian</label>
+            <input type="date" id="inp-opk-date" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Catatan Tambahan (Lendir Serviks / Cramp)</label>
+          <input type="text" id="inp-opk-notes" placeholder="Cth: Lendir putih telur / rasa ngilu sebelah ovari" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+        </div>
+        <button type="submit" class="w-full py-3 bg-pastel-500 hover:bg-pastel-600 text-white font-bold rounded-xl mt-2 shadow-sm transition">
+          Simpan Log Ujian Kesuburan
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- ================= MODAL: BUY ME A COFFEE (SOKONGAN PEMBANGUN) ================= -->
   <div id="modal-coffee" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-amber-200 text-center">
@@ -1205,6 +1475,26 @@
         lbl_current_status: "Status Semasa",
         opt_pregnant: "Sedang Hamil 🤰",
         opt_born: "Anak Dah Lahir 👶",
+        opt_ttc: "TTC / Ikhtiar",
+        lbl_lmp_date: "Tarikh Hari Pertama Haid Terakhir (LMP)",
+        lbl_cycle_len: "Purata Panjang Kitaran Haid (Hari)",
+        hint_cycle_len: "Kebiasaan kitaran normal wanita adalah antara 26 – 32 hari.",
+        tab_phase_ttc: "Fasa TTC (Ikhtiar Hamil)",
+        subtab_ttc_ovulation: "Waktu Subur & Ovulasi",
+        subtab_ttc_opk: "Log Ujian OPK & Suhu",
+        subtab_ttc_supps: "Vitamin & Suplemen Pasangan",
+        subtab_ttc_doa: "Sudut Doa & Motivasi",
+        lbl_days_to_ovul: "Hari ke Ovulasi",
+        lbl_fertile_window: "Jendela Subur",
+        lbl_next_period: "Jangkaan Haid",
+        lbl_cycle_days: "Panjang Kitaran",
+        btn_edit_cycle: "Kemaskini Kitaran / LMP",
+        btn_i_am_pregnant: "Saya Dah Hamil (BFP)!",
+        hdr_bd_tips: "Tips Waktu Bersama Pasangan (Baby Dance)",
+        desc_bd_tips: "Sperma boleh bertahan 3 – 5 hari di dalam rahim, manakala ovum bertahan 12 – 24 jam selepas ovulasi. Bersama pada hari subur selang 1-2 hari memberikan peluang persenyawaan terbaik.",
+        hdr_opk_logs: "Log Ujian Kesuburan (OPK & Suhu)",
+        btn_log_opk: "Log Ujian Baru",
+        hdr_supps_couple: "Senarai Semak Vitamin & Suplemen Pasangan",
         lbl_baby_nick: "Nama Gelaran Kandungan",
         lbl_edd: "Tarikh Jangka Bersalin (EDD)",
         lbl_clinic: "Klinik Kesihatan (KK) / Hospital",
@@ -1375,6 +1665,26 @@
         lbl_current_status: "Current Status",
         opt_pregnant: "Currently Pregnant 🤰",
         opt_born: "Baby is Born 👶",
+        opt_ttc: "TTC / Trying",
+        lbl_lmp_date: "First Day of Last Period (LMP)",
+        lbl_cycle_len: "Average Menstrual Cycle Length (Days)",
+        hint_cycle_len: "Standard healthy cycles range between 26 – 32 days.",
+        tab_phase_ttc: "TTC Phase (Trying to Conceive)",
+        subtab_ttc_ovulation: "Fertile Window & Ovulation",
+        subtab_ttc_opk: "OPK Test & BBT Logs",
+        subtab_ttc_supps: "Couple's Fertility Vitamins",
+        subtab_ttc_doa: "Daily Prayers & Motivation",
+        lbl_days_to_ovul: "Days to Ovulation",
+        lbl_fertile_window: "Fertile Window",
+        lbl_next_period: "Next Period",
+        lbl_cycle_days: "Cycle Length",
+        btn_edit_cycle: "Update Cycle / LMP",
+        btn_i_am_pregnant: "I'm Pregnant (BFP)!",
+        hdr_bd_tips: "Conception Timing Tips (Baby Dance)",
+        desc_bd_tips: "Sperm can live up to 3 – 5 days inside the reproductive tract while an egg survives 12 – 24 hours. Intimacy every 1–2 days during the fertile window maximizes conception chances.",
+        hdr_opk_logs: "Fertility Logs (OPK Strips & BBT)",
+        btn_log_opk: "Log New Test",
+        hdr_supps_couple: "Couple's Daily Fertility Supplement Checklist",
         lbl_baby_nick: "Baby's Nickname",
         lbl_edd: "Estimated Due Date (EDD)",
         lbl_clinic: "Health Clinic (KK) / Hospital",
@@ -1668,12 +1978,20 @@
     }
 
     function togglePregnancyFields(status) {
-      if (status === 'born') {
-        document.getElementById('field-pregnancy').classList.add('hidden');
-        document.getElementById('field-born').classList.remove('hidden');
+      const fTtc = document.getElementById('field-ttc');
+      const fPreg = document.getElementById('field-pregnancy');
+      const fBorn = document.getElementById('field-born');
+
+      if (fTtc) fTtc.classList.add('hidden');
+      if (fPreg) fPreg.classList.add('hidden');
+      if (fBorn) fBorn.classList.add('hidden');
+
+      if (status === 'ttc') {
+        if (fTtc) fTtc.classList.remove('hidden');
+      } else if (status === 'born') {
+        if (fBorn) fBorn.classList.remove('hidden');
       } else {
-        document.getElementById('field-born').classList.add('hidden');
-        document.getElementById('field-pregnancy').classList.remove('hidden');
+        if (fPreg) fPreg.classList.remove('hidden');
       }
     }
 
@@ -1777,8 +2095,17 @@
         }
         showDashboardScreen();
 
-        if (status === 'born') switchPhase('child');
-        else switchPhase('pregnancy');
+        if (status === 'ttc') {
+          const lmpDate = document.getElementById('reg-lmp-date') ? document.getElementById('reg-lmp-date').value : null;
+          const cycleLen = document.getElementById('reg-cycle-length') ? document.getElementById('reg-cycle-length').value : 28;
+          if (lmpDate) localStorage.setItem('bukupink_ttc_lmp', lmpDate);
+          localStorage.setItem('bukupink_ttc_cycle', cycleLen);
+          switchPhase('ttc');
+        } else if (status === 'born') {
+          switchPhase('child');
+        } else {
+          switchPhase('pregnancy');
+        }
 
       } catch (err) {
         console.error("Ralat pendaftaran:", err);
@@ -2606,6 +2933,7 @@
       const inactiveClass = "w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900";
 
       const allNavIds = [
+        'nav-ttc-fertility', 'nav-ttc-opk', 'nav-ttc-supplements', 'nav-ttc-doa',
         'nav-preg-overview', 'nav-preg-appt', 'nav-preg-vitals', 'nav-preg-pantang',
         'nav-child-memories', 'nav-child-vaccine', 'nav-child-food', 'nav-child-milestone'
       ];
@@ -2615,7 +2943,7 @@
         if (el) el.className = inactiveClass;
       });
 
-      const currentNavId = phase === 'pregnancy' ? `nav-preg-${subtab}` : `nav-child-${subtab}`;
+      let currentNavId = `nav-${phase}-${subtab}`;
       const activeEl = document.getElementById(currentNavId);
       if (activeEl) activeEl.className = activeClass;
       lucide.createIcons();
@@ -2623,25 +2951,64 @@
 
     function switchPhase(phase) {
       currentPhase = phase;
+      const ttcSec = document.getElementById('section-ttc');
       const pregSec = document.getElementById('section-pregnancy');
       const childSec = document.getElementById('section-child');
+      const btnTtc = document.getElementById('btn-phase-ttc');
       const btnPreg = document.getElementById('btn-phase-pregnancy');
       const btnChild = document.getElementById('btn-phase-child');
 
-      if (phase === 'child') {
-        pregSec.classList.add('hidden');
-        childSec.classList.remove('hidden');
-        btnChild.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 bg-pastel-500 text-white shadow-sm";
-        btnPreg.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 text-slate-600 hover:text-slate-900";
+      const activeBtnClass = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1 bg-pastel-500 text-white shadow-sm";
+      const inactiveBtnClass = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1 text-slate-600 hover:text-slate-900";
+
+      if (ttcSec) ttcSec.classList.add('hidden');
+      if (pregSec) pregSec.classList.add('hidden');
+      if (childSec) childSec.classList.add('hidden');
+
+      if (btnTtc) btnTtc.className = inactiveBtnClass;
+      if (btnPreg) btnPreg.className = inactiveBtnClass;
+      if (btnChild) btnChild.className = inactiveBtnClass;
+
+      if (phase === 'ttc') {
+        if (ttcSec) ttcSec.classList.remove('hidden');
+        if (btnTtc) btnTtc.className = activeBtnClass;
+        updateSidebarActiveMenu('ttc', 'fertility');
+        calculateTtcDates();
+      } else if (phase === 'child') {
+        if (childSec) childSec.classList.remove('hidden');
+        if (btnChild) btnChild.className = activeBtnClass;
         updateSidebarActiveMenu('child', 'memories');
       } else {
-        childSec.classList.add('hidden');
-        pregSec.classList.remove('hidden');
-        btnPreg.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 bg-pastel-500 text-white shadow-sm";
-        btnChild.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 text-slate-600 hover:text-slate-900";
+        if (pregSec) pregSec.classList.remove('hidden');
+        if (btnPreg) btnPreg.className = activeBtnClass;
         updateSidebarActiveMenu('pregnancy', 'overview');
       }
       lucide.createIcons();
+    }
+
+    function switchTtcSubtab(tab) {
+      const tabs = ['fertility', 'opk', 'supplements', 'doa'];
+      tabs.forEach(t => {
+        const viewEl = document.getElementById('view-ttc-' + t);
+        if (viewEl) viewEl.classList.add('hidden');
+      });
+      const activeView = document.getElementById('view-ttc-' + tab);
+      if (activeView) activeView.classList.remove('hidden');
+      updateSidebarActiveMenu('ttc', tab);
+      lucide.createIcons();
+    }
+
+    function navigateFromSidebar(phase, subtab) {
+      toggleSidebar(false);
+      switchPhase(phase);
+      if (phase === 'ttc') {
+        switchTtcSubtab(subtab);
+      } else if (phase === 'pregnancy') {
+        switchPregSubtab(subtab);
+      } else {
+        switchChildSubtab(subtab);
+      }
+      updateSidebarActiveMenu(phase, subtab);
     }
 
     function switchPregSubtab(tab) {
@@ -2767,6 +3134,168 @@
       document.getElementById(id).classList.remove('hidden');
     }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // ================= LOGIK FASA TTC (IKHTIAR HAMIL) =================
+    let ttcMedWifeTaken = true;
+    let ttcMedHusbandTaken = false;
+
+    function calculateTtcDates() {
+      const isEn = currentLang === 'en';
+      const storedLmp = localStorage.getItem('bukupink_ttc_lmp');
+      const storedCycle = parseInt(localStorage.getItem('bukupink_ttc_cycle') || '28');
+
+      const today = new Date();
+      let lmpDate = storedLmp ? new Date(storedLmp) : new Date(today.getTime() - (12 * 24 * 60 * 60 * 1000));
+      const cycleDays = isNaN(storedCycle) ? 28 : storedCycle;
+
+      // Ovulasi berlaku kira-kira 14 hari sebelum haid seterusnya
+      const ovulationDayOffset = Math.max(10, cycleDays - 14);
+      const ovulationDate = new Date(lmpDate.getTime() + (ovulationDayOffset * 24 * 60 * 60 * 1000));
+      const nextPeriodDate = new Date(lmpDate.getTime() + (cycleDays * 24 * 60 * 60 * 1000));
+
+      const fertileStart = new Date(ovulationDate.getTime() - (3 * 24 * 60 * 60 * 1000));
+      const fertileEnd = new Date(ovulationDate.getTime() + (1 * 24 * 60 * 60 * 1000));
+
+      const diffTime = ovulationDate - today;
+      const daysToOvul = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      // Kemaskini UI
+      const dayOvulEl = document.getElementById('ttc-days-to-ovulation');
+      if (dayOvulEl) dayOvulEl.innerText = daysToOvul >= 0 ? daysToOvul : "--";
+
+      const badgeEl = document.getElementById('hero-ttc-status-badge');
+      if (badgeEl) {
+        if (daysToOvul === 0) {
+          badgeEl.innerText = isEn ? "🔥 Peak Ovulation Day (Today)!" : "🔥 Hari Ovulasi Puncak (Hari Ini)!";
+          badgeEl.className = "inline-block bg-rose-500 text-white font-bold text-[11px] px-2.5 py-1 rounded-full mb-1.5 shadow-sm animate-pulse";
+        } else if (daysToOvul > 0 && daysToOvul <= 4) {
+          badgeEl.innerText = isEn ? `🌸 Highly Fertile Window (${daysToOvul} days to Ovulation)` : `🌸 Waktu Paling Subur (${daysToOvul} hari lagi ke Ovulasi)`;
+          badgeEl.className = "inline-block bg-white/90 border border-rose-200 text-[11px] font-bold px-2.5 py-1 rounded-full mb-1.5 text-rose-700 shadow-sm";
+        } else {
+          badgeEl.innerText = isEn ? "🌱 Follicular / Luteal Phase" : "🌱 Fasa Kitaran Normal";
+          badgeEl.className = "inline-block bg-white/90 border border-slate-200 text-[11px] font-bold px-2.5 py-1 rounded-full mb-1.5 text-slate-700 shadow-sm";
+        }
+      }
+
+      const formatShort = (d) => `${d.getDate()} ${d.toLocaleString(isEn ? 'en-US' : 'ms-MY', { month: 'short' })}`;
+      const formatFull = (d) => `${d.getDate()} ${d.toLocaleString(isEn ? 'en-US' : 'ms-MY', { month: 'short' })} ${d.getFullYear()}`;
+
+      const fertileEl = document.getElementById('ttc-fertile-display');
+      if (fertileEl) fertileEl.innerText = `${formatShort(fertileStart)} - ${formatShort(fertileEnd)}`;
+
+      const periodEl = document.getElementById('ttc-period-display');
+      if (periodEl) periodEl.innerText = formatFull(nextPeriodDate);
+
+      const cycleEl = document.getElementById('ttc-cycle-display');
+      if (cycleEl) cycleEl.innerText = isEn ? `${cycleDays} Days` : `${cycleDays} Hari`;
+
+      loadOpkLogs();
+    }
+
+    function handleSaveTtcSettings(e) {
+      e.preventDefault();
+      const isEn = currentLang === 'en';
+      const lmp = document.getElementById('inp-ttc-lmp').value;
+      const cycle = document.getElementById('inp-ttc-cycle').value;
+
+      if (lmp) localStorage.setItem('bukupink_ttc_lmp', lmp);
+      if (cycle) localStorage.setItem('bukupink_ttc_cycle', cycle);
+
+      closeModal('modal-ttc-settings');
+      showToast(isEn ? "✅ Menstrual cycle updated. Ovulation recalculated!" : "✅ Kitaran haid dikemaskini. Waktu subur dikira semula!");
+      calculateTtcDates();
+    }
+
+    function toggleTtcMed(person) {
+      const isEn = currentLang === 'en';
+      if (person === 'wife') {
+        ttcMedWifeTaken = !ttcMedWifeTaken;
+        const btn = document.getElementById('btn-ttc-med-wife');
+        if (ttcMedWifeTaken) {
+          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800";
+          btn.innerText = isEn ? "✓ Taken" : "✓ Dah Ambil";
+          showToast(isEn ? "Wife's folic acid & vitamins marked taken." : "Suplemen & Asid Folik isteri ditanda diambil.");
+        } else {
+          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700";
+          btn.innerText = isEn ? "Not Taken" : "Belum Ambil";
+        }
+      } else {
+        ttcMedHusbandTaken = !ttcMedHusbandTaken;
+        const btn = document.getElementById('btn-ttc-med-husband');
+        if (ttcMedHusbandTaken) {
+          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800";
+          btn.innerText = isEn ? "✓ Taken" : "✓ Dah Ambil";
+          showToast(isEn ? "Husband's zinc & vitamins marked taken." : "Suplemen & Zinc suami ditanda diambil.");
+        } else {
+          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700";
+          btn.innerText = isEn ? "Not Taken" : "Belum Ambil";
+        }
+      }
+    }
+
+    function handleSaveOpkLog(e) {
+      e.preventDefault();
+      const isEn = currentLang === 'en';
+      const result = document.getElementById('inp-opk-result').value;
+      const temp = document.getElementById('inp-opk-temp').value || '-';
+      const date = document.getElementById('inp-opk-date').value;
+      const notes = document.getElementById('inp-opk-notes').value || (isEn ? 'No notes' : 'Tiada catatan');
+
+      const logs = JSON.parse(localStorage.getItem('bukupink_opk_logs') || '[]');
+      logs.unshift({ id: 'opk-' + Date.now(), result, temp, date, notes });
+      localStorage.setItem('bukupink_opk_logs', JSON.stringify(logs));
+
+      closeModal('modal-add-opk');
+      showToast(isEn ? "📊 OPK test reading logged!" : "📊 Rekod ujian OPK berjaya disimpan!");
+      loadOpkLogs();
+    }
+
+    function loadOpkLogs() {
+      const isEn = currentLang === 'en';
+      const container = document.getElementById('opk-logs-list');
+      if (!container) return;
+
+      const logs = JSON.parse(localStorage.getItem('bukupink_opk_logs') || '[]');
+      if (logs.length === 0) {
+        container.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">${isEn ? "No OPK tests logged yet. Tap '+ Log New Test'." : "Belum ada ujian OPK direkodkan. Klik '+ Log Ujian Baru'."}</div>`;
+        return;
+      }
+
+      container.innerHTML = logs.map(item => `
+        <div class="p-3 flex justify-between items-center text-xs">
+          <div>
+            <div class="flex items-center space-x-1.5">
+              <span class="font-bold text-slate-800">${item.date}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${item.result.includes('Peak') ? 'bg-rose-100 text-rose-700 border border-rose-300' : 'bg-slate-100 text-slate-700'}">${item.result}</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-0.5">BBT: ${item.temp}°C | ${item.notes}</p>
+          </div>
+          <button onclick="deleteOpkLog('${item.id}')" title="Padam" class="text-rose-500 hover:text-rose-700 p-1">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function deleteOpkLog(id) {
+      let logs = JSON.parse(localStorage.getItem('bukupink_opk_logs') || '[]');
+      logs = logs.filter(x => x.id !== id);
+      localStorage.setItem('bukupink_opk_logs', JSON.stringify(logs));
+      showToast("Log ujian dipadam.");
+      loadOpkLogs();
+    }
+
+    function celebratePregnancySuccess() {
+      const isEn = currentLang === 'en';
+      const msg = isEn
+        ? "🎉 CONGRATULATIONS! We are overjoyed for you! Switching to Pregnancy Phase (Buku Pink)... 🌸"
+        : "🎉 TAHNIAH & ALHAMDULILLAH! Kami tumpang gembira atas berita kehamilan anda! Menukar ke Fasa Buku Pink... 🌸";
+      showToast(msg);
+      setTimeout(() => {
+        switchPhase('pregnancy');
+      }, 1500);
+    }
 
     // ================= BUY ME A COFFEE & FEEDBACK LOGIC =================
     let currentFeedbackRating = 5;
