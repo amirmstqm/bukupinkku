@@ -87,11 +87,17 @@
 
       <!-- BORANG 1: IBU (DAFTAR KELUARGA BARU) -->
       <form id="form-register-mother" onsubmit="handleRegisterMother(event)" class="space-y-3.5 text-xs">
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Nama Penuh Ibu</label>
-          <input type="text" id="reg-mom-name" required placeholder="Cth: Fie Tahir / Siti Sarah" class="w-full p-3 border border-pastel-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
-          <p class="text-[10px] text-slate-400 mt-1">Jika nama anda pernah didaftarkan, sistem akan automatik guna semula Kod Keluarga tetap anda.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Nama Penuh Ibu</label>
+            <input type="text" id="reg-mom-name" required placeholder="Cth: Fie Tahir" class="w-full p-3 border border-pastel-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">No. Telefon Ibu (Unik)</label>
+            <input type="tel" id="reg-mom-phone" required placeholder="Cth: 0123456789" class="w-full p-3 border border-pastel-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+          </div>
         </div>
+        <p class="text-[10px] text-slate-400 -mt-2">🔒 No. telefon digunakan sebagai ID unik supaya Kod Keluarga tidak bertindih walaupun ada pengguna lain yang berkongsi nama yang sama.</p>
 
         <div>
           <label class="block font-bold text-slate-700 mb-1">Status Semasa</label>
@@ -991,10 +997,12 @@
       }
     }
 
-    // DAFTAR KELUARGA BARU (ATAU GUNA SEMULA KOD TETAP IBU)
+    // DAFTAR KELUARGA BARU (ATAU GUNA SEMULA KOD TETAP BERDASARKAN NO. TELEFON UNIK)
     async function handleRegisterMother(e) {
       e.preventDefault();
       const momName = document.getElementById('reg-mom-name').value.trim();
+      const rawPhone = document.getElementById('reg-mom-phone') ? document.getElementById('reg-mom-phone').value.trim() : '';
+      const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
       const status = document.querySelector('input[name="pregnancy_status"]:checked').value;
       const babyNickname = document.getElementById('reg-baby-nickname').value.trim() || 'Bayi Comel';
       const eddDate = document.getElementById('reg-edd-date').value || null;
@@ -1005,7 +1013,7 @@
       const birthWeight = document.getElementById('reg-birth-weight').value || '3.2';
 
       const submitBtn = document.getElementById('btn-submit-register');
-      submitBtn.innerText = "Menyemak Profil Keluarga...";
+      submitBtn.innerText = "Menyemak ID Unik Keluarga...";
 
       const randomDigits = Math.floor(1000 + Math.random() * 9000);
       let finalCode = `PINK-${randomDigits}`;
@@ -1014,49 +1022,64 @@
 
       try {
         if (db) {
-          // 1. Semak dahulu jika nama Ibu ini sudah mempunyai Kod Keluarga Tetap di Supabase!
-          const { data: existingFamilies } = await db
+          // 1. Semak berdasarkan No. Telefon Unik Ibu dahulu!
+          const { data: phoneMatch } = await db
             .from('families')
             .select('*')
-            .ilike('family_name', `Keluarga ${momName}`)
-            .order('created_at', { ascending: true })
+            .ilike('family_name', `%[${cleanPhone}]%`)
             .limit(1);
 
-          if (existingFamilies && existingFamilies.length > 0) {
-            // GUNA SEMULA KOD KELUARGA TETAP SEDIA ADA!
-            newFamilyId = existingFamilies[0].id;
-            finalCode = existingFamilies[0].invite_code;
+          if (phoneMatch && phoneMatch.length > 0) {
+            newFamilyId = phoneMatch[0].id;
+            finalCode = phoneMatch[0].invite_code;
             isExistingFamily = true;
           } else {
-            // 2. Jika belum pernah daftar, barulah cipta Kod Keluarga baharu
-            const { data: familyData, error: famErr } = await db
+            // 2. Semak jika ada profil sedia ada dengan nama ini yang belum dikunci no. telefon (cth: PINK-1147)
+            const { data: legacyMatch } = await db
               .from('families')
-              .insert({
-                family_name: `Keluarga ${momName}`,
-                invite_code: finalCode
-              })
-              .select()
-              .single();
+              .select('*')
+              .ilike('family_name', `Keluarga ${momName}`)
+              .limit(1);
 
-            if (!famErr && familyData) {
-              newFamilyId = familyData.id;
-
-              // Simpan anak / kandungan ke Supabase
+            if (legacyMatch && legacyMatch.length > 0 && !legacyMatch[0].family_name.includes('[')) {
+              // Kunci profil sedia ada ini terus kepada No. Telefon Ibu ini
+              newFamilyId = legacyMatch[0].id;
+              finalCode = legacyMatch[0].invite_code;
+              isExistingFamily = true;
               await db
-                .from('children')
+                .from('families')
+                .update({ family_name: `Keluarga ${momName} [${cleanPhone}]` })
+                .eq('id', newFamilyId);
+            } else {
+              // 3. Pengguna baharu (walaupun nama sama dengan orang lain, no. telefon berbeza -> dapat Kod Keluarga tersendiri!)
+              const { data: familyData, error: famErr } = await db
+                .from('families')
                 .insert({
-                  family_id: newFamilyId,
-                  nickname: status === 'born' ? childName : babyNickname,
-                  status: status,
-                  edd_date: eddDate,
-                  birth_date: birthDate,
-                  blood_type: 'O+'
-                });
+                  family_name: `Keluarga ${momName} [${cleanPhone}]`,
+                  invite_code: finalCode
+                })
+                .select()
+                .single();
+
+              if (!famErr && familyData) {
+                newFamilyId = familyData.id;
+
+                await db
+                  .from('children')
+                  .insert({
+                    family_id: newFamilyId,
+                    nickname: status === 'born' ? childName : babyNickname,
+                    status: status,
+                    edd_date: eddDate,
+                    birth_date: birthDate,
+                    blood_type: 'O+'
+                  });
+              }
             }
           }
         }
 
-        // 3. Simpan sesi aktif ke localStorage
+        // 4. Simpan sesi aktif ke localStorage
         localStorage.setItem('bukupink_family_id', newFamilyId);
         localStorage.setItem('bukupink_role', 'mother');
         localStorage.setItem('bukupink_user_name', `${momName} (Ibu)`);
@@ -1123,7 +1146,8 @@
         currentUserName = `${userName} (${roleLabel})`;
         currentFamilyCode = familyData.invite_code;
 
-        showToast(`❤️ Berjaya masuk ke ${familyData.family_name} (${familyData.invite_code})!`);
+        const cleanFamTitle = (familyData.family_name || 'Keluarga').split(' [')[0];
+        showToast(`❤️ Berjaya masuk ke ${cleanFamTitle} (${familyData.invite_code})!`);
         showDashboardScreen();
 
       } catch (err) {
