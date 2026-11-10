@@ -398,13 +398,13 @@
             <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-700"></i>
           </button>
 
-          <!-- ☕ BUY ME A COFFEE BUTTON -->
-          <button onclick="openCoffeeModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-500 hover:to-yellow-500 text-amber-950 text-xs font-extrabold shadow-sm transition transform active:scale-95 border border-amber-300">
+          <!-- 💖 DUITNOW INFAQ / SUPPORT BUTTON -->
+          <button onclick="openCoffeeModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gradient-to-r from-rose-50 to-pink-50 hover:from-rose-100 hover:to-pink-100 text-rose-900 text-xs font-bold shadow-2xs transition transform active:scale-95 border border-rose-200">
             <span class="flex items-center space-x-2">
-              <span class="text-base">☕</span>
-              <span data-i18n="btn_coffee_sidebar">Belanja Kopi (Support App)</span>
+              <span class="text-base">💖</span>
+              <span data-i18n="btn_coffee_sidebar">Infaq & Sokongan DuitNow</span>
             </span>
-            <span class="text-[10px] bg-white/70 px-1.5 py-0.5 rounded-md font-bold text-amber-900">DuitNow</span>
+            <span class="text-[10px] bg-white border border-rose-200 px-1.5 py-0.5 rounded-md font-extrabold text-rose-700">QR DuitNow</span>
           </button>
 
           <!-- 💬 USER FEEDBACK BUTTON -->
@@ -1542,13 +1542,13 @@
     </div>
   </div>
 
-  <!-- ================= MODAL: BUY ME A COFFEE (SOKONGAN PEMBANGUN) ================= -->
+  <!-- ================= MODAL: INFAQ & SOKONGAN DUITNOW (100% LOKAL MALAYSIA) ================= -->
   <div id="modal-coffee" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-amber-200 text-center">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-rose-200 text-center">
       <div class="flex justify-between items-center pb-2 border-b border-slate-100">
         <div class="flex items-center space-x-2">
-          <span id="modal-coffee-icon" class="text-2xl">☕</span>
-          <h3 data-i18n="mdl_coffee_title" class="text-sm font-extrabold text-slate-800">Belanja Kopi (Support App)</h3>
+          <span id="modal-coffee-icon" class="text-2xl">💖</span>
+          <h3 data-i18n="mdl_coffee_title" class="text-sm font-extrabold text-slate-800">Infaq & Sokongan BukuPinkKu</h3>
         </div>
         <button onclick="closeModal('modal-coffee')" class="text-slate-400 hover:text-slate-600">
           <i data-lucide="x" class="w-5 h-5"></i>
@@ -1557,68 +1557,49 @@
 
       <div class="space-y-2 text-xs text-slate-600">
         <p data-i18n="mdl_coffee_desc" class="leading-relaxed">
-          BukuPinkKu dicipta dengan kasih sayang untuk memudahkan ibu bapa di Malaysia secara <strong>100% percuma</strong> tanpa iklan yang mengganggu.
+          BukuPinkKu dicipta dengan kasih sayang untuk memudahkan ibu bapa di Malaysia secara <strong>100% percuma tanpa sebarang iklan</strong>.
         </p>
-        <p data-i18n="mdl_coffee_sub" class="text-[11px] text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
-          💛 Seikhlas hati anda tanpa jumlah tetap, setiap sumbangan sangat bermakna untuk menampung kos pelayan pangkalan data & memastikan sistem ini kekal percuma.
+        <p data-i18n="mdl_coffee_sub" class="text-[11px] text-rose-950 bg-rose-50/80 p-2.5 rounded-xl border border-rose-200">
+          💛 Seikhlas hati anda tanpa sebarang jumlah tetap, setiap sumbangan sangat bermakna untuk menampung kos pelayan pangkalan data & memastikan sistem ini kekal percuma selamanya.
         </p>
       </div>
 
-      <!-- TAB PILIHAN KAEDAH SOKONGAN: DUITNOW vs BUY ME A COFFEE -->
-      <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200 text-xs font-bold">
-        <button type="button" id="tab-btn-duitnow" onclick="switchDonationMethod('duitnow')" class="flex-1 py-2 rounded-lg bg-white text-rose-700 shadow-sm transition flex items-center justify-center space-x-1.5">
-          <span>📲</span>
-          <span>DuitNow QR</span>
-        </button>
-        <button type="button" id="tab-btn-bmc" onclick="switchDonationMethod('bmc')" class="flex-1 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-1.5">
-          <span>☕</span>
-          <span>Buy Me a Coffee</span>
-        </button>
-      </div>
-
-      <!-- KANDUNGAN PILIHAN 1: DUITNOW (LOCAL BANKING / EWALLET) -->
-      <div id="content-donate-duitnow" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+      <!-- KANDUNGAN DUITNOW QR & MAKLUMAT PEMBAYARAN PERBANKAN LOKAL -->
+      <div class="bg-gradient-to-b from-rose-50/50 to-slate-50 p-4 rounded-2xl border border-rose-200/80 space-y-3">
         <div class="flex justify-center">
-          <div id="box-qr-duitnow" class="w-48 h-48 bg-white border-2 border-dashed border-rose-300 rounded-2xl p-2 flex flex-col items-center justify-center shadow-sm overflow-hidden">
-            <img id="img-qr-duitnow" src="./duitnow-qr.png" onerror="this.onerror=null; this.classList.add('hidden'); document.getElementById('placeholder-qr-duitnow').classList.remove('hidden');" class="w-full h-full object-contain rounded-xl" alt="DuitNow QR">
-            <div id="placeholder-qr-duitnow" class="hidden text-center p-2">
+          <div id="box-qr-duitnow" class="w-56 max-h-80 bg-white border-2 border-rose-200 rounded-2xl p-2 flex flex-col items-center justify-center shadow-md overflow-hidden">
+            <img id="img-qr-duitnow" src="./duitnow-qr.png" onerror="this.onerror=null; this.classList.add('hidden'); document.getElementById('placeholder-qr-duitnow').classList.remove('hidden');" class="w-full h-auto max-h-72 object-contain rounded-xl" alt="DuitNow QR">
+            <div id="placeholder-qr-duitnow" class="hidden text-center p-3">
               <span class="text-4xl block mb-1">📲</span>
-              <span class="text-[11px] font-black text-rose-600 uppercase block">DuitNow QR</span>
-              <span class="text-[9px] text-slate-400 block leading-tight mt-1">Imbas guna mana-mana Bank atau TNG eWallet</span>
+              <span class="text-xs font-black text-rose-600 uppercase tracking-wider block">DuitNow QR</span>
+              <span class="text-[10px] text-slate-500 block leading-tight mt-1.5">Imbas terus menggunakan mana-mana perbankan online atau Touch 'n Go eWallet</span>
             </div>
           </div>
         </div>
 
-        <div class="pt-1">
-          <p data-i18n="lbl_duitnow_ref" class="text-[11px] font-bold text-slate-700">Nombor Telefon / ID DuitNow:</p>
-          <p id="txt-duitnow-id" class="text-xs font-mono font-black text-pastel-700 bg-white py-1 px-3 rounded-lg border border-slate-200 inline-block mt-0.5">
-            amirmstqm@bukupinkku
-          </p>
-        </div>
-
-        <button onclick="copyDuitNowInfo()" class="w-full py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200 shadow-sm transition">
-          <span data-i18n="btn_copy_ref">📋 Salin Maklumat Rujukan</span>
-        </button>
-      </div>
-
-      <!-- KANDUNGAN PILIHAN 2: BUY ME A COFFEE (ONLINE CARD / INTERNATIONAL) -->
-      <div id="content-donate-bmc" class="hidden bg-gradient-to-br from-amber-50/60 to-yellow-50/60 p-4 rounded-2xl border border-amber-200 space-y-3 text-left">
-        <div class="flex items-center space-x-2.5 pb-2 border-b border-amber-200/60">
-          <span class="text-3xl">☕</span>
-          <div>
-            <h4 class="text-xs font-extrabold text-amber-950">Buy Me a Coffee</h4>
-            <p class="text-[10px] text-amber-800">Sumbangan kad debit/kredit antarabangsa & Apple Pay</p>
-          </div>
-        </div>
-
-        <p class="text-[11px] text-slate-600 leading-relaxed">
-          Sesuai untuk anda yang ingin menyumbang menggunakan kad bank online atau berada di luar negara.
+        <p class="text-[10px] text-slate-500 font-medium">
+          Diterima oleh: Maybank MAE, CIMB, Bank Islam, RHB, Touch 'n Go eWallet & semua bank di Malaysia.
         </p>
 
-        <a href="https://buymeacoffee.com" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-500 hover:to-yellow-500 text-amber-950 font-extrabold text-xs flex items-center justify-center space-x-2 shadow-sm transition transform active:scale-95 border border-amber-300">
-          <span>☕</span>
-          <span data-i18n="btn_open_bmc">Buka Laman Buy Me a Coffee</span>
-        </a>
+        <div class="pt-1 bg-white p-3 rounded-2xl border border-slate-200 text-left space-y-1 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Penerima DuitNow</span>
+            <span class="text-[10px] bg-sky-50 text-sky-700 font-extrabold px-2 py-0.5 rounded-full border border-sky-200">TNG eWallet</span>
+          </div>
+          <p class="text-xs font-extrabold text-slate-800">Amir Mustaqim (Pengasas BukuPinkKu)</p>
+          <div class="pt-1.5 border-t border-slate-100 flex items-center justify-between">
+            <div>
+              <p class="text-[10px] text-slate-500 font-semibold">No. Akaun DuitNow TNG:</p>
+              <p id="txt-duitnow-id" class="text-sm font-mono font-black text-rose-600 tracking-wider">
+                141305404636
+              </p>
+            </div>
+            <button onclick="copyDuitNowInfo()" class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 shadow-2xs transition flex items-center space-x-1 active:scale-95">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span data-i18n="btn_copy_ref">Salin No.</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2218,14 +2199,13 @@
         pb_mem_section: "Garis Masa Foto Kenangan Terpilih",
         pb_love_title: "Pesanan Kasih Sayang Ibu & Ayah:",
         pb_love_quote: "\"Untuk anakanda tersayang, membesar dengan sihat, ceria, dan menjadi anak yang solehah serta penyejuk hati ibu dan ayah selalu. Kami menyayangimu sepenuh hati.\"",
-        btn_coffee_sidebar: "Belanja Kopi (Support App)",
+        btn_coffee_sidebar: "Infaq & Sokongan DuitNow",
         btn_feedback_sidebar: "Maklum Balas & Cadangan",
-        mdl_coffee_title: "Belanja Kopi (Support App)",
-        mdl_coffee_desc: "BukuPinkKu dicipta dengan kasih sayang untuk memudahkan ibu bapa di Malaysia secara <strong>100% percuma</strong> tanpa iklan yang mengganggu.",
-        mdl_coffee_sub: "💛 Seikhlas hati anda tanpa jumlah tetap, setiap sumbangan sangat bermakna untuk menampung kos pelayan pangkalan data & memastikan sistem ini kekal percuma.",
+        mdl_coffee_title: "Infaq & Sokongan BukuPinkKu",
+        mdl_coffee_desc: "BukuPinkKu dicipta dengan kasih sayang untuk memudahkan ibu bapa di Malaysia secara <strong>100% percuma tanpa sebarang iklan</strong>.",
+        mdl_coffee_sub: "💛 Seikhlas hati anda tanpa sebarang jumlah tetap, setiap sumbangan sangat bermakna untuk menampung kos pelayan pangkalan data & memastikan sistem ini kekal percuma selamanya.",
         lbl_duitnow_ref: "Nombor Telefon / ID DuitNow:",
-        btn_open_bmc: "Sumbang Seikhlas Hati via Buy Me a Coffee (Online)",
-        btn_copy_ref: "📋 Salin Maklumat Rujukan",
+        btn_copy_ref: "Salin ID / Nombor DuitNow",
         mdl_feedback_title: "Maklum Balas & Cadangan",
         lbl_rating: "Tahap Kepuasan Pengalaman Anda",
         lbl_feedback_type: "Jenis Maklum Balas",
@@ -2522,14 +2502,13 @@
         pb_mem_section: "Featured Photo Memory Timeline",
         pb_love_title: "Love Message from Mom & Dad:",
         pb_love_quote: "\"To our dearest child, may you grow up healthy, happy, kind, and always be the joy of Mom and Dad's hearts. We love you endlessly.\"",
-        btn_coffee_sidebar: "Buy Me a Coffee (Support App)",
+        btn_coffee_sidebar: "Support via DuitNow QR",
         btn_feedback_sidebar: "User Feedback & Suggestions",
-        mdl_coffee_title: "Buy Me a Coffee (Support App)",
-        mdl_coffee_desc: "BukuPinkKu was crafted with love to assist parents across Malaysia completely <strong>100% free</strong> with no intrusive ads.",
-        mdl_coffee_sub: "💛 Give whatever amount you wish from the heart — every tip directly supports cloud database server costs to keep this app free for everyone.",
+        mdl_coffee_title: "Support BukuPinkKu (DuitNow)",
+        mdl_coffee_desc: "BukuPinkKu was crafted with love to assist parents across Malaysia completely <strong>100% free with no ads</strong>.",
+        mdl_coffee_sub: "💛 Give whatever amount you wish from the heart — every tip directly supports cloud server costs to keep this app free for everyone.",
         lbl_duitnow_ref: "Phone Number / DuitNow ID:",
-        btn_open_bmc: "Support with Any Amount via Buy Me a Coffee (Online)",
-        btn_copy_ref: "📋 Copy Reference Details",
+        btn_copy_ref: "Copy DuitNow Details",
         mdl_feedback_title: "Feedback & Suggestions",
         lbl_rating: "Your Experience Rating",
         lbl_feedback_type: "Feedback Category",
@@ -5871,35 +5850,10 @@
       showToast(isEn ? "🌸 Welcome to Pregnancy Phase (Pink Book)!" : "🌸 Selamat datang ke Fasa Hamil (Buku Pink)!");
     }
 
-    // ================= BUY ME A COFFEE & FEEDBACK LOGIC =================
+    // ================= INFAQ & SOKONGAN DUITNOW & FEEDBACK LOGIC =================
     let currentFeedbackRating = 5;
 
-    function switchDonationMethod(method) {
-      const btnDuitNow = document.getElementById('tab-btn-duitnow');
-      const btnBmc = document.getElementById('tab-btn-bmc');
-      const contentDuitNow = document.getElementById('content-donate-duitnow');
-      const contentBmc = document.getElementById('content-donate-bmc');
-
-      const activeClass = "flex-1 py-2 rounded-lg bg-white text-rose-700 shadow-sm transition flex items-center justify-center space-x-1.5 font-bold";
-      const inactiveClass = "flex-1 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-1.5 font-semibold";
-      const activeBmcClass = "flex-1 py-2 rounded-lg bg-white text-amber-800 shadow-sm transition flex items-center justify-center space-x-1.5 font-bold";
-
-      if (method === 'bmc') {
-        btnBmc.className = activeBmcClass;
-        btnDuitNow.className = inactiveClass;
-        contentDuitNow.classList.add('hidden');
-        contentBmc.classList.remove('hidden');
-      } else {
-        btnDuitNow.className = activeClass;
-        btnBmc.className = inactiveClass;
-        contentBmc.classList.add('hidden');
-        contentDuitNow.classList.remove('hidden');
-      }
-      lucide.createIcons();
-    }
-
     function openCoffeeModal(fromContext) {
-      switchDonationMethod('duitnow');
       const isEn = currentLang === 'en';
       const titleEl = document.querySelector('[data-i18n="mdl_coffee_title"]');
       const descEl = document.querySelector('[data-i18n="mdl_coffee_desc"]');
@@ -5916,7 +5870,7 @@
           ? "🤲 Give whatever feels right from the heart — no fixed amount. May it bring blessings to your family journey."
           : "🤲 Seikhlas hati anda tanpa sebarang jumlah tetap. Semoga menjadi asbab keberkatan rezeki zuriat buat anda dan pasangan.";
       } else {
-        if (iconEl) iconEl.innerText = '☕';
+        if (iconEl) iconEl.innerText = '💖';
         const dict = I18N[currentLang] || I18N.ms;
         if (titleEl) titleEl.innerText = dict.mdl_coffee_title;
         if (descEl) descEl.innerHTML = dict.mdl_coffee_desc;
@@ -5924,14 +5878,15 @@
       }
 
       openModal('modal-coffee');
+      lucide.createIcons();
     }
 
     function copyDuitNowInfo() {
       const isEn = currentLang === 'en';
-      const textToCopy = "amirmstqm@bukupinkku";
+      const textToCopy = "141305404636";
       if (navigator.clipboard) {
         navigator.clipboard.writeText(textToCopy).then(() => {
-          showToast(isEn ? "📋 DuitNow ID copied: " + textToCopy : "📋 ID DuitNow disalin: " + textToCopy);
+          showToast(isEn ? "📋 TNG DuitNow Account copied: " + textToCopy : "📋 No. Akaun DuitNow TNG disalin: " + textToCopy);
         }).catch(() => {
           showToast(textToCopy);
         });
