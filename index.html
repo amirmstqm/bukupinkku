@@ -209,19 +209,152 @@
   <!-- ============================================================== -->
   <div id="screen-dashboard" class="hidden">
     
-    <!-- TOP BAR: Profil Sebenar & Status Pasangan -->
-    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-sm">
-      <div class="max-w-2xl mx-auto px-4 py-2.5 flex items-center justify-between">
-        <div class="flex items-center space-x-2">
+    <!-- SIDEBAR DRAWER OVERLAY -->
+    <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden transition-opacity duration-300"></div>
+
+    <!-- SIDEBAR NAVIGATION DRAWER -->
+    <aside id="app-sidebar" class="fixed top-0 left-0 bottom-0 w-72 max-w-[85vw] bg-white z-50 shadow-2xl border-r border-slate-200 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+      <!-- Sidebar Header -->
+      <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-pastel-50 to-purple-50">
+        <div class="flex items-center space-x-2.5">
           <span class="text-2xl">🌸</span>
           <div>
-            <div class="flex items-center space-x-1.5">
-              <h1 class="text-base font-bold text-pastel-600 leading-tight">BukuPinkKu</h1>
-              <span id="cloud-badge" class="inline-flex items-center text-[9px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded-full border border-emerald-200">
-                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1 animate-pulse"></span> Cloud Live
-              </span>
+            <h2 class="text-base font-extrabold text-pastel-700 leading-tight">BukuPinkKu</h2>
+            <p class="text-[10px] text-slate-500"><span data-i18n="hdr_family_code">Kod:</span> <strong id="sidebar-invite-code" class="text-pastel-600 font-mono">PINK-8821</strong></p>
+          </div>
+        </div>
+        <button onclick="toggleSidebar(false)" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-white/80 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Profil Pengguna Ringkas Dalam Sidebar -->
+      <div class="p-3.5 m-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-full bg-pastel-200 text-pastel-800 flex items-center justify-center font-bold text-xs">
+            🌸
+          </div>
+          <div>
+            <p id="sidebar-user-name" class="font-bold text-slate-800">Sarah (Ibu)</p>
+            <p id="sidebar-family-title" data-i18n="hdr_happy_family" class="text-[10px] text-slate-500">Keluarga Bahagia</p>
+          </div>
+        </div>
+        <button onclick="logoutProfile()" title="Log Keluar" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Senarai Menu Navigasi Sidebar -->
+      <div class="flex-1 overflow-y-auto px-3 py-2 space-y-6">
+        
+        <!-- SEKSYEN: FASA KEHAMILAN (BUKU PINK) -->
+        <div class="space-y-1">
+          <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+            <span data-i18n="tab_phase_preg">Fasa Hamil (Buku Pink)</span>
+            <span class="text-xs">🤰</span>
+          </p>
+
+          <nav class="space-y-1 pt-1">
+            <button onclick="navigateFromSidebar('pregnancy', 'overview')" id="nav-preg-overview" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold transition text-pastel-700 bg-pastel-50 border border-pastel-200">
+              <i data-lucide="layout-dashboard" class="w-4 h-4 text-pastel-600"></i>
+              <span data-i18n="subtab_preg_dash">Dashboard Hamil</span>
+            </button>
+
+            <button onclick="navigateFromSidebar('pregnancy', 'appt')" id="nav-preg-appt" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="calendar" class="w-4 h-4 text-pastel-500"></i>
+              <span data-i18n="subtab_preg_appt">Janji Temu KK</span>
+            </button>
+
+            <button onclick="navigateFromSidebar('pregnancy', 'vitals')" id="nav-preg-vitals" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="activity" class="w-4 h-4 text-rose-500"></i>
+              <span data-i18n="subtab_preg_vitals">Bacaan Vital (HB/BP)</span>
+            </button>
+
+            <button onclick="navigateFromSidebar('pregnancy', 'pantang')" id="nav-preg-pantang" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="shield-alert" class="w-4 h-4 text-amber-500"></i>
+              <span data-i18n="subtab_preg_allergy">Pantang & Alahan</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- SEKSYEN: FASA PERKEMBANGAN ANAK (0 - 3 TAHUN) -->
+        <div class="space-y-1">
+          <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+            <span data-i18n="tab_phase_child">Fasa Anak (0 - 3 Tahun)</span>
+            <span class="text-xs">👶</span>
+          </p>
+
+          <nav class="space-y-1 pt-1">
+            <button onclick="navigateFromSidebar('child', 'memories')" id="nav-child-memories" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="image" class="w-4 h-4 text-purple-500"></i>
+              <span data-i18n="subtab_child_album">Album & Kenangan</span>
+            </button>
+
+            <button onclick="navigateFromSidebar('child', 'vaccine')" id="nav-child-vaccine" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="syringe" class="w-4 h-4 text-teal-500"></i>
+              <span data-i18n="subtab_child_vaccine">💉 Vaksin KKM</span>
+            </button>
+
+            <button onclick="navigateFromSidebar('child', 'food')" id="nav-child-food" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="utensils" class="w-4 h-4 text-amber-600"></i>
+              <span data-i18n="subtab_child_food">🥣 Makanan & 3-Day Rule</span>
+            </button>
+
+            <button onclick="navigateFromSidebar('child', 'milestone')" id="nav-child-milestone" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="sparkles" class="w-4 h-4 text-sky-500"></i>
+              <span data-i18n="subtab_child_milestone">🌟 Milestone</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- TINDAKAN PANTAS KELUARGA -->
+        <div class="space-y-2 pt-2 border-t border-slate-100">
+          <button onclick="openPhotobookModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold hover:bg-amber-100 transition">
+            <span class="flex items-center space-x-2">
+              <span>📖</span>
+              <span data-i18n="btn_export_book">Buku Kenangan PDF</span>
+            </span>
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-700"></i>
+          </button>
+
+          <button onclick="shareWhatsAppInvite(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-teal-50 border border-teal-200 text-teal-900 text-xs font-bold hover:bg-teal-100 transition">
+            <span class="flex items-center space-x-2">
+              <span>📲</span>
+              <span data-i18n="btn_whatsapp_partner">WhatsApp Pasangan</span>
+            </span>
+            <i data-lucide="share-2" class="w-3.5 h-3.5 text-teal-700"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Footer Sidebar -->
+      <div class="p-3 border-t border-slate-100 bg-slate-50 text-[10px] text-slate-400 text-center">
+        BukuPinkKu Digital Companion
+      </div>
+    </aside>
+    
+    <!-- TOP BAR: Profil Sebenar & Butang Hamburger ☰ -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+      <div class="max-w-2xl mx-auto px-4 py-2.5 flex items-center justify-between">
+        
+        <div class="flex items-center space-x-2.5">
+          <!-- Butang Buka Sidebar ☰ -->
+          <button type="button" onclick="toggleSidebar(true)" aria-label="Buka Menu" class="p-2 -ml-1 rounded-xl bg-slate-100 hover:bg-pastel-50 text-slate-700 hover:text-pastel-700 border border-slate-200 transition active:scale-95 flex items-center justify-center">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+
+          <div class="flex items-center space-x-1.5 cursor-pointer" onclick="toggleSidebar(true)">
+            <span class="text-2xl">🌸</span>
+            <div>
+              <div class="flex items-center space-x-1.5">
+                <h1 class="text-base font-bold text-pastel-600 leading-tight">BukuPinkKu</h1>
+                <span id="cloud-badge" class="inline-flex items-center text-[9px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded-full border border-emerald-200">
+                  <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1 animate-pulse"></span> Cloud Live
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-500"><span data-i18n="hdr_family_code">Kod:</span> <span id="display-invite-code" class="font-mono font-bold bg-pastel-50 text-pastel-700 px-1.5 py-0.5 rounded border border-pastel-200">PINK-8821</span></p>
             </div>
-            <p class="text-[11px] text-slate-500"><span data-i18n="hdr_family_code">Kod Keluarga:</span> <span id="display-invite-code" class="font-mono font-bold bg-pastel-50 text-pastel-700 px-1.5 py-0.5 rounded border border-pastel-200">PINK-8821</span></p>
           </div>
         </div>
 
@@ -2264,6 +2397,64 @@
       `;
     }
 
+    // SIDEBAR DRAWER TOGGLE & NAVIGATION
+    function toggleSidebar(open) {
+      const sidebar = document.getElementById('app-sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      if (!sidebar || !overlay) return;
+
+      if (open) {
+        overlay.classList.remove('hidden');
+        // update invite code & user in sidebar
+        const sbCode = document.getElementById('sidebar-invite-code');
+        if (sbCode) sbCode.innerText = currentFamilyCode || 'PINK-8821';
+        const sbUser = document.getElementById('sidebar-user-name');
+        if (sbUser) sbUser.innerText = currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah');
+        setTimeout(() => {
+          sidebar.classList.remove('-translate-x-full');
+        }, 10);
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+        }, 300);
+      }
+      lucide.createIcons();
+    }
+
+    function navigateFromSidebar(phase, subtab) {
+      toggleSidebar(false);
+      switchPhase(phase);
+      if (phase === 'pregnancy') {
+        switchPregSubtab(subtab);
+      } else {
+        switchChildSubtab(subtab);
+      }
+
+      // Kemaskini sorotan aktif menu di sidebar
+      updateSidebarActiveMenu(phase, subtab);
+    }
+
+    function updateSidebarActiveMenu(phase, subtab) {
+      const activeClass = "w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold transition text-pastel-700 bg-pastel-50 border border-pastel-200 shadow-sm";
+      const inactiveClass = "w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900";
+
+      const allNavIds = [
+        'nav-preg-overview', 'nav-preg-appt', 'nav-preg-vitals', 'nav-preg-pantang',
+        'nav-child-memories', 'nav-child-vaccine', 'nav-child-food', 'nav-child-milestone'
+      ];
+
+      allNavIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.className = inactiveClass;
+      });
+
+      const currentNavId = phase === 'pregnancy' ? `nav-preg-${subtab}` : `nav-child-${subtab}`;
+      const activeEl = document.getElementById(currentNavId);
+      if (activeEl) activeEl.className = activeClass;
+      lucide.createIcons();
+    }
+
     function switchPhase(phase) {
       currentPhase = phase;
       const pregSec = document.getElementById('section-pregnancy');
@@ -2276,11 +2467,13 @@
         childSec.classList.remove('hidden');
         btnChild.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 bg-pastel-500 text-white shadow-sm";
         btnPreg.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 text-slate-600 hover:text-slate-900";
+        updateSidebarActiveMenu('child', 'memories');
       } else {
         childSec.classList.add('hidden');
         pregSec.classList.remove('hidden');
         btnPreg.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 bg-pastel-500 text-white shadow-sm";
         btnChild.className = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1.5 text-slate-600 hover:text-slate-900";
+        updateSidebarActiveMenu('pregnancy', 'overview');
       }
       lucide.createIcons();
     }
@@ -2293,6 +2486,7 @@
       });
       document.getElementById('view-preg-' + tab).classList.remove('hidden');
       document.getElementById('subtab-preg-' + tab).className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
+      updateSidebarActiveMenu('pregnancy', tab);
       lucide.createIcons();
     }
 
@@ -2304,6 +2498,7 @@
       });
       document.getElementById('view-child-' + tab).classList.remove('hidden');
       document.getElementById('subtab-child-' + tab).className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
+      updateSidebarActiveMenu('child', tab);
       lucide.createIcons();
     }
 
