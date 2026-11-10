@@ -583,7 +583,7 @@
                 <i data-lucide="pill" class="w-4 h-4 text-teal-600"></i>
                 <span data-i18n="hdr_supps_couple">Senarai Semak Vitamin & Suplemen Pasangan</span>
               </h3>
-              <button onclick="sendNudge('ubat')" data-i18n="btn_remind_partner" class="text-[11px] font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg">
+              <button onclick="sendNudge('ttc_supplements')" data-i18n="btn_remind_partner" class="text-[11px] font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg">
                 Ingatkan Pasangan 🔔
               </button>
             </div>
@@ -905,120 +905,64 @@
           <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
               <h3 data-i18n="vac_header" class="text-xs font-bold text-slate-800">Status Imunisasi Kebangsaan KKM</h3>
-              <p data-i18n="vac_subheader" class="text-[11px] text-slate-500">4 daripada 7 temujanji vaksin telah selesai</p>
+              <p id="vac-summary-text" class="text-[11px] text-slate-500">4 daripada 7 temujanji vaksin telah selesai</p>
             </div>
-            <span data-i18n="vac_pct" class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">57% Selesai</span>
+            <span id="vac-progress-badge" class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">57% Selesai</span>
           </div>
 
-          <div class="space-y-2 text-xs">
-            <div class="bg-white p-3.5 rounded-2xl border border-emerald-200 shadow-sm flex justify-between items-center">
-              <div>
-                <span data-i18n="vac_0m_tag" class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded">Masa Lahir (0 Bulan)</span>
-                <p data-i18n="vac_0m_title" class="font-bold text-slate-800">BCG & Hepatitis B (Dos 1)</p>
-                <p data-i18n="vac_0m_loc" class="text-[11px] text-slate-500">Hospital Bersalin</p>
-              </div>
-              <span class="text-emerald-600 font-bold text-xs flex items-center space-x-1">
-                <i data-lucide="check-circle" class="w-4 h-4"></i>
-                <span data-i18n="lbl_completed">Selesai</span>
-              </span>
-            </div>
-
-            <div class="bg-white p-3.5 rounded-2xl border border-emerald-200 shadow-sm flex justify-between items-center">
-              <div>
-                <span data-i18n="vac_2m_tag" class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded">Umur 2 Bulan</span>
-                <p data-i18n="vac_2m_title" class="font-bold text-slate-800">DTaP-IPV-HepB-Hib (Dos 1) + Pneumokokal (Dos 1)</p>
-                <p data-i18n="vac_clinic_gov" class="text-[11px] text-slate-500">Klinik Kesihatan Kerajaan</p>
-              </div>
-              <span class="text-emerald-600 font-bold text-xs flex items-center space-x-1">
-                <i data-lucide="check-circle" class="w-4 h-4"></i>
-                <span data-i18n="lbl_completed">Selesai</span>
-              </span>
-            </div>
-
-            <div class="bg-white p-3.5 rounded-2xl border border-emerald-200 shadow-sm flex justify-between items-center">
-              <div>
-                <span data-i18n="vac_3m_tag" class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded">Umur 3 Bulan</span>
-                <p data-i18n="vac_3m_title" class="font-bold text-slate-800">DTaP-IPV-HepB-Hib (Dos 2)</p>
-                <p data-i18n="vac_clinic_gov" class="text-[11px] text-slate-500">Klinik Kesihatan Kerajaan</p>
-              </div>
-              <span class="text-emerald-600 font-bold text-xs flex items-center space-x-1">
-                <i data-lucide="check-circle" class="w-4 h-4"></i>
-                <span data-i18n="lbl_completed">Selesai</span>
-              </span>
-            </div>
-
-            <div class="bg-white p-3.5 rounded-2xl border border-emerald-200 shadow-sm flex justify-between items-center">
-              <div>
-                <span data-i18n="vac_5m_tag" class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded">Umur 5 Bulan</span>
-                <p data-i18n="vac_5m_title" class="font-bold text-slate-800">DTaP-IPV-HepB-Hib (Dos 3) + Pneumokokal (Dos 2)</p>
-                <p data-i18n="vac_clinic_gov" class="text-[11px] text-slate-500">Klinik Kesihatan Kerajaan</p>
-              </div>
-              <span class="text-emerald-600 font-bold text-xs flex items-center space-x-1">
-                <i data-lucide="check-circle" class="w-4 h-4"></i>
-                <span data-i18n="lbl_completed">Selesai</span>
-              </span>
-            </div>
-
-            <div class="bg-white p-3.5 rounded-2xl border-2 border-pastel-300 shadow-sm flex justify-between items-center bg-pastel-50/20">
-              <div>
-                <div class="flex items-center space-x-1.5">
-                  <span data-i18n="vac_9m_tag" class="text-[10px] bg-pastel-100 text-pastel-700 font-bold px-2 py-0.5 rounded">Umur 9 Bulan (Akan Datang)</span>
-                  <span data-i18n="vac_upcoming" class="text-[10px] text-amber-600 font-bold animate-pulse">⏳ Akan Datang</span>
-                </div>
-                <p data-i18n="vac_9m_title" class="font-bold text-slate-800">Campak / MMR (Dos 1)</p>
-                <p data-i18n="vac_9m_loc" class="text-[11px] text-slate-500">Temujanji di KK</p>
-              </div>
-              <button onclick="markVaccineDone('MMR')" data-i18n="btn_mark_done" class="px-3 py-1.5 rounded-xl bg-pastel-500 text-white font-bold text-xs hover:bg-pastel-600 shadow-sm">
-                Tanda Selesai
-              </button>
-            </div>
+          <div class="space-y-2 text-xs" id="vaccine-list-container">
+            <div class="p-4 text-center text-xs text-slate-400">Memuatkan jadual vaksin KKM...</div>
           </div>
         </div>
 
         <!-- [CHILD TAB: MAKANAN] -->
         <div id="view-child-food" class="hidden space-y-3">
-          <div class="bg-tealsoft-50 border border-tealsoft-100 p-3 rounded-2xl text-xs space-y-1 text-teal-900">
-            <p data-i18n="food_guide_title" class="font-bold">Panduan KKM: Peraturan 3 Hari (3-Day Rule)</p>
-            <p data-i18n="food_guide_desc" class="text-[11px] text-teal-800">Beri 1 makanan baru selama 3 hari berturut-turut untuk kenal pasti alergi sebelum campur bahan lain.</p>
+          <div class="bg-tealsoft-50 border border-tealsoft-100 p-3.5 rounded-2xl text-xs space-y-2 text-teal-900">
+            <div class="flex justify-between items-center">
+              <p data-i18n="food_guide_title" class="font-bold flex items-center space-x-1.5">
+                <span>🥣</span>
+                <span>Panduan KKM: Peraturan 3 Hari (3-Day Rule)</span>
+              </p>
+              <button onclick="openNewFoodTestModal()" class="text-[11px] bg-teal-700 hover:bg-teal-800 text-white font-bold px-3 py-1.5 rounded-xl transition shadow-sm flex items-center space-x-1">
+                <span>+</span>
+                <span data-i18n="food_btn_new">Uji Makanan Baru</span>
+              </button>
+            </div>
+            <p data-i18n="food_guide_desc" class="text-[11px] text-teal-800/90 leading-relaxed">Beri 1 jenis makanan baru selama 3 hari berturut-turut untuk kenal pasti sebarang alergi atau ruam sebelum mencampurkan bahan lain.</p>
           </div>
 
-          <div class="bg-white p-4 rounded-2xl border-2 border-amber-300 shadow-sm space-y-2">
-            <div class="flex justify-between items-start">
-              <div>
-                <span data-i18n="food_testing_tag" class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Sedang Diuji (Hari ke-2 dari 3)</span>
-                <h4 data-i18n="food_egg_title" class="text-sm font-bold text-slate-800 mt-1">🍳 Kuning Telur Rebus (Lumat)</h4>
-              </div>
-              <span data-i18n="food_no_rash" class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">Tiada Ruam ✅</span>
+          <!-- KAD UJIAN MAKANAN AKTIF -->
+          <div id="active-food-test-container">
+            <!-- Dynamic Active Food Test Card -->
+          </div>
+
+          <!-- SENARAI MAKANAN DISAHKAN SELAMAT -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2.5">
+            <div class="flex justify-between items-center">
+              <h4 data-i18n="food_safe_history_title" class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
+                <span>🥗</span>
+                <span>Senarai Makanan Yang Disahkan Selamat</span>
+              </h4>
+              <span id="safe-foods-count" class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">0 Makanan</span>
             </div>
-            <div class="flex space-x-2 pt-1 border-t border-slate-100">
-              <button onclick="showToast(currentLang === 'en' ? 'Status: Day 2 passed with no rash!' : 'Status: Hari ke-2 tiada ruam direkodkan!')" data-i18n="btn_pass_today" class="flex-1 py-1.5 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-lg border border-emerald-200">
-                ✓ Lulus Hari Ini
-              </button>
-              <button onclick="reportAllergyPrompt(currentLang === 'en' ? 'Egg Yolk' : 'Kuning Telur')" data-i18n="btn_has_rash" class="flex-1 py-1.5 bg-rose-50 text-rose-700 font-bold text-xs rounded-lg border border-rose-200">
-                ⚠️ Ada Reaksi Ruam
-              </button>
+            <div id="safe-foods-list" class="flex flex-wrap gap-1.5 text-[11px]">
+              <!-- Dynamic safe food tags -->
             </div>
           </div>
         </div>
 
         <!-- [CHILD TAB: MILESTONE] -->
         <div id="view-child-milestone" class="hidden space-y-3">
-          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2.5">
-            <span data-i18n="ms_header_6_9" class="text-xs font-bold text-pastel-700">Perkembangan Umur 6 - 9 Bulan</span>
-            <div class="space-y-2 text-xs">
-              <label class="flex items-center space-x-2.5 p-2 bg-slate-50 rounded-xl cursor-pointer">
-                <input type="checkbox" checked onchange="toggleMilestone(currentLang === 'en' ? 'Sitting without support' : 'Duduk stabil')" class="rounded text-pastel-500">
-                <span data-i18n="ms_item_1" class="font-bold text-slate-800">Boleh duduk stabil tanpa sokongan</span>
-              </label>
-              <label class="flex items-center space-x-2.5 p-2 bg-slate-50 rounded-xl cursor-pointer">
-                <input type="checkbox" checked onchange="toggleMilestone(currentLang === 'en' ? 'Transferring objects' : 'Pindah objek')" class="rounded text-pastel-500">
-                <span data-i18n="ms_item_2" class="font-bold text-slate-800">Memindahkan objek tangan ke tangan</span>
-              </label>
-              <label class="flex items-center space-x-2.5 p-2 bg-slate-50 rounded-xl cursor-pointer">
-                <input type="checkbox" onchange="toggleMilestone(currentLang === 'en' ? 'Crawling forward' : 'Merangkak')" class="rounded text-pastel-500">
-                <span data-i18n="ms_item_3" class="font-bold text-slate-800">Mula merangkak ke hadapan (Sedang dilatih)</span>
-              </label>
+          <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+              <h3 data-i18n="ms_progress_title" class="text-xs font-bold text-slate-800">Pencapaian Perkembangan Bayi (0 - 12 Bulan)</h3>
+              <p id="ms-summary-text" class="text-[11px] text-slate-500">8 daripada 12 milestone telah dicapai</p>
             </div>
+            <span id="ms-progress-badge" class="bg-pastel-100 text-pastel-700 text-xs font-bold px-2.5 py-1 rounded-full">67% Selesai</span>
+          </div>
+
+          <div class="space-y-3 text-xs" id="milestones-container">
+            <!-- Dynamic milestones grouped by stages -->
           </div>
         </div>
 
@@ -1194,6 +1138,49 @@
         </div>
         <button type="submit" id="btn-save-allergy" data-i18n="btn_save_allergy" class="w-full py-3 bg-pastel-500 text-white font-bold rounded-xl mt-2 hover:bg-pastel-600 transition shadow-sm">
           Simpan Nota Alahan ke Cloud
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: UJI MAKANAN BARU (3-DAY RULE) ================= -->
+  <div id="modal-add-food-test" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-tealsoft-200">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <span class="text-xl">🥣</span>
+          <h3 id="title-modal-food-test" data-i18n="mdl_food_test_title" class="text-sm font-bold text-slate-800">Uji Makanan Baru (3-Day Rule)</h3>
+        </div>
+        <button onclick="closeModal('modal-add-food-test')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleStartNewFoodTest(event)" class="space-y-3 text-xs">
+        <div>
+          <label data-i18n="lbl_food_test_name" class="block font-semibold mb-1 text-slate-700">Nama Makanan / Bahan</label>
+          <input type="text" id="inp-food-test-name" data-i18n-placeholder="ph_food_test_name" required placeholder="Cth: Puri Avokado / Kuning Telur" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+        </div>
+
+        <div>
+          <label data-i18n="lbl_food_presets" class="block font-semibold mb-1.5 text-slate-700">Pilihan Cepat (Cadangan KKM):</label>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="setFoodPreset('🍳 Kuning Telur Rebus (Lumat)')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🍳 Kuning Telur</button>
+            <button type="button" onclick="setFoodPreset('🥑 Puri Avokado Lumat')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🥑 Puri Avokado</button>
+            <button type="button" onclick="setFoodPreset('🥕 Puri Lobak Merah')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🥕 Puri Lobak</button>
+            <button type="button" onclick="setFoodPreset('🍌 Puri Pisang Mas')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🍌 Puri Pisang</button>
+            <button type="button" onclick="setFoodPreset('🥣 Bubur Beras Perang')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🥣 Bubur Beras</button>
+            <button type="button" onclick="setFoodPreset('🐟 Puri Ikan Tenggiri / Salmon')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🐟 Puri Ikan</button>
+          </div>
+        </div>
+
+        <div>
+          <label data-i18n="lbl_food_notes" class="block font-semibold mb-1 text-slate-700">Catatan Penyediaan (Pilihan)</label>
+          <input type="text" id="inp-food-test-notes" data-i18n-placeholder="ph_food_test_notes" placeholder="Cth: Kukus 10 min & kisar halus bersama susu ibu" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+        </div>
+
+        <button type="submit" class="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl mt-2 transition shadow-sm flex items-center justify-center space-x-1.5">
+          <span data-i18n="btn_start_test">Mula Ujian 3 Hari</span>
         </button>
       </form>
     </div>
@@ -1923,6 +1910,8 @@
         vac_0m_tag: "Masa Lahir (0 Bulan)",
         vac_0m_title: "BCG & Hepatitis B (Dos 1)",
         vac_0m_loc: "Hospital Bersalin",
+        vac_1m_tag: "Umur 1 Bulan",
+        vac_1m_title: "Hepatitis B (Dos 2)",
         vac_2m_tag: "Umur 2 Bulan",
         vac_2m_title: "DTaP-IPV-HepB-Hib (Dos 1) + Pneumokokal (Dos 1)",
         vac_3m_tag: "Umur 3 Bulan",
@@ -1931,18 +1920,31 @@
         vac_5m_title: "DTaP-IPV-HepB-Hib (Dos 3) + Pneumokokal (Dos 2)",
         vac_clinic_gov: "Klinik Kesihatan Kerajaan",
         lbl_completed: "Selesai",
-        vac_9m_tag: "Umur 9 Bulan (Akan Datang)",
+        vac_9m_tag: "Umur 9 Bulan",
         vac_upcoming: "⏳ Akan Datang",
         vac_9m_title: "Campak / MMR (Dos 1)",
-        vac_9m_loc: "Temujanji di KK",
+        vac_9m_loc: "Klinik Kesihatan Kerajaan",
+        vac_12m_tag: "Umur 12 Bulan",
+        vac_12m_title: "MMR (Dos 2) + Pneumokokal (Dos Penggalak)",
         btn_mark_done: "Tanda Selesai",
+        btn_undo: "Kembalikan",
         food_guide_title: "Panduan KKM: Peraturan 3 Hari (3-Day Rule)",
         food_guide_desc: "Beri 1 makanan baru selama 3 hari berturut-turut untuk kenal pasti alergi sebelum campur bahan lain.",
-        food_testing_tag: "Sedang Diuji (Hari ke-2 dari 3)",
+        food_btn_new: "+ Uji Makanan Baru",
+        food_safe_history_title: "Senarai Makanan Yang Disahkan Selamat",
+        mdl_food_test_title: "Uji Makanan Baru (3-Day Rule)",
+        lbl_food_test_name: "Nama Makanan / Bahan",
+        ph_food_test_name: "Cth: Puri Avokado / Kuning Telur",
+        lbl_food_presets: "Pilihan Cepat (Cadangan KKM):",
+        lbl_food_notes: "Catatan Penyediaan (Pilihan)",
+        ph_food_test_notes: "Cth: Kukus 10 min & kisar halus bersama susu ibu",
+        btn_start_test: "Mula Ujian 3 Hari",
+        food_testing_tag: "Sedang Diuji",
         food_egg_title: "🍳 Kuning Telur Rebus (Lumat)",
         food_no_rash: "Tiada Ruam ✅",
         btn_pass_today: "✓ Lulus Hari Ini",
         btn_has_rash: "⚠️ Ada Reaksi Ruam",
+        ms_progress_title: "Pencapaian Perkembangan Bayi (0 - 12 Bulan)",
         ms_header_6_9: "Perkembangan Umur 6 - 9 Bulan",
         ms_item_1: "Boleh duduk stabil tanpa sokongan",
         ms_item_2: "Memindahkan objek tangan ke tangan",
@@ -2195,6 +2197,8 @@
         vac_0m_tag: "At Birth (0 Months)",
         vac_0m_title: "BCG & Hepatitis B (Dose 1)",
         vac_0m_loc: "Maternity Hospital",
+        vac_1m_tag: "Age 1 Month",
+        vac_1m_title: "Hepatitis B (Dose 2)",
         vac_2m_tag: "Age 2 Months",
         vac_2m_title: "DTaP-IPV-HepB-Hib (Dose 1) + Pneumococcal (Dose 1)",
         vac_3m_tag: "Age 3 Months",
@@ -2203,18 +2207,31 @@
         vac_5m_title: "DTaP-IPV-HepB-Hib (Dose 3) + Pneumococcal (Dose 2)",
         vac_clinic_gov: "Government Health Clinic (KK)",
         lbl_completed: "Completed",
-        vac_9m_tag: "Age 9 Months (Upcoming)",
+        vac_9m_tag: "Age 9 Months",
         vac_upcoming: "⏳ Upcoming",
         vac_9m_title: "Measles / MMR (Dose 1)",
-        vac_9m_loc: "Appointment at Health Clinic",
+        vac_9m_loc: "Government Health Clinic (KK)",
+        vac_12m_tag: "Age 12 Months",
+        vac_12m_title: "MMR (Dose 2) + Pneumococcal (Booster)",
         btn_mark_done: "Mark Done",
+        btn_undo: "Undo",
         food_guide_title: "KKM Guide: The 3-Day Wait Rule",
         food_guide_desc: "Introduce 1 new food for 3 consecutive days to spot any allergic reaction before mixing other ingredients.",
-        food_testing_tag: "Currently Testing (Day 2 of 3)",
+        food_btn_new: "+ Test New Food",
+        food_safe_history_title: "Verified Safe Food List",
+        mdl_food_test_title: "Test New Food (3-Day Rule)",
+        lbl_food_test_name: "Food / Ingredient Name",
+        ph_food_test_name: "E.g., Avocado Puree / Egg Yolk",
+        lbl_food_presets: "Quick Picks (KKM Recommendations):",
+        lbl_food_notes: "Preparation Notes (Optional)",
+        ph_food_test_notes: "E.g., Steam 10 mins & blend fine with breastmilk",
+        btn_start_test: "Start 3-Day Test",
+        food_testing_tag: "Currently Testing",
         food_egg_title: "🍳 Mashed Boiled Egg Yolk",
         food_no_rash: "No Rash ✅",
         btn_pass_today: "✓ Passed Today",
         btn_has_rash: "⚠️ Rash / Reaction",
+        ms_progress_title: "Baby Developmental Milestones (0 – 12 Months)",
         ms_header_6_9: "6 – 9 Months Developmental Milestones",
         ms_item_1: "Sits steadily without support",
         ms_item_2: "Transfers objects from hand to hand",
@@ -2387,6 +2404,9 @@
       if (currentFamilyId) {
         loadAllSupabaseData();
       }
+      renderVaccines();
+      renderFoodTests();
+      renderMilestones();
       lucide.createIcons();
     }
 
@@ -2745,7 +2765,10 @@
           loadHealthVitals(),
           loadAllergies(),
           loadBabyMemories(),
-          loadTtcLetters()
+          loadTtcLetters(),
+          loadVaccines(),
+          loadFoodTests(),
+          loadMilestones()
         ]);
       } catch (err) {
         console.warn("Ralat memuatkan data:", err);
@@ -2906,6 +2929,9 @@
         if (quickActions) {
           quickActions.classList.remove('hidden');
           quickActions.innerHTML = `
+            <button onclick="event.stopPropagation(); sendNudge('appt')" class="text-[11px] px-2.5 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold border border-teal-200 transition">
+              🔔 ${isEn ? 'Remind Partner' : 'Ingatkan Pasangan'}
+            </button>
             <button onclick="event.stopPropagation(); editAppointment('${data[0].id}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 font-semibold border border-slate-200 transition">
               ✏️ ${isEn ? 'Edit Visit' : 'Edit Temujanji'}
             </button>
@@ -3085,15 +3111,18 @@
 
       const isEn = currentLang === 'en';
       const container = document.getElementById('memory-timeline-container');
-      if (error || !data || data.length === 0) {
+      const filtered = (data || []).filter(item => 
+        !['Warkah Buat Bakal Anak', 'Vaksin KKM', 'Milestone', 'Ujian Makanan'].includes(item.category)
+      );
+      if (error || filtered.length === 0) {
         cachedMemories = [];
         container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">${isEn ? "No photo memories yet. Tap '+ Save New Memory' to upload your baby's first photo! 📸" : "Belum ada memori foto. Klik butang '+ Simpan Kenangan Baru' untuk muat naik foto pertama anak anda! 📸"}</div>`;
         return;
       }
 
-      cachedMemories = data;
+      cachedMemories = filtered;
       container.innerHTML = '';
-      data.forEach(item => {
+      filtered.forEach(item => {
         const card = document.createElement('div');
         card.className = "bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2.5";
         createMemoryCard(card, item.title, item.category, item.memory_date, item.notes, item.image_url, item.uploaded_by, item.id);
@@ -3819,6 +3848,9 @@
       const activeSubtab = document.getElementById('subtab-child-' + tab);
       if (activeSubtab) activeSubtab.className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
       updateSidebarActiveMenu('child', tab);
+      if (tab === 'vaccine') renderVaccines();
+      if (tab === 'food') renderFoodTests();
+      if (tab === 'milestone') renderMilestones();
       lucide.createIcons();
     }
 
@@ -3837,24 +3869,734 @@
       }
     }
 
+    // ==========================================
+    // CIRI 1: INGATKAN PASANGAN 🔔 (WHATSAPP NUDGE)
+    // ==========================================
     function sendNudge(type) {
       const isEn = currentLang === 'en';
-      showToast(isEn ? "🔔 Reminder sent to your partner's phone!" : "🔔 Peringatan telah dihantar ke telefon pasangan!");
+      let msg = '';
+
+      if (type === 'ttc_supplements' || type === 'ttc') {
+        msg = isEn
+          ? "Hi dear! ❤️ Friendly reminder to take our fertility vitamins & supplements today. Let's stay consistent! ✨ - from BukuPinkKu (https://bukupinkku.my)"
+          : "Salam sayang! ❤️ Ingatan mesra untuk kita ambil vitamin & suplemen kesuburan (TTC) hari ini ya. Semoga rezeki zuriat kita dipermudahkan! 🤲✨ - dari BukuPinkKu (https://bukupinkku.my)";
+      } else if (type === 'appt') {
+        msg = isEn
+          ? "Hi dear! ❤️ Friendly reminder about our upcoming clinic checkup. Please make sure we have our Pink Book ready! 🏥📋 - from BukuPinkKu (https://bukupinkku.my)"
+          : "Salam sayang! ❤️ Ingatan mesra untuk temujanji Klinik Kesihatan (KK) kita yang seterusnya. Jangan lupa bawa Buku Pink ya! 🏥📋 - dari BukuPinkKu (https://bukupinkku.my)";
+      } else {
+        // default: ubat harian hamil
+        msg = isEn
+          ? "Hi dear! ❤️ Don't forget to take your daily vitamins & prenatal meds (Iberet / Zincofer / Folic Acid) today. Thinking of you and our baby! 🤰💊 - from BukuPinkKu (https://bukupinkku.my)"
+          : "Salam sayang! ❤️ Jangan lupa makan ubat & suplemen harian (Iberet / Zincofer / Asid Folik) hari ini ya. Kesihatan awak dan baby keutamaan kita! 🤰💊 - dari BukuPinkKu (https://bukupinkku.my)";
+      }
+
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+      showToast(isEn ? "📲 WhatsApp reminder opened to send to your partner!" : "📲 Peringatan WhatsApp telah dibuka untuk dihantar ke pasangan!");
     }
 
-    function markVaccineDone(name) {
-      const isEn = currentLang === 'en';
-      showToast(isEn ? `🎉 ${name} vaccination marked as COMPLETED!` : `🎉 Suntikan ${name} ditandakan SELESAI di rekod kesihatan!`);
+    // ==========================================
+    // CIRI 2: JADUAL VAKSIN KKM (FASA ANAK)
+    // ==========================================
+    const KKM_VACCINE_LIST = [
+      { id: 'v_0m', ageMs: 'Masa Lahir (0 Bulan)', ageEn: 'At Birth (0 Months)', nameMs: 'BCG & Hepatitis B (Dos 1)', nameEn: 'BCG & Hepatitis B (Dose 1)', locMs: 'Hospital Bersalin', locEn: 'Maternity Hospital' },
+      { id: 'v_1m', ageMs: 'Umur 1 Bulan', ageEn: '1 Month', nameMs: 'Hepatitis B (Dos 2)', nameEn: 'Hepatitis B (Dose 2)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' },
+      { id: 'v_2m', ageMs: 'Umur 2 Bulan', ageEn: '2 Months', nameMs: 'DTaP-IPV-HepB-Hib (Dos 1) + Pneumokokal (Dos 1)', nameEn: 'DTaP-IPV-HepB-Hib (Dose 1) + Pneumococcal (Dose 1)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' },
+      { id: 'v_3m', ageMs: 'Umur 3 Bulan', ageEn: '3 Months', nameMs: 'DTaP-IPV-HepB-Hib (Dos 2)', nameEn: 'DTaP-IPV-HepB-Hib (Dose 2)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' },
+      { id: 'v_5m', ageMs: 'Umur 5 Bulan', ageEn: '5 Months', nameMs: 'DTaP-IPV-HepB-Hib (Dos 3) + Pneumokokal (Dos 2)', nameEn: 'DTaP-IPV-HepB-Hib (Dose 3) + Pneumococcal (Dose 2)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' },
+      { id: 'v_9m', ageMs: 'Umur 9 Bulan', ageEn: '9 Months', nameMs: 'Campak / MMR (Dos 1)', nameEn: 'Measles / MMR (Dose 1)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' },
+      { id: 'v_12m', ageMs: 'Umur 12 Bulan', ageEn: '12 Months', nameMs: 'MMR (Dos 2) + Pneumokokal (Dos Penggalak)', nameEn: 'MMR (Dose 2) + Pneumococcal (Booster)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' }
+    ];
+
+    function getVaccineStorageKey() {
+      return 'bukupink_vaccines_' + (currentFamilyId || 'default');
     }
 
-    function toggleMilestone(name) {
+    function getSavedVaccines() {
+      const key = getVaccineStorageKey();
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        try { return JSON.parse(raw); } catch (e) {}
+      }
+      // Nilai permulaan (4 daripada 7 selesai - 57%)
+      const initial = {
+        'v_0m': { done: true, date: '2024-01-10' },
+        'v_1m': { done: true, date: '2024-02-12' },
+        'v_2m': { done: true, date: '2024-03-15' },
+        'v_3m': { done: true, date: '2024-04-18' }
+      };
+      localStorage.setItem(key, JSON.stringify(initial));
+      return initial;
+    }
+
+    function saveVaccinesState(state) {
+      localStorage.setItem(getVaccineStorageKey(), JSON.stringify(state));
+    }
+
+    async function loadVaccines() {
+      const state = getSavedVaccines();
+      if (db && currentFamilyId) {
+        try {
+          const { data, error } = await db
+            .from('baby_memories')
+            .select('*')
+            .eq('family_id', currentFamilyId)
+            .eq('category', 'Vaksin KKM');
+          if (!error && data && data.length > 0) {
+            data.forEach(item => {
+              if (item.notes) {
+                try {
+                  const parsed = JSON.parse(item.notes);
+                  if (parsed && parsed.vacId) {
+                    state[parsed.vacId] = { done: true, date: item.memory_date, cloudId: item.id };
+                  }
+                } catch (e) {
+                  const found = KKM_VACCINE_LIST.find(v => item.title && item.title.includes(v.nameMs));
+                  if (found) {
+                    state[found.id] = { done: true, date: item.memory_date, cloudId: item.id };
+                  }
+                }
+              }
+            });
+            saveVaccinesState(state);
+          }
+        } catch (e) {
+          console.warn("Vaccine sync warning:", e);
+        }
+      }
+      renderVaccines();
+    }
+
+    async function toggleVaccine(vacId) {
       const isEn = currentLang === 'en';
-      showToast(isEn ? `🌟 Milestone "${name}" updated and shared!` : `🌟 Milestone "${name}" berjaya dikemaskini dan dikongsi!`);
+      const state = getSavedVaccines();
+      const vac = KKM_VACCINE_LIST.find(v => v.id === vacId);
+      if (!vac) return;
+
+      const vacTitle = isEn ? vac.nameEn : vac.nameMs;
+
+      if (state[vacId] && state[vacId].done) {
+        if (!confirm(isEn ? `Change status of "${vacTitle}" to Not Completed?` : `Tukar status suntikan "${vacTitle}" kepada Belum Selesai?`)) {
+          return;
+        }
+        const cloudId = state[vacId].cloudId;
+        delete state[vacId];
+        saveVaccinesState(state);
+        renderVaccines();
+
+        if (db && currentFamilyId) {
+          try {
+            if (cloudId) {
+              await db.from('baby_memories').delete().eq('id', cloudId);
+            } else {
+              await db.from('baby_memories').delete().eq('family_id', currentFamilyId).eq('category', 'Vaksin KKM').like('title', `%${vac.nameMs}%`);
+            }
+          } catch (e) {
+            console.warn("Error removing vaccine from Supabase:", e);
+          }
+        }
+        showToast(isEn ? `Vaccine "${vacTitle}" marked as Not Completed.` : `Status suntikan "${vacTitle}" ditukar ke Belum Selesai.`);
+      } else {
+        const today = new Date().toISOString().split('T')[0];
+        state[vacId] = { done: true, date: today };
+        saveVaccinesState(state);
+        renderVaccines();
+
+        if (db && currentFamilyId) {
+          try {
+            const { data, error } = await db.from('baby_memories').insert({
+              family_id: currentFamilyId,
+              title: `Vaksin KKM: ${vac.nameMs}`,
+              category: 'Vaksin KKM',
+              memory_date: today,
+              notes: JSON.stringify({ vacId: vac.id, name: vac.nameMs, date: today }),
+              uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
+            }).select('id').single();
+
+            if (!error && data) {
+              state[vacId].cloudId = data.id;
+              saveVaccinesState(state);
+            }
+          } catch (e) {
+            console.warn("Error syncing vaccine to Supabase:", e);
+          }
+        }
+        showToast(isEn ? `🎉 ${vacTitle} marked as COMPLETED!` : `🎉 Suntikan ${vacTitle} ditandakan SELESAI di rekod kesihatan!`);
+      }
+    }
+
+    function markVaccineDone(nameOrId) {
+      const match = KKM_VACCINE_LIST.find(v => v.id === nameOrId || v.nameMs.includes(nameOrId) || v.nameEn.includes(nameOrId));
+      if (match) {
+        toggleVaccine(match.id);
+      } else {
+        toggleVaccine('v_9m');
+      }
+    }
+
+    function renderVaccines() {
+      const isEn = currentLang === 'en';
+      const container = document.getElementById('vaccine-list-container');
+      if (!container) return;
+
+      const state = getSavedVaccines();
+      let doneCount = 0;
+      KKM_VACCINE_LIST.forEach(v => {
+        if (state[v.id] && state[v.id].done) doneCount++;
+      });
+      const total = KKM_VACCINE_LIST.length;
+      const pct = Math.round((doneCount / total) * 100);
+
+      const summaryEl = document.getElementById('vac-summary-text');
+      if (summaryEl) {
+        summaryEl.innerText = isEn ? `${doneCount} of ${total} vaccine appointments completed` : `${doneCount} daripada ${total} temujanji vaksin telah selesai`;
+      }
+      const pctEl = document.getElementById('vac-progress-badge');
+      if (pctEl) {
+        pctEl.innerText = `${pct}% ${isEn ? 'Completed' : 'Selesai'}`;
+      }
+
+      container.innerHTML = '';
+      KKM_VACCINE_LIST.forEach(vac => {
+        const isDone = Boolean(state[vac.id] && state[vac.id].done);
+        const card = document.createElement('div');
+        const ageLabel = isEn ? vac.ageEn : vac.ageMs;
+        const nameLabel = isEn ? vac.nameEn : vac.nameMs;
+        const locLabel = isEn ? vac.locEn : vac.locMs;
+        const vacDate = (state[vac.id] && state[vac.id].date) ? state[vac.id].date : '';
+
+        if (isDone) {
+          card.className = "bg-white p-3.5 rounded-2xl border border-emerald-200 shadow-sm flex justify-between items-center bg-emerald-50/20 transition hover:border-emerald-300";
+          card.innerHTML = `
+            <div>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">${ageLabel}</span>
+              <p class="font-bold text-slate-800 mt-1">${nameLabel}</p>
+              <p class="text-[11px] text-slate-500">${locLabel} ${vacDate ? `• <span class="text-emerald-700 font-medium">${vacDate}</span>` : ''}</p>
+            </div>
+            <button onclick="toggleVaccine('${vac.id}')" title="${isEn ? 'Click to undo' : 'Klik untuk tukar status'}" class="text-emerald-700 font-bold text-xs flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 transition">
+              <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
+              <span>${isEn ? 'Completed' : 'Selesai'}</span>
+            </button>
+          `;
+        } else {
+          card.className = "bg-white p-3.5 rounded-2xl border-2 border-pastel-200/80 shadow-sm flex justify-between items-center transition hover:border-pastel-400";
+          card.innerHTML = `
+            <div>
+              <div class="flex items-center space-x-1.5">
+                <span class="text-[10px] bg-pastel-100 text-pastel-700 font-bold px-2 py-0.5 rounded">${ageLabel}</span>
+                <span class="text-[10px] text-amber-600 font-bold">⏳ ${isEn ? 'Upcoming' : 'Akan Datang'}</span>
+              </div>
+              <p class="font-bold text-slate-800 mt-1">${nameLabel}</p>
+              <p class="text-[11px] text-slate-500">${locLabel}</p>
+            </div>
+            <button onclick="toggleVaccine('${vac.id}')" class="px-3 py-1.5 rounded-xl bg-pastel-500 hover:bg-pastel-600 text-white font-bold text-xs shadow-sm transition whitespace-nowrap">
+              ${isEn ? 'Mark Done' : 'Tanda Selesai'}
+            </button>
+          `;
+        }
+        container.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    // ==========================================
+    // CIRI 3: PANDUAN MAKANAN BAYI (3-DAY RULE)
+    // ==========================================
+    function getFoodTestStorageKey() {
+      return 'bukupink_food_test_' + (currentFamilyId || 'default');
+    }
+
+    function getFoodSafeStorageKey() {
+      return 'bukupink_food_safe_' + (currentFamilyId || 'default');
+    }
+
+    function getSavedFoodTest() {
+      const key = getFoodTestStorageKey();
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        try { return JSON.parse(raw); } catch (e) {}
+      }
+      const initial = {
+        foodName: '🍳 Kuning Telur Rebus (Lumat)',
+        currentDay: 2,
+        day1: 'pass',
+        day2: 'pending',
+        day3: 'pending',
+        status: 'testing',
+        notes: 'Kukus & lumat bersama susu ibu'
+      };
+      localStorage.setItem(key, JSON.stringify(initial));
+      return initial;
+    }
+
+    function getSavedSafeFoods() {
+      const key = getFoodSafeStorageKey();
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        try { return JSON.parse(raw); } catch (e) {}
+      }
+      const initial = [
+        '🥣 Bubur Beras Putih',
+        '🥕 Puri Lobak Merah',
+        '🥑 Puri Avokado Lumat',
+        '🍌 Puri Pisang Mas'
+      ];
+      localStorage.setItem(key, JSON.stringify(initial));
+      return initial;
+    }
+
+    function saveFoodTestState(state) {
+      localStorage.setItem(getFoodTestStorageKey(), JSON.stringify(state));
+    }
+
+    function saveSafeFoodsState(list) {
+      localStorage.setItem(getFoodSafeStorageKey(), JSON.stringify(list));
+    }
+
+    async function loadFoodTests() {
+      renderFoodTests();
+    }
+
+    function openNewFoodTestModal() {
+      document.getElementById('inp-food-test-name').value = '';
+      document.getElementById('inp-food-test-notes').value = '';
+      openModal('modal-add-food-test');
+    }
+
+    function setFoodPreset(name) {
+      document.getElementById('inp-food-test-name').value = name;
+    }
+
+    function handleStartNewFoodTest(e) {
+      e.preventDefault();
+      const isEn = currentLang === 'en';
+      const foodName = document.getElementById('inp-food-test-name').value.trim();
+      const notes = document.getElementById('inp-food-test-notes').value.trim();
+      if (!foodName) return;
+
+      const newTest = {
+        foodName,
+        currentDay: 1,
+        day1: 'pending',
+        day2: 'pending',
+        day3: 'pending',
+        status: 'testing',
+        notes
+      };
+
+      saveFoodTestState(newTest);
+      closeModal('modal-add-food-test');
+      renderFoodTests();
+      showToast(isEn ? `🥣 Started 3-Day Rule test for "${foodName}"!` : `🥣 Ujian 3 Hari dimulakan untuk "${foodName}"!`);
+    }
+
+    async function passFoodTestToday() {
+      const isEn = currentLang === 'en';
+      const test = getSavedFoodTest();
+      if (test.status !== 'testing') return;
+
+      if (test.currentDay === 1) {
+        test.day1 = 'pass';
+        test.currentDay = 2;
+        saveFoodTestState(test);
+        renderFoodTests();
+        showToast(isEn ? "✅ Day 1 passed with no rash! Ready for Day 2." : "✅ Hari Pertama lulus tanpa ruam! Sambung Hari ke-2 esok.");
+      } else if (test.currentDay === 2) {
+        test.day2 = 'pass';
+        test.currentDay = 3;
+        saveFoodTestState(test);
+        renderFoodTests();
+        showToast(isEn ? "✅ Day 2 passed with no rash! Ready for Day 3." : "✅ Hari ke-2 lulus tanpa ruam! Sambung Hari ke-3 esok.");
+      } else if (test.currentDay === 3) {
+        test.day3 = 'pass';
+        test.status = 'passed';
+        saveFoodTestState(test);
+
+        const safeList = getSavedSafeFoods();
+        if (!safeList.includes(test.foodName)) {
+          safeList.push(test.foodName);
+          saveSafeFoodsState(safeList);
+        }
+
+        renderFoodTests();
+
+        if (db && currentFamilyId) {
+          try {
+            await db.from('baby_memories').insert({
+              family_id: currentFamilyId,
+              title: `Ujian Makanan Selamat: ${test.foodName}`,
+              category: 'Ujian Makanan',
+              memory_date: new Date().toISOString().split('T')[0],
+              notes: `Melepasi Ujian 3 Hari KKM tanpa reaksi alergi. Catatan: ${test.notes || '-'}`,
+              uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
+            });
+          } catch (e) {
+            console.warn("Food test save to Supabase:", e);
+          }
+        }
+
+        showToast(isEn ? `🎉 Congrats! "${test.foodName}" successfully passed the 3-Day Rule and is safe for baby!` : `🎉 Tahniah! "${test.foodName}" melepasi Ujian 3 Hari dan disahkan selamat!`);
+      }
+    }
+
+    async function reportFoodAllergy(customName) {
+      const isEn = currentLang === 'en';
+      const test = getSavedFoodTest();
+      const foodName = customName || test.foodName;
+
+      const confirmMsg = isEn
+        ? `Confirm that "${foodName}" caused a rash or allergic reaction? This will stop testing and save it to your Child Allergy list in Supabase.`
+        : `Adakah si manja mengalami ruam merah, gatal, atau cirit-birit selepas makan "${foodName}"? Rekod alahan ini akan disimpan terus ke Supabase.`;
+
+      if (!confirm(confirmMsg)) return;
+
+      test.status = 'allergic';
+      saveFoodTestState(test);
+      renderFoodTests();
+
+      // SIMPAN TERUS KE SUPABASE ALLERGIES TABLE
+      if (db && currentFamilyId) {
+        try {
+          await db.from('allergies').insert({
+            family_id: currentFamilyId,
+            item_name: foodName,
+            category: isEn ? 'Baby Food (3-Day Rule)' : 'Makanan Bayi (Ujian 3 Hari)',
+            symptoms: isEn ? 'Skin rash / allergic reaction detected during 3-Day Rule' : 'Reaksi ruam kemerahan / alahan dikesan semasa Ujian 3 Hari KKM',
+            recorded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
+          });
+          loadAllergies();
+        } catch (e) {
+          console.warn("Error inserting allergy to Supabase:", e);
+        }
+      }
+
+      showToast(isEn ? `⚠️ Allergic reaction for "${foodName}" saved to Cloud & added to Allergy List!` : `⚠️ Reaksi alahan "${foodName}" direkodkan & disimpan ke Cloud Supabase!`);
     }
 
     function reportAllergyPrompt(food) {
+      reportFoodAllergy(food);
+    }
+
+    function renderFoodTests() {
       const isEn = currentLang === 'en';
-      showToast(isEn ? `⚠️ Allergy reaction for ${food} logged!` : `⚠️ Alahan untuk ${food} direkodkan!`);
+      const container = document.getElementById('active-food-test-container');
+      if (!container) return;
+
+      const test = getSavedFoodTest();
+      let statusBadge = '';
+      let actionButtons = '';
+
+      if (test.status === 'passed') {
+        statusBadge = `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">✓ ${isEn ? 'Passed & Safe' : 'Lulus Sepenuhnya'}</span>`;
+        actionButtons = `
+          <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
+            <span class="text-xs text-emerald-700 font-bold">${isEn ? '✨ Safe to mix with other foods!' : '✨ Selamat dimakan dan dicampur dengan hidangan lain!'}</span>
+            <button onclick="openNewFoodTestModal()" class="text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1.5 rounded-xl hover:bg-teal-100 transition">
+              + ${isEn ? 'Test Next Food' : 'Uji Makanan Seterusnya'}
+            </button>
+          </div>
+        `;
+      } else if (test.status === 'allergic') {
+        statusBadge = `<span class="bg-rose-100 text-rose-800 text-xs font-bold px-2.5 py-1 rounded-full">⚠️ ${isEn ? 'Allergic Reaction' : 'Reaksi Alahan'}</span>`;
+        actionButtons = `
+          <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
+            <span class="text-xs text-rose-700 font-bold">${isEn ? '🛑 Testing halted. Saved to Pantang/Allergies.' : '🛑 Makanan dihentikan. Telah disimpan ke tab Pantang & Alahan.'}</span>
+            <button onclick="openNewFoodTestModal()" class="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-200 transition">
+              + ${isEn ? 'Test Another Food' : 'Uji Makanan Lain'}
+            </button>
+          </div>
+        `;
+      } else {
+        statusBadge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-1 rounded-full">${isEn ? `Testing Day ${test.currentDay} of 3` : `Sedang Diuji (Hari ke-${test.currentDay} dari 3)`}</span>`;
+        actionButtons = `
+          <div class="flex space-x-2 pt-2 border-t border-slate-100">
+            <button onclick="passFoodTestToday()" class="flex-1 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs rounded-xl border border-emerald-200 transition">
+              ✓ ${isEn ? 'Passed Today (No Rash)' : '✓ Lulus Hari Ini (Tiada Ruam)'}
+            </button>
+            <button onclick="reportFoodAllergy()" class="flex-1 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200 transition">
+              ⚠️ ${isEn ? 'Rash / Allergic Reaction' : '⚠️ Ada Reaksi Ruam'}
+            </button>
+          </div>
+        `;
+      }
+
+      const d1Class = test.day1 === 'pass' ? 'bg-emerald-500 text-white' : (test.currentDay === 1 ? 'bg-amber-100 text-amber-800 border-2 border-amber-400 font-bold' : 'bg-slate-100 text-slate-400');
+      const d2Class = test.day2 === 'pass' ? 'bg-emerald-500 text-white' : (test.currentDay === 2 && test.status === 'testing' ? 'bg-amber-100 text-amber-800 border-2 border-amber-400 font-bold' : 'bg-slate-100 text-slate-400');
+      const d3Class = test.day3 === 'pass' ? 'bg-emerald-500 text-white' : (test.currentDay === 3 && test.status === 'testing' ? 'bg-amber-100 text-amber-800 border-2 border-amber-400 font-bold' : 'bg-slate-100 text-slate-400');
+
+      container.innerHTML = `
+        <div class="bg-white p-4 rounded-2xl border-2 ${test.status === 'allergic' ? 'border-rose-300' : (test.status === 'passed' ? 'border-emerald-300' : 'border-amber-300')} shadow-sm space-y-3">
+          <div class="flex justify-between items-start">
+            <div>
+              ${statusBadge}
+              <h4 class="text-sm font-bold text-slate-800 mt-1.5">${test.foodName}</h4>
+              ${test.notes ? `<p class="text-[11px] text-slate-500 mt-0.5">${test.notes}</p>` : ''}
+            </div>
+            <button onclick="openNewFoodTestModal()" class="text-[11px] text-slate-400 hover:text-slate-600">
+              <i data-lucide="edit" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <!-- 3-Day Steps Visual Tracker -->
+          <div class="grid grid-cols-3 gap-2 text-center text-xs">
+            <div class="p-2 rounded-xl ${d1Class}">
+              <p class="font-bold">${isEn ? 'Day 1' : 'Hari 1'}</p>
+              <p class="text-[10px]">${test.day1 === 'pass' ? (isEn ? 'Passed ✓' : 'Lulus ✓') : (test.currentDay === 1 ? (isEn ? 'Testing' : 'Ujian') : '-')}</p>
+            </div>
+            <div class="p-2 rounded-xl ${d2Class}">
+              <p class="font-bold">${isEn ? 'Day 2' : 'Hari 2'}</p>
+              <p class="text-[10px]">${test.day2 === 'pass' ? (isEn ? 'Passed ✓' : 'Lulus ✓') : (test.currentDay === 2 && test.status === 'testing' ? (isEn ? 'Testing' : 'Ujian') : '-')}</p>
+            </div>
+            <div class="p-2 rounded-xl ${d3Class}">
+              <p class="font-bold">${isEn ? 'Day 3' : 'Hari 3'}</p>
+              <p class="text-[10px]">${test.day3 === 'pass' ? (isEn ? 'Passed ✓' : 'Lulus ✓') : (test.currentDay === 3 && test.status === 'testing' ? (isEn ? 'Testing' : 'Ujian') : '-')}</p>
+            </div>
+          </div>
+
+          ${actionButtons}
+        </div>
+      `;
+
+      // Render Safe Foods
+      const safeList = getSavedSafeFoods();
+      const countEl = document.getElementById('safe-foods-count');
+      if (countEl) countEl.innerText = `${safeList.length} ${isEn ? 'Foods' : 'Makanan'}`;
+
+      const safeContainer = document.getElementById('safe-foods-list');
+      if (safeContainer) {
+        if (safeList.length === 0) {
+          safeContainer.innerHTML = `<p class="text-xs text-slate-400 py-1">${isEn ? 'No safe foods logged yet.' : 'Belum ada makanan disahkan selesai ujian.'}</p>`;
+        } else {
+          safeContainer.innerHTML = safeList.map(item => `
+            <span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 font-semibold rounded-lg border border-emerald-200 shadow-2xs">
+              ✓ ${item}
+            </span>
+          `).join('');
+        }
+      }
+
+      lucide.createIcons();
+    }
+
+    // ==========================================
+    // CIRI 4: MILESTONE PERKEMBANGAN (0-12 BULAN)
+    // ==========================================
+    const BABY_MILESTONES = [
+      {
+        stageId: 's_0_3',
+        stageMs: 'Perkembangan Umur 0 – 3 Bulan',
+        stageEn: '0 – 3 Months Developmental Milestones',
+        items: [
+          { id: 'ms_0_1', textMs: 'Senyum sosial bila diajak berbual atau diagah', textEn: 'Social smile when spoken or played with' },
+          { id: 'ms_0_2', textMs: 'Mampu mengangkat kepala sekejap ketika meniarap (tummy time)', textEn: 'Lifts head momentarily during tummy time' },
+          { id: 'ms_0_3', textMs: 'Mata mengikut objek atau wajah yang bergerak', textEn: 'Follows moving objects or faces with eyes' }
+        ]
+      },
+      {
+        stageId: 's_3_6',
+        stageMs: 'Perkembangan Umur 3 – 6 Bulan',
+        stageEn: '3 – 6 Months Developmental Milestones',
+        items: [
+          { id: 'ms_3_1', textMs: 'Meniarap dan berguling sendiri dari terlentang', textEn: 'Rolls over independently from tummy to back' },
+          { id: 'ms_3_2', textMs: 'Mencapai dan memegang mainan dengan kedua-dua belah tangan', textEn: 'Reaches out and grasps toys with hands' },
+          { id: 'ms_3_3', textMs: 'Ketawa riang dan mula membebel bunyi vokal (ah, oh, ba)', textEn: 'Laughs and makes babbling sounds (ah, oh, ba)' }
+        ]
+      },
+      {
+        stageId: 's_6_9',
+        stageMs: 'Perkembangan Umur 6 – 9 Bulan',
+        stageEn: '6 – 9 Months Developmental Milestones',
+        items: [
+          { id: 'ms_6_1', textMs: 'Boleh duduk stabil tanpa perlu sokongan bantal', textEn: 'Sits steadily without pillows or support' },
+          { id: 'ms_6_2', textMs: 'Memindahkan objek dari satu tangan ke tangan yang lain', textEn: 'Transfers objects easily from hand to hand' },
+          { id: 'ms_6_3', textMs: 'Mula merangkak ke hadapan atau bergerak secara mengensot', textEn: 'Starts crawling forward or scooting' }
+        ]
+      },
+      {
+        stageId: 's_9_12',
+        stageMs: 'Perkembangan Umur 9 – 12 Bulan',
+        stageEn: '9 – 12 Months Developmental Milestones',
+        items: [
+          { id: 'ms_9_1', textMs: 'Berdiri tegak dengan berpaut pada sofa atau perabot', textEn: 'Pulls to stand and cruises along furniture' },
+          { id: 'ms_9_2', textMs: 'Memanggil "Mama" atau "Papa" secara bermakna', textEn: 'Calls "Mama" or "Papa" with specific meaning' },
+          { id: 'ms_9_3', textMs: 'Melambai tangan ("Bye-bye") dan menepuk amai-amai', textEn: 'Waves "Bye-bye" and plays peek-a-boo / clapping' }
+        ]
+      }
+    ];
+
+    function getMilestoneStorageKey() {
+      return 'bukupink_milestones_' + (currentFamilyId || 'default');
+    }
+
+    function getSavedMilestones() {
+      const key = getMilestoneStorageKey();
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        try { return JSON.parse(raw); } catch (e) {}
+      }
+      // Nilai permulaan (peringkat awal selesai, 6-9 bulan separa selesai: 8 daripada 12 = 67%)
+      const initial = {
+        'ms_0_1': true,
+        'ms_0_2': true,
+        'ms_0_3': true,
+        'ms_3_1': true,
+        'ms_3_2': true,
+        'ms_3_3': true,
+        'ms_6_1': true,
+        'ms_6_2': true
+      };
+      localStorage.setItem(key, JSON.stringify(initial));
+      return initial;
+    }
+
+    function saveMilestonesState(state) {
+      localStorage.setItem(getMilestoneStorageKey(), JSON.stringify(state));
+    }
+
+    async function loadMilestones() {
+      const state = getSavedMilestones();
+      if (db && currentFamilyId) {
+        try {
+          const { data, error } = await db
+            .from('baby_memories')
+            .select('*')
+            .eq('family_id', currentFamilyId)
+            .eq('category', 'Milestone');
+          if (!error && data && data.length > 0) {
+            data.forEach(item => {
+              if (item.notes) {
+                try {
+                  const parsed = JSON.parse(item.notes);
+                  if (parsed && parsed.msId) {
+                    state[parsed.msId] = true;
+                  }
+                } catch (e) {}
+              }
+            });
+            saveMilestonesState(state);
+          }
+        } catch (e) {
+          console.warn("Milestone sync warning:", e);
+        }
+      }
+      renderMilestones();
+    }
+
+    async function toggleMilestone(msId) {
+      const isEn = currentLang === 'en';
+      const state = getSavedMilestones();
+
+      // Find item
+      let matchedItem = null;
+      BABY_MILESTONES.forEach(stage => {
+        stage.items.forEach(it => {
+          if (it.id === msId || it.textMs.includes(msId) || it.textEn.includes(msId)) {
+            matchedItem = it;
+          }
+        });
+      });
+
+      const actualId = matchedItem ? matchedItem.id : msId;
+      const isCurrentlyDone = Boolean(state[actualId]);
+      const nextState = !isCurrentlyDone;
+
+      if (nextState) {
+        state[actualId] = true;
+      } else {
+        delete state[actualId];
+      }
+      saveMilestonesState(state);
+      renderMilestones();
+
+      const itemTitle = matchedItem ? (isEn ? matchedItem.textEn : matchedItem.textMs) : actualId;
+
+      if (nextState) {
+        if (db && currentFamilyId && matchedItem) {
+          try {
+            await db.from('baby_memories').insert({
+              family_id: currentFamilyId,
+              title: `Milestone: ${matchedItem.textMs}`,
+              category: 'Milestone',
+              memory_date: new Date().toISOString().split('T')[0],
+              notes: JSON.stringify({ msId: actualId, text: matchedItem.textMs }),
+              uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
+            });
+          } catch (e) {
+            console.warn("Milestone insert error:", e);
+          }
+        }
+        showToast(isEn ? `🌟 Milestone "${itemTitle}" marked achieved & saved to Cloud!` : `🌟 Perkembangan "${itemTitle}" berjaya dicapai & disimpan ke Cloud!`);
+      } else {
+        if (db && currentFamilyId && matchedItem) {
+          try {
+            await db.from('baby_memories').delete()
+              .eq('family_id', currentFamilyId)
+              .eq('category', 'Milestone')
+              .like('title', `%${matchedItem.textMs}%`);
+          } catch (e) {
+            console.warn("Milestone delete error:", e);
+          }
+        }
+        showToast(isEn ? `Milestone "${itemTitle}" updated.` : `Status milestone "${itemTitle}" dikemaskini.`);
+      }
+    }
+
+    function renderMilestones() {
+      const isEn = currentLang === 'en';
+      const container = document.getElementById('milestones-container');
+      if (!container) return;
+
+      const state = getSavedMilestones();
+      let doneCount = 0;
+      let totalCount = 0;
+
+      BABY_MILESTONES.forEach(stage => {
+        stage.items.forEach(it => {
+          totalCount++;
+          if (state[it.id]) doneCount++;
+        });
+      });
+
+      const pct = Math.round((doneCount / totalCount) * 100);
+      const summaryEl = document.getElementById('ms-summary-text');
+      if (summaryEl) {
+        summaryEl.innerText = isEn ? `${doneCount} of ${totalCount} milestones achieved` : `${doneCount} daripada ${totalCount} milestone telah dicapai`;
+      }
+      const pctEl = document.getElementById('ms-progress-badge');
+      if (pctEl) {
+        pctEl.innerText = `${pct}% ${isEn ? 'Completed' : 'Selesai'}`;
+      }
+
+      container.innerHTML = '';
+      BABY_MILESTONES.forEach(stage => {
+        const stageCard = document.createElement('div');
+        stageCard.className = "bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2.5";
+        const stageTitle = isEn ? stage.stageEn : stage.stageMs;
+
+        let itemsHtml = stage.items.map(it => {
+          const isChecked = Boolean(state[it.id]);
+          const itemText = isEn ? it.textEn : it.textMs;
+          return `
+            <label class="flex items-center space-x-2.5 p-2.5 ${isChecked ? 'bg-pastel-50/50 border border-pastel-200/60' : 'bg-slate-50 border border-slate-100'} rounded-xl cursor-pointer hover:bg-pastel-50 transition">
+              <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleMilestone('${it.id}')" class="rounded text-pastel-500 w-4 h-4 cursor-pointer focus:ring-pastel-300">
+              <span class="text-xs ${isChecked ? 'font-bold text-slate-800' : 'font-medium text-slate-600'} leading-snug">${itemText}</span>
+            </label>
+          `;
+        }).join('');
+
+        stageCard.innerHTML = `
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-pastel-700">${stageTitle}</span>
+            <span class="text-[10px] text-slate-400 font-semibold">${stage.items.filter(it => state[it.id]).length}/${stage.items.length}</span>
+          </div>
+          <div class="space-y-1.5">
+            ${itemsHtml}
+          </div>
+        `;
+        container.appendChild(stageCard);
+      });
+      lucide.createIcons();
     }
 
     function showToast(message) {
@@ -3898,6 +4640,11 @@
           document.getElementById('inp-allergy-symp').value = '';
           const titleEl = document.getElementById('title-modal-allergy');
           if (titleEl) titleEl.innerText = isEn ? "Add Allergy / Diet Note" : "Tambah Alahan / Pantang";
+        } else if (id === 'modal-add-food-test') {
+          document.getElementById('inp-food-test-name').value = '';
+          document.getElementById('inp-food-test-notes').value = '';
+          const titleEl = document.getElementById('title-modal-food-test');
+          if (titleEl) titleEl.innerText = isEn ? "Test New Food (3-Day Rule)" : "Uji Makanan Baru (3-Day Rule)";
         } else if (id === 'modal-add-memory') {
           editingMemoryId = null;
           document.getElementById('inp-mem-title').value = '';
