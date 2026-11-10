@@ -22,6 +22,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- html2pdf.js for Generating PDF Photobook -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- Canvas Confetti for Golden Hearts & Sparkles Celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -1209,6 +1211,55 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: SAMBUTAN BFP (SAYA DAH HAMIL!) ================= -->
+  <div id="modal-bfp-celebrate" onclick="handleBfpBackdropClick(event)" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-all duration-300">
+    <div id="modal-bfp-box" onclick="event.stopPropagation()" class="bg-gradient-to-b from-[#fffdf5] via-[#fff7fa] to-[#fdf2f8] rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border-2 border-amber-300 text-center relative overflow-hidden transform scale-100 transition-all">
+      
+      <!-- Latar kilauan emas hiasan -->
+      <div class="absolute -top-12 -left-12 w-32 h-32 bg-amber-200/50 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-rose-200/50 rounded-full blur-2xl pointer-events-none"></div>
+
+      <!-- Ikon & Lencana Sambutan -->
+      <div class="relative z-10 flex flex-col items-center">
+        <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-400 via-yellow-300 to-rose-400 p-1 shadow-lg shadow-amber-200 flex items-center justify-center mb-2 animate-bounce">
+          <div class="w-full h-full bg-white rounded-[22px] flex items-center justify-center text-4xl">
+            👶✨
+          </div>
+        </div>
+        <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 font-extrabold text-[11px] shadow-xs">
+          <span>💛</span>
+          <span data-i18n="bfp_badge">Alhamdulillah • Rezeki Zuriat Terindah</span>
+        </span>
+      </div>
+
+      <!-- Teks Ucapan Menyentuh Hati -->
+      <div class="relative z-10 space-y-2.5">
+        <h3 data-i18n="bfp_title" class="text-xl font-black text-slate-800 tracking-tight">
+          Tahniah & Selamat Melangkah ke Fasa Hamil! 🎉
+        </h3>
+        <p data-i18n="bfp_desc" class="text-xs text-slate-600 leading-relaxed">
+          Segala doa, sabar, dan ikhtiar anda berdua telah membuahkan hasil yang sangat indah. Perjalanan baru bermula hari ini — semoga ibu dan bayi di dalam kandungan sentiasa sihat, dilindungi, dan dipermudahkan segala urusan.
+        </p>
+
+        <div class="p-3 bg-white/85 rounded-2xl border border-amber-200/80 text-[11px] text-amber-950 font-serif italic text-center shadow-xs">
+          <p data-i18n="bfp_quote">"Maha Suci Tuhan yang mengurniakan zuriat pada waktu yang paling tepat. Kami tumpang gembira atas berita bahagia ini!" 🌸</p>
+        </div>
+      </div>
+
+      <!-- Butang Tindakan & Petunjuk Klik Skrin -->
+      <div class="relative z-10 pt-2 space-y-2">
+        <button onclick="confirmSwitchToPregnancy()" class="w-full py-3 bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white font-extrabold rounded-2xl shadow-lg shadow-rose-200 text-xs flex items-center justify-center space-x-2 transition transform active:scale-95">
+          <span>🌸</span>
+          <span data-i18n="bfp_btn_proceed">Buka Buku Pink (Fasa Hamil)</span>
+        </button>
+        <p data-i18n="bfp_tap_hint" class="text-[10px] text-slate-400 font-medium">
+          (Klik di mana-mana bahagian luar skrin untuk teruskan)
+        </p>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ================= MODAL: BUY ME A COFFEE (SOKONGAN PEMBANGUN) ================= -->
   <div id="modal-coffee" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-amber-200 text-center">
@@ -1541,6 +1592,12 @@
         hdr_ttc_motivation: "Peringatan Hati: Percaturan Allah Itu Sempurna",
         desc_ttc_motivation_1: "Tuhan telah merancang setiap detik perjalanan hidup kita di dunia ini dengan penuh hikmah dan keindahan. Berbaik sangka dengan Allah itu melapangkan jiwa — yakinlah bahawa setiap doa yang dipanjatkan tidak pernah sia-sia, dan rezeki zuriat akan tiba pada saat yang paling tepat dan terindah.",
         desc_ttc_motivation_2: "\"Rezeki zuriat bukan perlumbaan siapa cepat, tetapi tentang ketentuan yang paling tepat. Terus saling menguatkan, memeluk jiwa, dan menyayangi antara suami isteri.\" 🌸",
+        bfp_badge: "Alhamdulillah • Rezeki Zuriat Terindah",
+        bfp_title: "Tahniah & Selamat Melangkah ke Fasa Hamil! 🎉",
+        bfp_desc: "Segala doa, sabar, dan ikhtiar anda berdua telah membuahkan hasil yang sangat indah. Perjalanan baru bermula hari ini — semoga ibu dan bayi di dalam kandungan sentiasa sihat, dilindungi, dan dipermudahkan segala urusan.",
+        bfp_quote: "\"Maha Suci Tuhan yang mengurniakan zuriat pada waktu yang paling tepat. Kami tumpang gembira atas berita bahagia ini!\" 🌸",
+        bfp_btn_proceed: "Buka Buku Pink (Fasa Hamil) 🌸",
+        bfp_tap_hint: "(Klik di mana-mana bahagian luar skrin untuk teruskan)",
         mdl_ttc_settings_title: "Kemaskini Kitaran Haid & Ovulasi",
         btn_save_ttc_calc: "Simpan & Kira Waktu Subur",
         mdl_opk_title: "Log Ujian OPK & Suhu",
@@ -1763,6 +1820,12 @@
         hdr_ttc_motivation: "Heartfelt Reminder: God's Plan is Perfect",
         desc_ttc_motivation_1: "God has planned every chapter of our life with boundless grace and divine wisdom. Wholehearted trust in God brings profound peace to the soul — trust that every sincere prayer is cherished, and blessings unfold at the most beautiful, intended moment.",
         desc_ttc_motivation_2: "\"Parenthood is not a race of who arrives first, but a sacred blessing that arrives right on time. Keep cherishing, understanding, and loving each other as husband and wife.\" 🌸",
+        bfp_badge: "Alhamdulillah • Precious New Beginning",
+        bfp_title: "Congratulations on Your Pregnancy Journey! 🎉",
+        bfp_desc: "Your patience, prayers, and dedicated journey have brought this most wonderful blessing. A beautiful new chapter starts today — wishing mom and baby healthy growth, safety, and joy throughout every milestone.",
+        bfp_quote: "\"Glory be to God who blesses us right on time. We are overjoyed for you and your family!\" 🌸",
+        bfp_btn_proceed: "Open Pink Book (Pregnancy Phase) 🌸",
+        bfp_tap_hint: "(Tap anywhere outside the box to continue)",
         mdl_ttc_settings_title: "Update Menstrual Cycle & Ovulation",
         btn_save_ttc_calc: "Save & Calculate Fertile Days",
         mdl_opk_title: "Log OPK Test & Temperature",
@@ -3419,14 +3482,73 @@
     }
 
     function celebratePregnancySuccess() {
+      // 1. Pancarkan animasi kilauan hati emas (Heart Golden Sparkles)
+      triggerGoldenHeartSparkles();
+      // 2. Buka modal sambutan petak besar (tidak hilang automatik)
+      openModal('modal-bfp-celebrate');
+    }
+
+    function triggerGoldenHeartSparkles() {
+      if (typeof confetti === 'function') {
+        try {
+          const heartScalar = 2.2;
+          const goldenHeart = confetti.shapeFromText({ text: '💛', scalar: heartScalar });
+          const sparkle = confetti.shapeFromText({ text: '✨', scalar: heartScalar });
+          const pinkHeart = confetti.shapeFromText({ text: '💖', scalar: heartScalar });
+          const star = confetti.shapeFromText({ text: '⭐', scalar: heartScalar });
+
+          // Letupan kilauan tengah skrin
+          confetti({
+            particleCount: 50,
+            spread: 100,
+            origin: { y: 0.55 },
+            shapes: [goldenHeart, sparkle, pinkHeart, star],
+            colors: ['#FFD700', '#FFA500', '#FF69B4', '#FFF8DC', '#FFB6C1']
+          });
+
+          // Pancaran bunga api berkilau dari kiri dan kanan selama 3 saat
+          const end = Date.now() + 3200;
+          const interval = setInterval(() => {
+            if (Date.now() > end) {
+              return clearInterval(interval);
+            }
+            confetti({
+              particleCount: 16,
+              angle: 60,
+              spread: 60,
+              origin: { x: 0, y: 0.7 },
+              shapes: [goldenHeart, sparkle, pinkHeart],
+              colors: ['#FFD700', '#FFA500', '#FFF8DC', '#FF69B4']
+            });
+            confetti({
+              particleCount: 16,
+              angle: 120,
+              spread: 60,
+              origin: { x: 1, y: 0.7 },
+              shapes: [goldenHeart, sparkle, pinkHeart],
+              colors: ['#FFD700', '#FFA500', '#FFF8DC', '#FF69B4']
+            });
+          }, 240);
+        } catch (e) {
+          console.warn("Confetti sparkles fallback:", e);
+        }
+      }
+    }
+
+    function handleBfpBackdropClick(e) {
+      // Jika pengguna klik mana-mana bahagian skrin luar kotak
+      const box = document.getElementById('modal-bfp-box');
+      if (e.target === document.getElementById('modal-bfp-celebrate') || (box && !box.contains(e.target))) {
+        confirmSwitchToPregnancy();
+      }
+    }
+
+    function confirmSwitchToPregnancy() {
+      closeModal('modal-bfp-celebrate');
+      switchPhase('pregnancy');
+      localStorage.setItem('bukupink_pregnancy_status', 'pregnancy');
       const isEn = currentLang === 'en';
-      const msg = isEn
-        ? "🎉 CONGRATULATIONS! We are overjoyed for you! Switching to Pregnancy Phase (Buku Pink)... 🌸"
-        : "🎉 TAHNIAH & ALHAMDULILLAH! Kami tumpang gembira atas berita kehamilan anda! Menukar ke Fasa Buku Pink... 🌸";
-      showToast(msg);
-      setTimeout(() => {
-        switchPhase('pregnancy');
-      }, 1500);
+      showToast(isEn ? "🌸 Welcome to Pregnancy Phase (Pink Book)!" : "🌸 Selamat datang ke Fasa Hamil (Buku Pink)!");
     }
 
     // ================= BUY ME A COFFEE & FEEDBACK LOGIC =================
