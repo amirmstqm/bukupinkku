@@ -463,22 +463,19 @@
         </button>
       </div>
 
-      <!-- FASA TOGGLE: TTC vs HAMIL vs ANAK LAHIR -->
+      <!-- FASA TOGGLE: TTC vs HAMIL vs ANAK LAHIR (TEKS BERSIH TANPA EMOJI SUPAYA 100% ALIGNED) -->
       <div class="bg-white p-1.5 rounded-2xl border border-slate-200 flex items-center shadow-sm">
         <button id="btn-phase-ttc" onclick="switchPhase('ttc')"
-          class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1 text-slate-600 hover:text-slate-900">
-          <span>🌸</span>
-          <span data-i18n="tab_phase_ttc">Ikhtiar (TTC)</span>
+          class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center text-slate-600 hover:text-slate-900">
+          <span data-i18n="pill_phase_ttc">Ikhtiar (TTC)</span>
         </button>
         <button id="btn-phase-pregnancy" onclick="switchPhase('pregnancy')"
-          class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1 bg-pastel-500 text-white shadow-sm">
-          <span>🤰</span>
-          <span data-i18n="tab_phase_preg">Hamil</span>
+          class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center bg-pastel-500 text-white shadow-sm">
+          <span data-i18n="pill_phase_preg">Hamil</span>
         </button>
         <button id="btn-phase-child" onclick="switchPhase('child')"
-          class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1 text-slate-600 hover:text-slate-900">
-          <span>👶</span>
-          <span data-i18n="tab_phase_child">Anak (0-3T)</span>
+          class="flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center text-slate-600 hover:text-slate-900">
+          <span data-i18n="pill_phase_child">Anak (0-3T)</span>
         </button>
       </div>
 
@@ -1645,6 +1642,9 @@
         btn_whatsapp_partner: "WhatsApp Pasangan",
         tab_phase_preg: "Fasa Hamil (Buku Pink)",
         tab_phase_child: "Fasa Anak (0 - 3 Tahun)",
+        pill_phase_ttc: "Ikhtiar (TTC)",
+        pill_phase_preg: "Hamil",
+        pill_phase_child: "Anak (0-3T)",
         lbl_days_to_edd: "Hari ke EDD",
         lbl_edd_date: "Tarikh EDD:",
         btn_save_scan: "+ Simpan Foto Scan 4D / Kenangan",
@@ -1874,6 +1874,9 @@
         btn_whatsapp_partner: "WhatsApp Partner",
         tab_phase_preg: "Pregnancy Phase (Pink Book)",
         tab_phase_child: "Child Phase (0 - 3 Years)",
+        pill_phase_ttc: "TTC",
+        pill_phase_preg: "Pregnancy",
+        pill_phase_child: "Child (0-3Y)",
         lbl_days_to_edd: "Days to EDD",
         lbl_edd_date: "EDD Date:",
         btn_save_scan: "+ Save 4D Scan / Memory Photo",
@@ -3183,8 +3186,8 @@
       const btnPreg = document.getElementById('btn-phase-pregnancy');
       const btnChild = document.getElementById('btn-phase-child');
 
-      const activeBtnClass = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1 bg-pastel-500 text-white shadow-sm";
-      const inactiveBtnClass = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center space-x-1 text-slate-600 hover:text-slate-900";
+      const activeBtnClass = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center bg-pastel-500 text-white shadow-sm";
+      const inactiveBtnClass = "flex-1 py-2 rounded-xl text-xs font-bold text-center transition flex items-center justify-center text-slate-600 hover:text-slate-900";
 
       if (ttcSec) ttcSec.classList.add('hidden');
       if (pregSec) pregSec.classList.add('hidden');
