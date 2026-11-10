@@ -78,10 +78,10 @@
       <!-- Pilihan Masuk (Tab Onboarding) -->
       <div class="bg-pastel-50 p-1.5 rounded-2xl flex border border-pastel-200 text-xs font-bold">
         <button onclick="switchAuthTab('mother')" id="tab-auth-mother" class="flex-1 py-2.5 rounded-xl bg-white text-pastel-600 shadow-sm transition">
-          🤰 Saya Ibu (Daftar Baru)
+          🤰 Daftar Baru (Ibu)
         </button>
         <button onclick="switchAuthTab('father')" id="tab-auth-father" class="flex-1 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition">
-          👨 Saya Suami (Pautkan Kod)
+          🔑 Masuk Kod Keluarga
         </button>
       </div>
 
@@ -89,7 +89,8 @@
       <form id="form-register-mother" onsubmit="handleRegisterMother(event)" class="space-y-3.5 text-xs">
         <div>
           <label class="block font-bold text-slate-700 mb-1">Nama Penuh Ibu</label>
-          <input type="text" id="reg-mom-name" required placeholder="Cth: Siti Sarah" class="w-full p-3 border border-pastel-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+          <input type="text" id="reg-mom-name" required placeholder="Cth: Fie Tahir / Siti Sarah" class="w-full p-3 border border-pastel-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+          <p class="text-[10px] text-slate-400 mt-1">Jika nama anda pernah didaftarkan, sistem akan automatik guna semula Kod Keluarga tetap anda.</p>
         </div>
 
         <div>
@@ -141,26 +142,40 @@
         </div>
 
         <button type="submit" id="btn-submit-register" class="w-full py-3.5 bg-gradient-to-r from-pastel-500 to-rose-500 text-white font-extrabold rounded-2xl shadow-lg hover:opacity-95 transition flex items-center justify-center space-x-2">
-          <span>Cipta Profil Keluarga & Jana Kod Pasangan</span>
+          <span>Buka / Cipta Profil Keluarga Tetap</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
       </form>
 
-      <!-- BORANG 2: SUAMI (MASUKKAN KOD JEMPUTAN) -->
+      <!-- BORANG 2: LOG MASUK KOD KELUARGA SEDIA ADA (SUAMI ATAU ISTERI) -->
       <form id="form-join-father" onsubmit="handleJoinFather(event)" class="hidden space-y-3.5 text-xs">
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Nama Penuh Suami / Ayah</label>
-          <input type="text" id="join-dad-name" required placeholder="Cth: Amir Mustaqim" class="w-full p-3 border border-pastel-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <label class="block font-bold text-slate-700 mb-1">Anda Log Masuk Sebagai:</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex items-center space-x-2 p-2.5 border border-pastel-200 rounded-xl bg-pastel-50/50 cursor-pointer">
+              <input type="radio" name="join_role" value="father" checked class="text-teal-600">
+              <span class="font-bold text-slate-800">👨 Suami (Ayah)</span>
+            </label>
+            <label class="flex items-center space-x-2 p-2.5 border border-pastel-200 rounded-xl bg-pastel-50/50 cursor-pointer">
+              <input type="radio" name="join_role" value="mother" class="text-pastel-500">
+              <span class="font-bold text-slate-800">🤰 Isteri (Ibu)</span>
+            </label>
+          </div>
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Kod Jemputan Pasangan (Isteri)</label>
-          <input type="text" id="join-invite-code" required placeholder="Cth: PINK-8821" class="w-full p-3 font-mono font-bold text-base uppercase border border-pastel-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
-          <p class="text-[11px] text-slate-500 mt-1">Dapatkan kod 6-digit ini daripada aplikasi telefon isteri anda.</p>
+          <label class="block font-bold text-slate-700 mb-1">Nama Anda</label>
+          <input type="text" id="join-dad-name" required placeholder="Cth: Amir / Fie Tahir" class="w-full p-3 border border-pastel-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Kod Keluarga Tetap Pasangan</label>
+          <input type="text" id="join-invite-code" required placeholder="Cth: PINK-1147" class="w-full p-3 font-mono font-bold text-base uppercase border border-pastel-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <p class="text-[11px] text-slate-500 mt-1">1 pasangan berkongsi 1 Kod Keluarga yang sama selamanya pada semua peranti.</p>
         </div>
 
         <button type="submit" id="btn-submit-join" class="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-2xl shadow-lg transition flex items-center justify-center space-x-2">
-          <span>Pautkan Akaun Bersama Isteri</span>
+          <span>Log Masuk Ke Kod Keluarga</span>
           <i data-lucide="link" class="w-4 h-4"></i>
         </button>
       </form>
@@ -286,15 +301,15 @@
 
         <!-- VIEW 1: OVERVIEW HAMIL -->
         <div id="view-preg-overview" class="space-y-3">
-          <div class="bg-white rounded-2xl p-4 border border-pastel-200 shadow-sm space-y-2">
+          <div onclick="openModal('modal-add-appointment')" class="bg-white rounded-2xl p-4 border border-pastel-200 shadow-sm space-y-2 cursor-pointer hover:border-pastel-400 transition">
             <div class="flex justify-between items-center">
               <span class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
                 <i data-lucide="calendar" class="w-4 h-4 text-pastel-500"></i>
-                <span id="quick-appt-text">Temujanji KK Terdekat: 12 Nov 2026 (8:30 AM)</span>
+                <span id="quick-appt-text">Tiada Temujanji KK Dijadualkan</span>
               </span>
-              <span class="text-[10px] bg-pastel-100 text-pastel-700 font-bold px-2 py-0.5 rounded-full">Cloud Sync</span>
+              <span class="text-[10px] bg-pastel-100 text-pastel-700 font-bold px-2 py-0.5 rounded-full">+ Kemaskini</span>
             </div>
-            <p class="text-xs text-slate-600" id="quick-appt-desc">Pemeriksaan: <strong>Minum Air Gula (MGTT) & Detail Scan</strong> di KK Bandar Baru Bangi</p>
+            <p class="text-xs text-slate-600" id="quick-appt-desc">Klik di sini untuk rekod tarikh temujanji Klinik Kesihatan (KK) anda yang seterusnya.</p>
           </div>
 
           <div class="bg-white rounded-2xl p-4 border border-pastel-200 shadow-sm space-y-2.5">
@@ -310,8 +325,8 @@
             <div class="space-y-1.5">
               <div class="flex justify-between items-center p-2.5 rounded-xl bg-pastel-50/50 border border-pastel-100 text-xs">
                 <div>
-                  <p class="font-bold text-slate-800">Iberet Folic Acid (1x Pagi)</p>
-                  <p class="text-[10px] text-slate-500">Minum bersama air limau / jus oren</p>
+                  <p class="font-bold text-slate-800">Iberet Folic Acid / Zincofer (1x Pagi)</p>
+                  <p class="text-[10px] text-slate-500">Minum bersama air kosong atau jus oren</p>
                 </div>
                 <button onclick="toggleMed(1)" id="med-1-status" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800">
                   ✓ Dah Makan
@@ -321,15 +336,15 @@
           </div>
 
           <div class="grid grid-cols-2 gap-2 text-center text-xs">
-            <div class="bg-white p-3 rounded-2xl border border-pastel-200 shadow-sm">
+            <div onclick="openModal('modal-add-vital')" class="bg-white p-3 rounded-2xl border border-pastel-200 shadow-sm cursor-pointer hover:border-pastel-400 transition">
               <p class="text-[10px] text-slate-500 font-semibold">BACAAN HB TERAKHIR</p>
-              <p class="text-lg font-black text-emerald-600 my-0.5" id="val-hb-display">11.4 g/dL</p>
-              <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full">Normal KKM ✅</span>
+              <p class="text-lg font-black text-slate-400 my-0.5" id="val-hb-display">Belum Direkod</p>
+              <span id="badge-hb-status" class="inline-block text-[10px] bg-pastel-50 text-pastel-700 font-bold px-2.5 py-0.5 rounded-full border border-pastel-200">+ Rekod Bacaan HB</span>
             </div>
-            <div class="bg-white p-3 rounded-2xl border border-pastel-200 shadow-sm">
+            <div onclick="openModal('modal-add-vital')" class="bg-white p-3 rounded-2xl border border-pastel-200 shadow-sm cursor-pointer hover:border-pastel-400 transition">
               <p class="text-[10px] text-slate-500 font-semibold">TEKANAN DARAH</p>
-              <p class="text-lg font-black text-slate-800 my-0.5" id="val-bp-display">118/74 mmHg</p>
-              <span class="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-full">Sihat</span>
+              <p class="text-lg font-black text-slate-400 my-0.5" id="val-bp-display">Belum Direkod</p>
+              <span id="badge-bp-status" class="inline-block text-[10px] bg-pastel-50 text-pastel-700 font-bold px-2.5 py-0.5 rounded-full border border-pastel-200">+ Rekod Tekanan BP</span>
             </div>
           </div>
         </div>
@@ -976,7 +991,7 @@
       }
     }
 
-    // DAFTAR KELUARGA BARU (IBU)
+    // DAFTAR KELUARGA BARU (ATAU GUNA SEMULA KOD TETAP IBU)
     async function handleRegisterMother(e) {
       e.preventDefault();
       const momName = document.getElementById('reg-mom-name').value.trim();
@@ -990,42 +1005,54 @@
       const birthWeight = document.getElementById('reg-birth-weight').value || '3.2';
 
       const submitBtn = document.getElementById('btn-submit-register');
-      submitBtn.innerText = "Membina Profil Keluarga...";
+      submitBtn.innerText = "Menyemak Profil Keluarga...";
 
-      // Jana kod jemputan 6-digit rawak cth: PINK-4920
       const randomDigits = Math.floor(1000 + Math.random() * 9000);
-      const generatedCode = `PINK-${randomDigits}`;
+      let finalCode = `PINK-${randomDigits}`;
+      let newFamilyId = 'local-' + Date.now();
+      let isExistingFamily = false;
 
       try {
-        let newFamilyId = 'local-' + Date.now();
-
         if (db) {
-          // 1. Simpan keluarga baru ke Supabase
-          const { data: familyData, error: famErr } = await db
+          // 1. Semak dahulu jika nama Ibu ini sudah mempunyai Kod Keluarga Tetap di Supabase!
+          const { data: existingFamilies } = await db
             .from('families')
-            .insert({
-              family_name: `Keluarga ${momName}`,
-              invite_code: generatedCode
-            })
-            .select()
-            .single();
+            .select('*')
+            .ilike('family_name', `Keluarga ${momName}`)
+            .order('created_at', { ascending: true })
+            .limit(1);
 
-          if (!famErr && familyData) {
-            newFamilyId = familyData.id;
-
-            // 2. Simpan anak / kandungan ke Supabase
-            await db
-              .from('children')
+          if (existingFamilies && existingFamilies.length > 0) {
+            // GUNA SEMULA KOD KELUARGA TETAP SEDIA ADA!
+            newFamilyId = existingFamilies[0].id;
+            finalCode = existingFamilies[0].invite_code;
+            isExistingFamily = true;
+          } else {
+            // 2. Jika belum pernah daftar, barulah cipta Kod Keluarga baharu
+            const { data: familyData, error: famErr } = await db
+              .from('families')
               .insert({
-                family_id: newFamilyId,
-                nickname: status === 'born' ? childName : babyNickname,
-                status: status,
-                edd_date: eddDate,
-                birth_date: birthDate,
-                blood_type: 'O+'
-              });
-          } else if (famErr) {
-            console.warn("Supabase insert warning:", famErr);
+                family_name: `Keluarga ${momName}`,
+                invite_code: finalCode
+              })
+              .select()
+              .single();
+
+            if (!famErr && familyData) {
+              newFamilyId = familyData.id;
+
+              // Simpan anak / kandungan ke Supabase
+              await db
+                .from('children')
+                .insert({
+                  family_id: newFamilyId,
+                  nickname: status === 'born' ? childName : babyNickname,
+                  status: status,
+                  edd_date: eddDate,
+                  birth_date: birthDate,
+                  blood_type: 'O+'
+                });
+            }
           }
         }
 
@@ -1033,14 +1060,18 @@
         localStorage.setItem('bukupink_family_id', newFamilyId);
         localStorage.setItem('bukupink_role', 'mother');
         localStorage.setItem('bukupink_user_name', `${momName} (Ibu)`);
-        localStorage.setItem('bukupink_invite_code', generatedCode);
+        localStorage.setItem('bukupink_invite_code', finalCode);
 
         currentFamilyId = newFamilyId;
         currentRole = 'mother';
         currentUserName = `${momName} (Ibu)`;
-        currentFamilyCode = generatedCode;
+        currentFamilyCode = finalCode;
 
-        showToast(`🎉 Profil Keluarga berjaya dicipta! Kod Pasangan: ${generatedCode}`);
+        if (isExistingFamily) {
+          showToast(`🌸 Selamat kembali ${momName}! Kod Keluarga Tetap: ${finalCode}`);
+        } else {
+          showToast(`🎉 Profil Keluarga dicipta! Kod Tetap Pasangan: ${finalCode}`);
+        }
         showDashboardScreen();
 
         if (status === 'born') switchPhase('child');
@@ -1050,19 +1081,22 @@
         console.error("Ralat pendaftaran:", err);
         showToast("Ralat mendaftar profil. Sila cuba lagi.");
       } finally {
-        submitBtn.innerHTML = `<span>Cipta Profil Keluarga & Jana Kod Pasangan</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+        submitBtn.innerHTML = `<span>Buka / Cipta Profil Keluarga Tetap</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
         lucide.createIcons();
       }
     }
 
-    // PAUTKAN AKAUN SUAMI
+    // LOG MASUK MENGGUNAKAN KOD KELUARGA TETAP (SUAMI ATAU ISTERI)
     async function handleJoinFather(e) {
       e.preventDefault();
-      const dadName = document.getElementById('join-dad-name').value.trim();
+      const userName = document.getElementById('join-dad-name').value.trim();
       const enteredCode = document.getElementById('join-invite-code').value.trim().toUpperCase();
+      const selectedRoleEl = document.querySelector('input[name="join_role"]:checked');
+      const selectedRole = selectedRoleEl ? selectedRoleEl.value : 'father';
+      const roleLabel = selectedRole === 'mother' ? 'Ibu' : 'Ayah';
 
       const submitBtn = document.getElementById('btn-submit-join');
-      submitBtn.innerText = "Menyemak kod pasangan...";
+      submitBtn.innerText = "Menyemak kod keluarga...";
 
       try {
         const { data: familyData, error } = await db
@@ -1072,31 +1106,31 @@
           .single();
 
         if (error || !familyData) {
-          showToast("❌ Kod pasangan tidak dijumpai. Sila pastikan kod betul!");
-          submitBtn.innerHTML = `<span>Pautkan Akaun Bersama Isteri</span><i data-lucide="link" class="w-4 h-4"></i>`;
+          showToast("❌ Kod keluarga tidak dijumpai. Sila pastikan kod betul!");
+          submitBtn.innerHTML = `<span>Log Masuk Ke Kod Keluarga</span><i data-lucide="link" class="w-4 h-4"></i>`;
           lucide.createIcons();
           return;
         }
 
         // Pautan berjaya!
         localStorage.setItem('bukupink_family_id', familyData.id);
-        localStorage.setItem('bukupink_role', 'father');
-        localStorage.setItem('bukupink_user_name', `${dadName} (Ayah)`);
+        localStorage.setItem('bukupink_role', selectedRole);
+        localStorage.setItem('bukupink_user_name', `${userName} (${roleLabel})`);
         localStorage.setItem('bukupink_invite_code', familyData.invite_code);
 
         currentFamilyId = familyData.id;
-        currentRole = 'father';
-        currentUserName = `${dadName} (Ayah)`;
+        currentRole = selectedRole;
+        currentUserName = `${userName} (${roleLabel})`;
         currentFamilyCode = familyData.invite_code;
 
-        showToast(`❤️ Berjaya berpaut dengan ${familyData.family_name}!`);
+        showToast(`❤️ Berjaya masuk ke ${familyData.family_name} (${familyData.invite_code})!`);
         showDashboardScreen();
 
       } catch (err) {
-        console.error("Ralat sambung suami:", err);
-        showToast("Ralat menyambung kod pasangan.");
+        console.error("Ralat sambung kod keluarga:", err);
+        showToast("Ralat menyambung kod keluarga.");
       } finally {
-        submitBtn.innerHTML = `<span>Pautkan Akaun Bersama Isteri</span><i data-lucide="link" class="w-4 h-4"></i>`;
+        submitBtn.innerHTML = `<span>Log Masuk Ke Kod Keluarga</span><i data-lucide="link" class="w-4 h-4"></i>`;
         lucide.createIcons();
       }
     }
@@ -1166,25 +1200,62 @@
 
       if (error || !data) return;
 
-      // Update hero anak
+      // Update hero anak & photobook
       document.getElementById('hero-child-name').innerText = data.nickname || 'Anak Comel';
+      const pbTitle = document.getElementById('pb-child-title');
+      if (pbTitle) pbTitle.innerText = data.nickname || 'Anak Comel';
+
       if (data.birth_date) {
         document.getElementById('hero-child-sub').innerText = `Lahir: ${data.birth_date} | Darah: ${data.blood_type || 'O+'}`;
-        // Kira umur
+        const pbBirth = document.getElementById('pb-birth-date');
+        if (pbBirth) pbBirth.innerText = data.birth_date;
+
         const bDate = new Date(data.birth_date);
         const now = new Date();
-        const diffMonths = Math.floor((now - bDate) / (1000 * 60 * 60 * 24 * 30.4375));
-        document.getElementById('hero-child-age-tag').innerText = `👶 Umur: ${diffMonths} Bulan`;
+        const diffDaysTotal = Math.max(0, Math.floor((now - bDate) / (1000 * 60 * 60 * 24)));
+        const months = Math.floor(diffDaysTotal / 30);
+        const days = diffDaysTotal % 30;
+        document.getElementById('hero-child-age-tag').innerText = `👶 Umur: ${months} Bulan ${days} Hari`;
+      } else {
+        document.getElementById('hero-child-sub').innerText = `Darah: ${data.blood_type || 'O+'}`;
+        document.getElementById('hero-child-age-tag').innerText = `👶 Dalam Kandungan / Baru Lahir`;
       }
 
-      // Update hero hamil
+      // Update hero hamil secara dinamik ikut EDD
       document.getElementById('hero-baby-name').innerText = `${data.nickname || 'Bayi'} (Kandungan)`;
       if (data.edd_date) {
         document.getElementById('hero-edd-display').innerText = data.edd_date;
         const edd = new Date(data.edd_date);
         const now = new Date();
         const diffDays = Math.ceil((edd - now) / (1000 * 60 * 60 * 24));
-        document.getElementById('hero-days-left').innerText = diffDays > 0 ? diffDays : 0;
+        const daysLeft = diffDays > 0 ? diffDays : 0;
+        document.getElementById('hero-days-left').innerText = daysLeft;
+
+        // Kira minggu kehamilan (40 minggu = 280 hari)
+        const daysPregnant = Math.max(7, 280 - daysLeft);
+        const currentWeek = Math.min(40, Math.max(1, Math.floor(daysPregnant / 7)));
+        const progressPct = Math.min(100, Math.max(5, Math.round((currentWeek / 40) * 100)));
+
+        let trimesterText = `👶 Trimester Pertama (Minggu ${currentWeek})`;
+        let fruitText = "Saiz bayi: Sebesar Bijieri / Limau Nipis";
+        if (currentWeek >= 28) {
+          trimesterText = `👶 Trimester Ketiga (Minggu ${currentWeek})`;
+          fruitText = "Saiz bayi: Sebesar Buah Kelapa / Tembikai (~1.5kg - 3.0kg)";
+        } else if (currentWeek >= 13) {
+          trimesterText = `👶 Trimester Kedua (Minggu ${currentWeek})`;
+          fruitText = "Saiz bayi: Sebesar Buah Avokado / Betik (~300g - 800g)";
+        }
+
+        document.getElementById('hero-trimester-tag').innerText = trimesterText;
+        document.getElementById('hero-baby-sub').innerText = fruitText;
+        document.getElementById('hero-progress-text').innerText = `${progressPct}% Tempoh Hamil`;
+        document.getElementById('hero-progress-bar').style.width = `${progressPct}%`;
+      } else {
+        document.getElementById('hero-edd-display').innerText = "Belum Ditetapkan";
+        document.getElementById('hero-days-left').innerText = "--";
+        document.getElementById('hero-trimester-tag').innerText = "🤰 Fasa Kehamilan Aktif";
+        document.getElementById('hero-baby-sub').innerText = "Rekod perkembangan harian ibu & kandungan";
+        document.getElementById('hero-progress-text').innerText = "Pantauan Buku Pink";
       }
     }
 
@@ -1199,6 +1270,8 @@
       const container = document.getElementById('appointment-list');
       if (error || !data || data.length === 0) {
         container.innerHTML = `<div class="p-4 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-pastel-200">Tiada janji temu dijadualkan. Klik '+ Tambah' untuk rekod janji temu pertama anda.</div>`;
+        document.getElementById('quick-appt-text').innerText = "Tiada Temujanji KK Dijadualkan";
+        document.getElementById('quick-appt-desc').innerHTML = "Klik di sini untuk rekod tarikh temujanji Klinik Kesihatan (KK) anda yang seterusnya.";
         return;
       }
 
@@ -1224,8 +1297,8 @@
       });
 
       if (data[0]) {
-        document.getElementById('quick-appt-text').innerText = `Temujanji: ${data[0].appointment_date} (${data[0].appointment_time || 'Pagi'})`;
-        document.getElementById('quick-appt-desc').innerHTML = `Pemeriksaan: <strong>${data[0].title}</strong> di ${data[0].clinic_name || 'KK'}`;
+        document.getElementById('quick-appt-text').innerText = `Temujanji KK: ${data[0].appointment_date} (${data[0].appointment_time || 'Pagi'})`;
+        document.getElementById('quick-appt-desc').innerHTML = `Pemeriksaan: <strong>${data[0].title}</strong> di ${data[0].clinic_name || 'Klinik Kesihatan'}`;
       }
     }
 
@@ -1238,8 +1311,25 @@
         .order('logged_date', { ascending: false });
 
       const container = document.getElementById('vital-logs');
+      const hbDisplay = document.getElementById('val-hb-display');
+      const hbBadge = document.getElementById('badge-hb-status');
+      const bpDisplay = document.getElementById('val-bp-display');
+      const bpBadge = document.getElementById('badge-bp-status');
+
       if (error || !data || data.length === 0) {
-        container.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">Tiada rekod bacaan vital lagi.</div>`;
+        container.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">Tiada rekod bacaan vital lagi. Klik '+ Log Bacaan Baru' di atas.</div>`;
+        hbDisplay.innerText = "Belum Direkod";
+        hbDisplay.className = "text-lg font-black text-slate-400 my-0.5";
+        if (hbBadge) {
+          hbBadge.innerText = "+ Rekod Bacaan HB";
+          hbBadge.className = "inline-block text-[10px] bg-pastel-50 text-pastel-700 font-bold px-2.5 py-0.5 rounded-full border border-pastel-200";
+        }
+        bpDisplay.innerText = "Belum Direkod";
+        bpDisplay.className = "text-lg font-black text-slate-400 my-0.5";
+        if (bpBadge) {
+          bpBadge.innerText = "+ Rekod Tekanan BP";
+          bpBadge.className = "inline-block text-[10px] bg-pastel-50 text-pastel-700 font-bold px-2.5 py-0.5 rounded-full border border-pastel-200";
+        }
         return;
       }
 
@@ -1262,8 +1352,35 @@
       });
 
       if (data[0]) {
-        document.getElementById('val-hb-display').innerText = `${data[0].hb_reading} g/dL`;
-        if (data[0].blood_pressure) document.getElementById('val-bp-display').innerText = `${data[0].blood_pressure} mmHg`;
+        const latestHb = parseFloat(data[0].hb_reading);
+        hbDisplay.innerText = `${latestHb.toFixed(1)} g/dL`;
+
+        if (latestHb < 9.0) {
+          hbDisplay.className = "text-lg font-black text-rose-600 my-0.5";
+          if (hbBadge) {
+            hbBadge.innerText = "Anemia Teruk 🚨";
+            hbBadge.className = "inline-block text-[10px] bg-rose-50 text-rose-700 font-bold px-2 py-0.5 rounded-full border border-rose-200";
+          }
+        } else if (latestHb < 11.0) {
+          hbDisplay.className = "text-lg font-black text-amber-600 my-0.5";
+          if (hbBadge) {
+            hbBadge.innerText = "Anemia Ringan ⚠️";
+            hbBadge.className = "inline-block text-[10px] bg-amber-50 text-amber-700 font-bold px-2 py-0.5 rounded-full border border-amber-200";
+          }
+        } else {
+          hbDisplay.className = "text-lg font-black text-emerald-600 my-0.5";
+          if (hbBadge) {
+            hbBadge.innerText = "Normal KKM ✅";
+            hbBadge.className = "inline-block text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200";
+          }
+        }
+
+        bpDisplay.innerText = `${data[0].blood_pressure || '120/80'} mmHg`;
+        bpDisplay.className = "text-lg font-black text-slate-800 my-0.5";
+        if (bpBadge) {
+          bpBadge.innerText = "Direkod ✅";
+          bpBadge.className = "inline-block text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-full";
+        }
       }
     }
 
