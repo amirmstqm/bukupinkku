@@ -227,10 +227,19 @@
       </form>
 
       <!-- Pilihan Lihat Demo Contoh -->
-      <div class="pt-2 border-t border-slate-100 text-center">
-        <button onclick="loadDemoMode()" data-i18n="btn_demo_mode" class="text-xs text-slate-500 hover:text-pastel-600 font-semibold underline">
+      <div class="pt-2 border-t border-slate-100 text-center space-y-2">
+        <button onclick="loadDemoMode()" data-i18n="btn_demo_mode" class="text-xs text-slate-500 hover:text-pastel-600 font-semibold underline block mx-auto">
           👀 Atau Terus Cuba Mod Demo (Keluarga Contoh Amir & Sarah)
         </button>
+
+        <!-- Jaminan Privasi Data PDPA Onboarding -->
+        <div class="pt-2 border-t border-slate-100/70 flex items-center justify-center space-x-1.5 text-[10px] text-slate-400">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+          <span data-i18n="onboard_privacy_note">Data kesihatan keluarga dilindungi.</span>
+          <button type="button" onclick="openPrivacyModal()" class="text-pastel-600 hover:text-pastel-800 underline font-semibold transition" data-i18n="link_privacy_pdpa">
+            Dasar Privasi & PDPA
+          </button>
+        </div>
       </div>
 
     </div>
@@ -406,8 +415,12 @@
       </div>
 
       <!-- Footer Sidebar -->
-      <div class="p-3 border-t border-slate-100 bg-slate-50 text-[10px] text-slate-400 text-center">
-        BukuPinkKu Digital Companion
+      <div class="p-3 border-t border-slate-100 bg-slate-50 text-[10px] text-slate-500 flex flex-col items-center space-y-1">
+        <button type="button" onclick="openPrivacyModal(); toggleSidebar(false);" class="text-slate-500 hover:text-slate-800 underline transition flex items-center space-x-1 font-semibold">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+          <span data-i18n="btn_privacy_policy">Dasar Privasi & PDPA</span>
+        </button>
+        <span class="text-[9px] text-slate-400" data-i18n="sidebar_privacy_sub">BukuPinkKu • 100% Persendirian Keluarga</span>
       </div>
     </aside>
     
@@ -1514,6 +1527,103 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: DASAR PRIVASI & PDPA (DATA KESIHATAN KELUARGA) ================= -->
+  <div id="modal-privacy-policy" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col">
+      <!-- Header -->
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 data-i18n="mdl_privacy_title" class="text-sm font-extrabold text-slate-800">Dasar Privasi & Perlindungan Data</h3>
+            <p data-i18n="mdl_privacy_sub" class="text-[10px] text-slate-400">Pematuhan PDPA Malaysia 2010 • 100% Persendirian</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-privacy-policy')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Scrollable Content -->
+      <div class="overflow-y-auto space-y-3.5 text-xs text-slate-600 pr-1 leading-relaxed">
+        <!-- Ikrar Utama -->
+        <div class="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50/80 to-teal-50/80 border border-emerald-200/80 space-y-1">
+          <p class="font-bold text-emerald-900 text-xs flex items-center space-x-1.5">
+            <span>🛡️</span>
+            <span data-i18n="pdpa_pledge_title">Ikrar Privasi BukuPinkKu</span>
+          </p>
+          <p class="text-[11px] text-emerald-800" data-i18n="pdpa_pledge_desc">
+            Kami memahami bahawa data kehamilan, kesuburan, dan anak anda adalah rahsia peribadi keluarga yang amat sensitif. Kami berikrar data anda tidak akan sesekali dijual kepada mana-mana syarikat pihak ketiga atau agensi pemasaran.
+          </p>
+        </div>
+
+        <!-- Fasal 1: Kerahsiaan Data Kesihatan -->
+        <div class="space-y-1">
+          <h4 class="font-bold text-slate-800 text-xs flex items-center space-x-1.5">
+            <span>🩺</span>
+            <span data-i18n="pdpa_sec1_title">1. Maklumat Kesihatan Yang Dikumpul</span>
+          </h4>
+          <p class="text-[11px] text-slate-600" data-i18n="pdpa_sec1_desc">
+            Data seperti bacaan HB, tekanan darah, rekod janji temu KK, kitaran haid (LMP), ujian OPK, warkah bakal anak, dan alahan hanya disimpan untuk kegunaan pantauan anda dan pasangan.
+          </p>
+        </div>
+
+        <!-- Fasal 2: Kawalan Kod Keluarga Pasangan -->
+        <div class="space-y-1">
+          <h4 class="font-bold text-slate-800 text-xs flex items-center space-x-1.5">
+            <span>🔑</span>
+            <span data-i18n="pdpa_sec2_title">2. Akses Terhad (1 Keluarga, 1 Kod)</span>
+          </h4>
+          <p class="text-[11px] text-slate-600" data-i18n="pdpa_sec2_desc">
+            Setiap keluarga mempunyai Kod Unik tersendiri. Hanya pasangan yang anda kongsikan kod ini sahaja yang boleh melihat atau mengemaskini rekod tersebut secara masa nyata.
+          </p>
+        </div>
+
+        <!-- Fasal 3: Tiada Iklan & Tiada Jual Data -->
+        <div class="space-y-1">
+          <h4 class="font-bold text-slate-800 text-xs flex items-center space-x-1.5">
+            <span>🚫</span>
+            <span data-i18n="pdpa_sec3_title">3. Bebas Iklan & Tidak Dikongsi Pihak Ketiga</span>
+          </h4>
+          <p class="text-[11px] text-slate-600" data-i18n="pdpa_sec3_desc">
+            BukuPinkKu bebas daripada penjejak iklan komersial. Kami tidak berkongsi atau menjual profil kesihatan anda kepada syarikat insurans, farmaseutikal, atau perkhidmatan pemasaran luar.
+          </p>
+        </div>
+
+        <!-- Fasal 4: Hak Pemadaman & Akses (PDPA 2010) -->
+        <div class="space-y-1">
+          <h4 class="font-bold text-slate-800 text-xs flex items-center space-x-1.5">
+            <span>🗑️</span>
+            <span data-i18n="pdpa_sec4_title">4. Hak Akses & Pemadaman Data</span>
+          </h4>
+          <p class="text-[11px] text-slate-600" data-i18n="pdpa_sec4_desc">
+            Selaras dengan Akta Perlindungan Data Peribadi 2010 (PDPA Malaysia), anda mempunyai hak mutlak untuk memadam sebarang rekod klinikal, nota, atau memohon pemadaman penuh profil keluarga anda pada bila-bila masa melalui ruang Maklum Balas.
+          </p>
+        </div>
+
+        <!-- Fasal 5: Keselamatan Awan (Encrypted Cloud) -->
+        <div class="space-y-1">
+          <h4 class="font-bold text-slate-800 text-xs flex items-center space-x-1.5">
+            <span>☁️</span>
+            <span data-i18n="pdpa_sec5_title">5. Keselamatan Pelayan & Enkripsi</span>
+          </h4>
+          <p class="text-[11px] text-slate-600" data-i18n="pdpa_sec5_desc">
+            Semua transaksi data antara telefon anda dan pangkalan data dilindungi dengan sambungan selamat disulitkan (HTTPS / TLS Enkripsi).
+          </p>
+        </div>
+      </div>
+
+      <!-- Butang Tutup -->
+      <div class="pt-3 border-t border-slate-100">
+        <button onclick="closeModal('modal-privacy-policy')" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition" data-i18n="btn_close_privacy">
+          Faham & Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= MODAL: PRATONTON & EKSPORT PHOTOBOOK PDF ================= -->
   <div id="modal-photobook-preview" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 hidden flex flex-col items-center justify-center p-2 sm:p-4 overflow-y-auto">
     <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden my-auto">
@@ -1913,7 +2023,26 @@
         lbl_contact_optional: "No. Telefon / Emel (Pilihan)",
         ph_contact_optional: "Cth: 012-3456789 atau nama@gmail.com",
         hint_contact_feedback: "Tinggalkan no. telefon atau emel jika anda mahu kami hubungi semula.",
-        btn_send_feedback: "Hantar Maklum Balas"
+        btn_send_feedback: "Hantar Maklum Balas",
+        btn_privacy_policy: "Dasar Privasi & PDPA",
+        link_privacy_pdpa: "Dasar Privasi & PDPA",
+        onboard_privacy_note: "Data kesihatan keluarga dilindungi.",
+        sidebar_privacy_sub: "BukuPinkKu • 100% Persendirian Keluarga",
+        mdl_privacy_title: "Dasar Privasi & Perlindungan Data",
+        mdl_privacy_sub: "Pematuhan PDPA Malaysia 2010 • 100% Persendirian",
+        pdpa_pledge_title: "Ikrar Privasi BukuPinkKu",
+        pdpa_pledge_desc: "Kami memahami bahawa data kehamilan, kesuburan, dan anak anda adalah rahsia peribadi keluarga yang amat sensitif. Kami berikrar data anda tidak akan sesekali dijual kepada mana-mana syarikat pihak ketiga atau agensi pemasaran.",
+        pdpa_sec1_title: "1. Maklumat Kesihatan Yang Dikumpul",
+        pdpa_sec1_desc: "Data seperti bacaan HB, tekanan darah, rekod janji temu KK, kitaran haid (LMP), ujian OPK, warkah bakal anak, dan alahan hanya disimpan untuk kegunaan pantauan anda dan pasangan.",
+        pdpa_sec2_title: "2. Akses Terhad (1 Keluarga, 1 Kod)",
+        pdpa_sec2_desc: "Setiap keluarga mempunyai Kod Unik tersendiri. Hanya pasangan yang anda kongsikan kod ini sahaja yang boleh melihat atau mengemaskini rekod tersebut secara masa nyata.",
+        pdpa_sec3_title: "3. Bebas Iklan & Tidak Dikongsi Pihak Ketiga",
+        pdpa_sec3_desc: "BukuPinkKu bebas daripada penjejak iklan komersial. Kami tidak berkongsi atau menjual profil kesihatan anda kepada syarikat insurans, farmaseutikal, atau perkhidmatan pemasaran luar.",
+        pdpa_sec4_title: "4. Hak Akses & Pemadaman Data",
+        pdpa_sec4_desc: "Selaras dengan Akta Perlindungan Data Peribadi 2010 (PDPA Malaysia), anda mempunyai hak mutlak untuk memadam sebarang rekod klinikal, nota, atau memohon pemadaman penuh profil keluarga anda pada bila-bila masa melalui ruang Maklum Balas.",
+        pdpa_sec5_title: "5. Keselamatan Pelayan & Enkripsi",
+        pdpa_sec5_desc: "Semua transaksi data antara telefon anda dan pangkalan data dilindungi dengan sambungan selamat disulitkan (HTTPS / TLS Enkripsi).",
+        btn_close_privacy: "Faham & Tutup"
       },
       en: {
         onboard_subtitle: "Digital Pregnancy (Pink Book) & Child Growth Companion (0–3 Years) for Couples",
@@ -2166,7 +2295,26 @@
         lbl_contact_optional: "Phone / Email (Optional)",
         ph_contact_optional: "E.g., 012-3456789 or name@gmail.com",
         hint_contact_feedback: "Leave your phone or email if you wish to receive a reply.",
-        btn_send_feedback: "Send Feedback"
+        btn_send_feedback: "Send Feedback",
+        btn_privacy_policy: "Privacy Policy & PDPA",
+        link_privacy_pdpa: "Privacy Policy & PDPA",
+        onboard_privacy_note: "Family health data is protected.",
+        sidebar_privacy_sub: "BukuPinkKu • 100% Private Family Vault",
+        mdl_privacy_title: "Privacy Policy & Data Protection",
+        mdl_privacy_sub: "Malaysia PDPA 2010 Compliant • 100% Private",
+        pdpa_pledge_title: "BukuPinkKu Privacy Pledge",
+        pdpa_pledge_desc: "We understand that pregnancy, fertility, and child growth data are deeply personal family matters. We strictly pledge that your personal data is never sold, rented, or traded to any third parties or marketing agencies.",
+        pdpa_sec1_title: "1. Health Information Collected",
+        pdpa_sec1_desc: "Data such as HB readings, blood pressure, clinic appointments, menstrual cycle (LMP), OPK logs, letters to future baby, and allergies are stored solely for you and your partner's monitoring.",
+        pdpa_sec2_title: "2. Restricted Access (1 Family, 1 Code)",
+        pdpa_sec2_desc: "Each family operates under a unique Family Code. Only the partner you share this code with can access or update these records in real time.",
+        pdpa_sec3_title: "3. Ad-Free & Zero Third-Party Selling",
+        pdpa_sec3_desc: "BukuPinkKu is completely free of commercial ad tracking. We do not sell or disclose your health records to insurers, pharmaceuticals, or advertising networks.",
+        pdpa_sec4_title: "4. Access & Deletion Rights (PDPA 2010)",
+        pdpa_sec4_desc: "In compliance with Malaysia's Personal Data Protection Act 2010 (PDPA), you retain full rights to delete individual health records or request full family profile deletion anytime via the Feedback form.",
+        pdpa_sec5_title: "5. Server Security & Encryption",
+        pdpa_sec5_desc: "All data transmitted between your device and the cloud database is secured with strong industry-standard encryption (HTTPS / TLS).",
+        btn_close_privacy: "Understood & Close"
       }
     };
 
@@ -4078,6 +4226,10 @@
       } else {
         showToast(textToCopy);
       }
+    }
+
+    function openPrivacyModal() {
+      openModal('modal-privacy-policy');
     }
 
     function openFeedbackModal() {
