@@ -1,8 +1,12 @@
-const CACHE_NAME = 'bukupinkku-v1';
+const CACHE_NAME = 'bukupinkku-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './apple-touch-icon.png',
+  './icon-192.png',
+  './icon-512.png',
+  './favicon.png'
 ];
 
 self.addEventListener('install', (event) => {
