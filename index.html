@@ -481,8 +481,8 @@
               <span id="hero-ttc-status-badge" class="inline-block bg-white/90 border border-rose-200 text-[11px] font-bold px-2.5 py-1 rounded-full mb-1.5 text-rose-700 shadow-sm">
                 🌸 Waktu Paling Subur (Hari ke-14)
               </span>
-              <h2 id="hero-ttc-name" class="text-xl font-extrabold text-slate-800">Ikhtiar Zuriat Comel</h2>
-              <p class="text-xs text-slate-600 font-medium mt-0.5" id="hero-ttc-sub">Peluang persenyawaan tinggi dalam 3 hari ini</p>
+              <h2 id="hero-ttc-name" data-i18n="hero_ttc_title" class="text-xl font-extrabold text-slate-800">Ikhtiar Zuriat Comel</h2>
+              <p class="text-xs text-slate-600 font-medium mt-0.5" id="hero-ttc-sub" data-i18n="hero_ttc_sub">Peluang persenyawaan tinggi dalam jendela subur ini</p>
             </div>
             <div class="text-right bg-white/80 border border-rose-100 px-3 py-1.5 rounded-2xl shadow-sm">
               <p class="text-2xl font-black text-rose-600" id="ttc-days-to-ovulation">2</p>
@@ -524,12 +524,12 @@
             <div class="flex justify-between items-center">
               <span class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
                 <i data-lucide="sparkles" class="w-4 h-4 text-rose-500"></i>
-                <span data-i18n="hdr_bd_tips">Tips Waktu Bersama Pasangan (Baby Dance)</span>
+                <span data-i18n="hdr_bd_tips">Tips Waktu Bersama Pasangan (Waktu Subur)</span>
               </span>
-              <span class="text-[10px] bg-rose-50 text-rose-700 font-bold px-2 py-0.5 rounded-full border border-rose-200">Rekomendasi</span>
+              <span data-i18n="ttc_badge_recommended" class="text-[10px] bg-rose-50 text-rose-700 font-bold px-2 py-0.5 rounded-full border border-rose-200">Rekomendasi</span>
             </div>
             <p data-i18n="desc_bd_tips" class="text-xs text-slate-600 leading-relaxed">
-              Sperma boleh bertahan 3 – 5 hari di dalam rahim, manakala ovum bertahan 12 – 24 jam selepas ovulasi. Bersama pada hari subur selang 1-2 hari memberikan peluang persenyawaan terbaik.
+              Sperma mampu bertahan 3 – 5 hari di dalam rahim, manakala ovum bertahan 12 – 24 jam selepas ovulasi. Bersama pada hari subur selang 1-2 hari memberikan peluang persenyawaan yang optimum.
             </p>
           </div>
         </div>
@@ -544,7 +544,7 @@
             </button>
           </div>
           <div class="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 overflow-hidden shadow-sm" id="opk-logs-list">
-            <div class="p-4 text-center text-xs text-slate-400">Belum ada ujian OPK direkodkan. Klik '+ Log Ujian Baru'.</div>
+            <div class="p-4 text-center text-xs text-slate-400" data-i18n="opk_empty_state">Belum ada ujian OPK direkodkan. Klik '+ Log Ujian Baru'.</div>
           </div>
         </div>
 
@@ -552,9 +552,9 @@
         <div id="view-ttc-supplements" class="hidden space-y-3">
           <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
             <div class="flex justify-between items-center">
-              <h3 data-i18n="hdr_supps_couple" class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
+              <h3 class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
                 <i data-lucide="pill" class="w-4 h-4 text-teal-600"></i>
-                <span>Senarai Semak Vitamin & Suplemen Pasangan</span>
+                <span data-i18n="hdr_supps_couple">Senarai Semak Vitamin & Suplemen Pasangan</span>
               </h3>
               <button onclick="sendNudge('ubat')" data-i18n="btn_remind_partner" class="text-[11px] font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg">
                 Ingatkan Pasangan 🔔
@@ -565,9 +565,9 @@
               <!-- Isteri -->
               <div class="p-3 rounded-xl bg-pink-50/60 border border-pink-100 flex items-center justify-between">
                 <div>
-                  <span class="text-[10px] bg-pink-200 text-pink-900 font-bold px-1.5 py-0.5 rounded">Untuk Isteri</span>
-                  <p class="font-bold text-slate-800 mt-1">Asid Folik 5mg / CoQ10 / Inositol</p>
-                  <p class="text-[10px] text-slate-500">Membantu kualiti ovum & pembentukan tiub neural</p>
+                  <span data-i18n="lbl_supp_wife_tag" class="text-[10px] bg-pink-200 text-pink-900 font-bold px-1.5 py-0.5 rounded">Untuk Isteri</span>
+                  <p data-i18n="lbl_supp_wife_name" class="font-bold text-slate-800 mt-1">Asid Folik 5mg / CoQ10 / Inositol</p>
+                  <p data-i18n="lbl_supp_wife_desc" class="text-[10px] text-slate-500">Membantu kualiti ovum & pembentukan awal saraf janin</p>
                 </div>
                 <button onclick="toggleTtcMed('wife')" id="btn-ttc-med-wife" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800">
                   ✓ Dah Ambil
@@ -577,9 +577,9 @@
               <!-- Suami -->
               <div class="p-3 rounded-xl bg-sky-50/60 border border-sky-100 flex items-center justify-between">
                 <div>
-                  <span class="text-[10px] bg-sky-200 text-sky-900 font-bold px-1.5 py-0.5 rounded">Untuk Suami</span>
-                  <p class="font-bold text-slate-800 mt-1">Zinc & Selenium / Multivitamin Lelaki</p>
-                  <p class="text-[10px] text-slate-500">Meningkatkan bilangan & motiliti sperma sihat</p>
+                  <span data-i18n="lbl_supp_husb_tag" class="text-[10px] bg-sky-200 text-sky-900 font-bold px-1.5 py-0.5 rounded">Untuk Suami</span>
+                  <p data-i18n="lbl_supp_husb_name" class="font-bold text-slate-800 mt-1">Zinc & Selenium / Multivitamin Lelaki</p>
+                  <p data-i18n="lbl_supp_husb_desc" class="text-[10px] text-slate-500">Meningkatkan kualiti, bilangan & motiliti sperma sihat</p>
                 </div>
                 <button onclick="toggleTtcMed('husband')" id="btn-ttc-med-husband" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700">
                   Belum Ambil
@@ -594,12 +594,12 @@
           <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 p-4 rounded-2xl space-y-2 text-xs">
             <div class="flex items-center space-x-2">
               <span class="text-xl">🤲</span>
-              <h3 class="font-bold text-amber-950">Doa Memohon Zuriat Yang Baik (Surah Ali 'Imran: 38)</h3>
+              <h3 data-i18n="hdr_doa_1" class="font-bold text-amber-950">Doa Memohon Zuriat Yang Baik (Surah Ali 'Imran: 38)</h3>
             </div>
             <p class="font-serif text-sm text-slate-850 leading-relaxed text-right font-medium py-1">
               رَبِّ هَبْ لِي مِن لَّدُنكَ ذُرِّيَّةً طَيِّبَةً ۖ إِنَّكَ سَمِيعُ الدُّعَاءِ
             </p>
-            <p class="text-slate-700 italic text-[11px]">
+            <p data-i18n="trans_doa_1" class="text-slate-700 italic text-[11px]">
               "Wahai Tuhanku! Kurniakanlah kepadaku dari sisi-Mu zuriat keturunan yang baik; sesungguhnya Engkau sentiasa Mendengar doa."
             </p>
           </div>
@@ -607,14 +607,37 @@
           <div class="bg-gradient-to-r from-rose-50 to-purple-50 border border-rose-200 p-4 rounded-2xl space-y-2 text-xs">
             <div class="flex items-center space-x-2">
               <span class="text-xl">💌</span>
-              <h3 class="font-bold text-rose-950">Doa Nabi Zakaria a.s. (Surah Al-Anbiya': 89)</h3>
+              <h3 data-i18n="hdr_doa_2" class="font-bold text-rose-950">Doa Nabi Zakaria a.s. (Surah Al-Anbiya': 89)</h3>
             </div>
             <p class="font-serif text-sm text-slate-850 leading-relaxed text-right font-medium py-1">
               رَبِّ لَا تَذَرْنِي فَرْدًا وَأَنتَ خَيْرُ الْوَارِثِينَ
             </p>
-            <p class="text-slate-700 italic text-[11px]">
+            <p data-i18n="trans_doa_2" class="text-slate-700 italic text-[11px]">
               "Wahai Tuhanku! Janganlah Engkau biarkan daku seorang diri, dan Engkaulah jua sebaik-baik yang mewarisi."
             </p>
+          </div>
+
+          <!-- KAD INFAQ / SEDEKAH IKHTIAR PEJUANG TTC (IDEA 1: SEDEKAH SUBUH / NIAT HAJAT) -->
+          <div class="bg-gradient-to-br from-rose-50 via-pink-50 to-amber-50 border border-rose-200/90 p-4 rounded-3xl text-xs space-y-3 shadow-xs">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="text-xl">🌱</span>
+                <div>
+                  <h4 data-i18n="ttc_donate_box_title" class="font-bold text-slate-800">Tabung Infaq & Sedekah Pejuang TTC</h4>
+                  <p data-i18n="ttc_donate_box_sub" class="text-[10px] text-rose-700 font-medium">Amalan Sedekah Niat Hajat Zuriat</p>
+                </div>
+              </div>
+              <span data-i18n="ttc_badge_voluntary" class="text-[10px] bg-white border border-rose-200 text-rose-700 font-bold px-2 py-0.5 rounded-full shadow-xs">Suka Rela</span>
+            </div>
+
+            <p data-i18n="ttc_donate_box_desc" class="text-[11px] text-slate-600 leading-relaxed bg-white/75 p-3 rounded-2xl border border-rose-100">
+              Di samping doa dan ikhtiar harian, niatkan sedikit sumbangan ikhlas (cth: Sedekah Subuh). Semoga menjadi asbab keberkatan rezeki zuriat dan membantu kami mengekalkan aplikasi ini 100% percuma tanpa iklan untuk semua pejuang TTC.
+            </p>
+
+            <button onclick="openCoffeeModal('ttc')" data-i18n="btn_ttc_sedekah" class="w-full py-2.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold rounded-xl transition shadow-sm flex items-center justify-center space-x-2 text-xs transform active:scale-95">
+              <span>🤲</span>
+              <span>Niat Sedekah Ikhtiar (DuitNow / Coffee)</span>
+            </button>
           </div>
         </div>
 
@@ -1121,22 +1144,22 @@
   <div id="modal-ttc-settings" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-rose-200">
       <div class="flex justify-between items-center">
-        <h3 class="text-base font-bold text-slate-800">Kemaskini Kitaran Haid & Ovulasi</h3>
+        <h3 class="text-base font-bold text-slate-800" data-i18n="mdl_ttc_settings_title">Kemaskini Kitaran Haid & Ovulasi</h3>
         <button onclick="closeModal('modal-ttc-settings')" class="text-slate-400 hover:text-slate-600">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
       <form onsubmit="handleSaveTtcSettings(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block font-semibold mb-1">Tarikh Hari Pertama Haid Terakhir (LMP)</label>
+          <label class="block font-semibold mb-1" data-i18n="lbl_lmp_date">Tarikh Hari Pertama Haid Terakhir (LMP)</label>
           <input type="date" id="inp-ttc-lmp" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
         </div>
         <div>
-          <label class="block font-semibold mb-1">Panjang Kitaran Haid (Hari)</label>
+          <label class="block font-semibold mb-1" data-i18n="lbl_cycle_len">Panjang Kitaran Haid (Hari)</label>
           <input type="number" id="inp-ttc-cycle" value="28" min="21" max="45" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
-          <p class="text-[10px] text-slate-400 mt-1">Kitaran biasa wanita ialah antara 26 – 32 hari.</p>
+          <p class="text-[10px] text-slate-400 mt-1" data-i18n="hint_cycle_len">Kitaran biasa wanita ialah antara 26 – 32 hari.</p>
         </div>
-        <button type="submit" class="w-full py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold rounded-xl mt-2 shadow-sm transition">
+        <button type="submit" data-i18n="btn_save_ttc_calc" class="w-full py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold rounded-xl mt-2 shadow-sm transition">
           Simpan & Kira Waktu Subur
         </button>
       </form>
@@ -1147,35 +1170,35 @@
   <div id="modal-add-opk" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-purple-200">
       <div class="flex justify-between items-center">
-        <h3 class="text-base font-bold text-slate-800">Log Ujian OPK & Suhu</h3>
+        <h3 class="text-base font-bold text-slate-800" data-i18n="mdl_opk_title">Log Ujian OPK & Suhu</h3>
         <button onclick="closeModal('modal-add-opk')" class="text-slate-400 hover:text-slate-600">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
       <form onsubmit="handleSaveOpkLog(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block font-semibold mb-1">Keputusan Ujian OPK (Garisan)</label>
+          <label class="block font-semibold mb-1" data-i18n="lbl_opk_result">Keputusan Ujian OPK (Garisan)</label>
           <select id="inp-opk-result" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
-            <option value="Negatif / Samar (Low)">Negatif / Garisan Samar (Fasa Rendah)</option>
-            <option value="Tinggi (High)">Garisan Semakin Terang (High)</option>
-            <option value="Puncak / Positif (Peak 🔥)">PUNCAK / POSITIF (Peak - Ovulasi 24-36 jam lagi! 🔥)</option>
+            <option value="Negatif / Samar (Rendah)" data-i18n="opt_opk_low">Negatif / Garisan Samar (Fasa Rendah)</option>
+            <option value="Tinggi (Subur)" data-i18n="opt_opk_high">Garisan Semakin Terang (Tinggi)</option>
+            <option value="Puncak / Positif 🔥" data-i18n="opt_opk_peak">PUNCAK / POSITIF (Peak - Ovulasi 24-36 jam lagi! 🔥)</option>
           </select>
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block font-semibold mb-1">Suhu Basal BBT (°C)</label>
-            <input type="number" step="0.1" id="inp-opk-temp" placeholder="Cth: 36.4" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+            <label class="block font-semibold mb-1" data-i18n="lbl_opk_temp">Suhu Basal BBT (°C)</label>
+            <input type="number" step="0.1" id="inp-opk-temp" placeholder="Cth: 36.4" data-i18n-placeholder="ph_opk_temp" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
           </div>
           <div>
-            <label class="block font-semibold mb-1">Tarikh Ujian</label>
+            <label class="block font-semibold mb-1" data-i18n="lbl_opk_date">Tarikh Ujian</label>
             <input type="date" id="inp-opk-date" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
           </div>
         </div>
         <div>
-          <label class="block font-semibold mb-1">Catatan Tambahan (Lendir Serviks / Cramp)</label>
-          <input type="text" id="inp-opk-notes" placeholder="Cth: Lendir putih telur / rasa ngilu sebelah ovari" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+          <label class="block font-semibold mb-1" data-i18n="lbl_opk_notes">Catatan Tambahan (Lendir Serviks / Cramp)</label>
+          <input type="text" id="inp-opk-notes" placeholder="Cth: Lendir putih telur / rasa ngilu sebelah ovari" data-i18n-placeholder="ph_opk_notes" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
         </div>
-        <button type="submit" class="w-full py-3 bg-pastel-500 hover:bg-pastel-600 text-white font-bold rounded-xl mt-2 shadow-sm transition">
+        <button type="submit" data-i18n="btn_save_opk" class="w-full py-3 bg-pastel-500 hover:bg-pastel-600 text-white font-bold rounded-xl mt-2 shadow-sm transition">
           Simpan Log Ujian Kesuburan
         </button>
       </form>
@@ -1187,7 +1210,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-amber-200 text-center">
       <div class="flex justify-between items-center pb-2 border-b border-slate-100">
         <div class="flex items-center space-x-2">
-          <span class="text-2xl">☕</span>
+          <span id="modal-coffee-icon" class="text-2xl">☕</span>
           <h3 data-i18n="mdl_coffee_title" class="text-sm font-extrabold text-slate-800">Belanja Kopi (Support App)</h3>
         </div>
         <button onclick="closeModal('modal-coffee')" class="text-slate-400 hover:text-slate-600">
@@ -1484,17 +1507,49 @@
         subtab_ttc_opk: "Log Ujian OPK & Suhu",
         subtab_ttc_supps: "Vitamin & Suplemen Pasangan",
         subtab_ttc_doa: "Sudut Doa & Motivasi",
+        hero_ttc_title: "Ikhtiar Zuriat Comel",
+        hero_ttc_sub: "Peluang persenyawaan tinggi dalam jendela subur ini",
+        ttc_badge_recommended: "Rekomendasi",
         lbl_days_to_ovul: "Hari ke Ovulasi",
         lbl_fertile_window: "Jendela Subur",
         lbl_next_period: "Jangkaan Haid",
         lbl_cycle_days: "Panjang Kitaran",
         btn_edit_cycle: "Kemaskini Kitaran / LMP",
         btn_i_am_pregnant: "Saya Dah Hamil (BFP)!",
-        hdr_bd_tips: "Tips Waktu Bersama Pasangan (Baby Dance)",
-        desc_bd_tips: "Sperma boleh bertahan 3 – 5 hari di dalam rahim, manakala ovum bertahan 12 – 24 jam selepas ovulasi. Bersama pada hari subur selang 1-2 hari memberikan peluang persenyawaan terbaik.",
+        hdr_bd_tips: "Tips Waktu Bersama Pasangan (Waktu Subur)",
+        desc_bd_tips: "Sperma mampu bertahan 3 – 5 hari di dalam rahim, manakala ovum bertahan 12 – 24 jam selepas ovulasi. Bersama pada hari subur selang 1-2 hari memberikan peluang persenyawaan yang optimum.",
         hdr_opk_logs: "Log Ujian Kesuburan (OPK & Suhu)",
         btn_log_opk: "Log Ujian Baru",
+        opk_empty_state: "Belum ada ujian OPK direkodkan. Klik '+ Log Ujian Baru'.",
         hdr_supps_couple: "Senarai Semak Vitamin & Suplemen Pasangan",
+        lbl_supp_wife_tag: "Untuk Isteri",
+        lbl_supp_wife_name: "Asid Folik 5mg / CoQ10 / Inositol",
+        lbl_supp_wife_desc: "Membantu kualiti ovum & pembentukan awal saraf janin",
+        lbl_supp_husb_tag: "Untuk Suami",
+        lbl_supp_husb_name: "Zinc & Selenium / Multivitamin Lelaki",
+        lbl_supp_husb_desc: "Meningkatkan kualiti, bilangan & motiliti sperma sihat",
+        hdr_doa_1: "Doa Memohon Zuriat Yang Baik (Surah Ali 'Imran: 38)",
+        trans_doa_1: "\"Wahai Tuhanku! Kurniakanlah kepadaku dari sisi-Mu zuriat keturunan yang baik; sesungguhnya Engkau sentiasa Mendengar doa.\"",
+        hdr_doa_2: "Doa Nabi Zakaria a.s. (Surah Al-Anbiya': 89)",
+        trans_doa_2: "\"Wahai Tuhanku! Janganlah Engkau biarkan daku seorang diri, dan Engkaulah jua sebaik-baik yang mewarisi.\"",
+        ttc_donate_box_title: "Tabung Infaq & Sedekah Pejuang TTC",
+        ttc_donate_box_sub: "Amalan Sedekah Niat Hajat Zuriat",
+        ttc_badge_voluntary: "Suka Rela",
+        ttc_donate_box_desc: "Di samping doa dan ikhtiar harian, niatkan sedikit sumbangan ikhlas (cth: Sedekah Subuh). Semoga menjadi asbab keberkatan rezeki zuriat dan membantu kami mengekalkan aplikasi ini 100% percuma tanpa iklan untuk semua pejuang TTC.",
+        btn_ttc_sedekah: "Niat Sedekah Ikhtiar (DuitNow / Coffee)",
+        mdl_ttc_settings_title: "Kemaskini Kitaran Haid & Ovulasi",
+        btn_save_ttc_calc: "Simpan & Kira Waktu Subur",
+        mdl_opk_title: "Log Ujian OPK & Suhu",
+        lbl_opk_result: "Keputusan Ujian OPK (Garisan)",
+        opt_opk_low: "Negatif / Garisan Samar (Fasa Rendah)",
+        opt_opk_high: "Garisan Semakin Terang (Tinggi)",
+        opt_opk_peak: "PUNCAK / POSITIF (Peak - Ovulasi 24-36 jam lagi! 🔥)",
+        lbl_opk_temp: "Suhu Basal BBT (°C)",
+        ph_opk_temp: "Cth: 36.4",
+        lbl_opk_date: "Tarikh Ujian",
+        lbl_opk_notes: "Catatan Tambahan (Lendir Serviks / Cramp)",
+        ph_opk_notes: "Cth: Lendir putih telur / rasa ngilu sebelah ovari",
+        btn_save_opk: "Simpan Log Ujian Kesuburan",
         lbl_baby_nick: "Nama Gelaran Kandungan",
         lbl_edd: "Tarikh Jangka Bersalin (EDD)",
         lbl_clinic: "Klinik Kesihatan (KK) / Hospital",
@@ -1674,17 +1729,49 @@
         subtab_ttc_opk: "OPK Test & BBT Logs",
         subtab_ttc_supps: "Couple's Fertility Vitamins",
         subtab_ttc_doa: "Daily Prayers & Motivation",
+        hero_ttc_title: "Fertility & Conception Journey",
+        hero_ttc_sub: "Higher chance of conception during this fertile window",
+        ttc_badge_recommended: "Recommended",
         lbl_days_to_ovul: "Days to Ovulation",
         lbl_fertile_window: "Fertile Window",
         lbl_next_period: "Next Period",
         lbl_cycle_days: "Cycle Length",
         btn_edit_cycle: "Update Cycle / LMP",
         btn_i_am_pregnant: "I'm Pregnant (BFP)!",
-        hdr_bd_tips: "Conception Timing Tips (Baby Dance)",
+        hdr_bd_tips: "Conception Timing Tips (Fertile Window)",
         desc_bd_tips: "Sperm can live up to 3 – 5 days inside the reproductive tract while an egg survives 12 – 24 hours. Intimacy every 1–2 days during the fertile window maximizes conception chances.",
         hdr_opk_logs: "Fertility Logs (OPK Strips & BBT)",
         btn_log_opk: "Log New Test",
+        opk_empty_state: "No OPK tests logged yet. Tap '+ Log New Test'.",
         hdr_supps_couple: "Couple's Daily Fertility Supplement Checklist",
+        lbl_supp_wife_tag: "For Wife",
+        lbl_supp_wife_name: "Folic Acid 5mg / CoQ10 / Inositol",
+        lbl_supp_wife_desc: "Supports egg quality & early neural tube development",
+        lbl_supp_husb_tag: "For Husband",
+        lbl_supp_husb_name: "Zinc & Selenium / Men's Multivitamin",
+        lbl_supp_husb_desc: "Improves healthy sperm count, motility & vitality",
+        hdr_doa_1: "Prayer for Good Offspring (Surah Ali 'Imran: 38)",
+        trans_doa_1: "\"My Lord, grant me from Yourself a good offspring. Indeed, You are the Hearer of prayer.\"",
+        hdr_doa_2: "Prophet Zechariah's Prayer (Surah Al-Anbiya': 89)",
+        trans_doa_2: "\"My Lord, do not leave me alone and You are the best of inheritors.\"",
+        ttc_donate_box_title: "TTC Community & Gratitude Fund",
+        ttc_donate_box_sub: "Voluntary Charity with Fertility Intentions",
+        ttc_badge_voluntary: "Voluntary",
+        ttc_donate_box_desc: "Pair your daily prayers with voluntary charity (e.g. morning charity). Every contribution helps cover server costs so BukuPinkKu stays 100% free with zero ads for all TTC couples.",
+        btn_ttc_sedekah: "Support TTC Community (DuitNow / Coffee)",
+        mdl_ttc_settings_title: "Update Menstrual Cycle & Ovulation",
+        btn_save_ttc_calc: "Save & Calculate Fertile Days",
+        mdl_opk_title: "Log OPK Test & Temperature",
+        lbl_opk_result: "OPK Test Result (Strips)",
+        opt_opk_low: "Negative / Faint Line (Low Phase)",
+        opt_opk_high: "Darkening Line (High Surge)",
+        opt_opk_peak: "PEAK / POSITIVE (Ovulation in 24-36 hrs! 🔥)",
+        lbl_opk_temp: "Basal Body Temp BBT (°C)",
+        ph_opk_temp: "E.g., 36.4",
+        lbl_opk_date: "Test Date",
+        lbl_opk_notes: "Additional Notes (Cervical Mucus / Cramps)",
+        ph_opk_notes: "E.g., Egg-white mucus / mild ovulation cramps",
+        btn_save_opk: "Save Fertility Test Log",
         lbl_baby_nick: "Baby's Nickname",
         lbl_edd: "Estimated Due Date (EDD)",
         lbl_clinic: "Health Clinic (KK) / Hospital",
@@ -1892,6 +1979,23 @@
           ? (lang === 'en' ? "✓ Taken" : "✓ Dah Makan")
           : (lang === 'en' ? "Not Taken" : "Belum Makan");
       }
+
+      // Kemaskini butang suplemen TTC
+      const btnTtcWife = document.getElementById('btn-ttc-med-wife');
+      if (btnTtcWife) {
+        btnTtcWife.innerText = ttcMedWifeTaken
+          ? (lang === 'en' ? "✓ Taken" : "✓ Dah Ambil")
+          : (lang === 'en' ? "Not Taken" : "Belum Ambil");
+      }
+      const btnTtcHusb = document.getElementById('btn-ttc-med-husband');
+      if (btnTtcHusb) {
+        btnTtcHusb.innerText = ttcMedHusbandTaken
+          ? (lang === 'en' ? "✓ Taken" : "✓ Dah Ambil")
+          : (lang === 'en' ? "Not Taken" : "Belum Ambil");
+      }
+
+      // Kira semula dan kemaskini teks waktu subur mengikut bahasa aktif
+      calculateTtcDates();
 
       if (currentFamilyId) {
         loadAllSupabaseData();
@@ -3261,28 +3365,52 @@
         return;
       }
 
-      container.innerHTML = logs.map(item => `
-        <div class="p-3 flex justify-between items-center text-xs">
-          <div>
-            <div class="flex items-center space-x-1.5">
-              <span class="font-bold text-slate-800">${item.date}</span>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${item.result.includes('Peak') ? 'bg-rose-100 text-rose-700 border border-rose-300' : 'bg-slate-100 text-slate-700'}">${item.result}</span>
+      function formatOpkBadge(raw) {
+        const s = String(raw || '');
+        if (s.includes('Puncak') || s.includes('Peak') || s.includes('🔥')) {
+          return {
+            label: isEn ? "Peak Ovulation 🔥" : "Puncak Ovulasi 🔥",
+            cls: "bg-rose-100 text-rose-700 border border-rose-300"
+          };
+        } else if (s.includes('Tinggi') || s.includes('High')) {
+          return {
+            label: isEn ? "High Surge 📈" : "Tinggi (Subur) 📈",
+            cls: "bg-purple-100 text-purple-700 border border-purple-200"
+          };
+        } else {
+          return {
+            label: isEn ? "Low / Negative" : "Rendah / Negatif",
+            cls: "bg-slate-100 text-slate-700"
+          };
+        }
+      }
+
+      container.innerHTML = logs.map(item => {
+        const badge = formatOpkBadge(item.result);
+        return `
+          <div class="p-3 flex justify-between items-center text-xs">
+            <div>
+              <div class="flex items-center space-x-1.5">
+                <span class="font-bold text-slate-800">${item.date}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badge.cls}">${badge.label}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-0.5">${isEn ? 'BBT' : 'Suhu BBT'}: ${item.temp}°C | ${item.notes}</p>
             </div>
-            <p class="text-[11px] text-slate-500 mt-0.5">BBT: ${item.temp}°C | ${item.notes}</p>
+            <button onclick="deleteOpkLog('${item.id}')" title="${isEn ? 'Delete' : 'Padam'}" class="text-rose-500 hover:text-rose-700 p-1">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
           </div>
-          <button onclick="deleteOpkLog('${item.id}')" title="Padam" class="text-rose-500 hover:text-rose-700 p-1">
-            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-          </button>
-        </div>
-      `).join('');
+        `;
+      }).join('');
       lucide.createIcons();
     }
 
     function deleteOpkLog(id) {
+      const isEn = currentLang === 'en';
       let logs = JSON.parse(localStorage.getItem('bukupink_opk_logs') || '[]');
       logs = logs.filter(x => x.id !== id);
       localStorage.setItem('bukupink_opk_logs', JSON.stringify(logs));
-      showToast("Log ujian dipadam.");
+      showToast(isEn ? "Test log deleted." : "Log ujian dipadam.");
       loadOpkLogs();
     }
 
@@ -3324,8 +3452,31 @@
       lucide.createIcons();
     }
 
-    function openCoffeeModal() {
+    function openCoffeeModal(fromContext) {
       switchDonationMethod('duitnow');
+      const isEn = currentLang === 'en';
+      const titleEl = document.querySelector('[data-i18n="mdl_coffee_title"]');
+      const descEl = document.querySelector('[data-i18n="mdl_coffee_desc"]');
+      const subEl = document.querySelector('[data-i18n="mdl_coffee_sub"]');
+      const iconEl = document.getElementById('modal-coffee-icon');
+
+      if (fromContext === 'ttc') {
+        if (iconEl) iconEl.innerText = '🌱';
+        if (titleEl) titleEl.innerText = isEn ? "TTC Hope & Charity Fund" : "Tabung Infaq & Niat Sedekah Zuriat";
+        if (descEl) descEl.innerHTML = isEn
+          ? "BukuPinkKu's fertility tracker is <strong>100% free with zero ads</strong>. Pair your prayers with voluntary charity (such as morning charity) to help keep this app accessible for every hopeful couple."
+          : "Kalkulator waktu subur BukuPinkKu adalah <strong>100% percuma tanpa iklan</strong>. Niatkan sedekah ikhlas anda (cth: Sedekah Subuh) sambil berikhtiar dan berdoa, di samping membantu kami menampung kos pelayan untuk semua pejuang zuriat.";
+        if (subEl) subEl.innerHTML = isEn
+          ? "🤲 Give whatever feels right from the heart — no fixed amount. May it bring blessings to your family journey."
+          : "🤲 Seikhlas hati anda tanpa sebarang jumlah tetap. Semoga menjadi asbab keberkatan rezeki zuriat buat anda dan pasangan.";
+      } else {
+        if (iconEl) iconEl.innerText = '☕';
+        const dict = I18N[currentLang] || I18N.ms;
+        if (titleEl) titleEl.innerText = dict.mdl_coffee_title;
+        if (descEl) descEl.innerHTML = dict.mdl_coffee_desc;
+        if (subEl) subEl.innerHTML = dict.mdl_coffee_sub;
+      }
+
       openModal('modal-coffee');
     }
 
