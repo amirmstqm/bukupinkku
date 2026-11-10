@@ -20,6 +20,8 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Supabase JS Client CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- html2pdf.js for Generating PDF Photobook -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -432,8 +434,8 @@
               <p class="font-bold text-slate-800">Simpanan Foto & Video Sebenar</p>
               <p class="text-[11px] text-slate-600">Boleh dieksport menjadi <strong>Photobook PDF</strong> bila genap 1 atau 3 tahun!</p>
             </div>
-            <button onclick="showToast('Ciri Eksport Photobook PDF bersedia untuk langganan Pro!')" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-extrabold text-[11px] px-3 py-2 rounded-xl whitespace-nowrap shadow-sm">
-              Eksport Buku 📖
+            <button onclick="openPhotobookModal()" class="bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-amber-950 font-extrabold text-[11px] px-3.5 py-2 rounded-xl whitespace-nowrap shadow-md flex items-center space-x-1.5 transition transform active:scale-95">
+              <span>Eksport Buku 📖</span>
             </button>
           </div>
 
@@ -739,6 +741,137 @@
           Simpan Nota Alahan ke Cloud
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PRATONTON & EKSPORT PHOTOBOOK PDF ================= -->
+  <div id="modal-photobook-preview" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 hidden flex flex-col items-center justify-center p-2 sm:p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-pastel-200 overflow-hidden my-auto">
+      
+      <!-- Top Action Bar -->
+      <div class="px-5 py-3.5 bg-gradient-to-r from-pastel-100 to-pink-50 border-b border-pastel-200 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <span class="text-xl">📖</span>
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">Buku Kenangan Digital (Photobook PDF)</h3>
+            <p class="text-[10px] text-slate-500">Sedia untuk dimuat turun & dicetak sebagai album fizikal</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="downloadPhotobookPDF()" id="btn-download-pdf" class="bg-gradient-to-r from-pastel-500 to-rose-500 hover:from-pastel-600 hover:to-rose-600 text-white font-bold text-xs px-3.5 py-2 rounded-xl flex items-center space-x-1.5 shadow-md transition transform active:scale-95">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Muat Turun PDF</span>
+          </button>
+          <button onclick="closeModal('modal-photobook-preview')" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-white/80 transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Preview Area -->
+      <div class="p-4 sm:p-6 overflow-y-auto bg-slate-100/60 flex justify-center">
+        
+        <!-- DOKUMEN PHOTOBOOK (AKAN DITUKAR MENJADI FAIL PDF) -->
+        <div id="photobook-content" class="bg-white shadow-xl rounded-2xl w-full max-w-[560px] p-6 sm:p-8 space-y-6 text-slate-800 border border-slate-200" style="font-family: system-ui, sans-serif;">
+          
+          <!-- [MUKA SURAT 1: KULIT DEPAN / COVER] -->
+          <div class="text-center space-y-4 pb-6 border-b-2 border-dashed border-pastel-200">
+            <div class="inline-block bg-pastel-50 border border-pastel-200 px-3 py-1 rounded-full text-[11px] font-bold text-pastel-600 uppercase tracking-wider">
+              🌸 Buku Kenangan Digital Rasmi
+            </div>
+            
+            <div>
+              <h1 id="pb-child-title" class="text-2xl font-black text-slate-900 tracking-tight">Nur Aisyah Humaira</h1>
+              <p class="text-xs text-pastel-600 font-bold mt-1">Koleksi Tumbesaran & Memori Kasih Sayang (0 - 3 Tahun)</p>
+            </div>
+
+            <!-- Foto Utama Bayi -->
+            <div class="mx-auto w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden shadow-lg border-4 border-pastel-100 bg-pastel-50 flex items-center justify-center" id="pb-hero-photo-wrapper">
+              <div class="text-center p-4">
+                <span class="text-6xl block mb-2">👶✨</span>
+                <p class="text-xs font-bold text-slate-700">Foto Manis Aisyah</p>
+                <p class="text-[10px] text-slate-400">8 Bulan 12 Hari</p>
+              </div>
+            </div>
+
+            <!-- Kad Maklumat Kelahiran -->
+            <div class="grid grid-cols-3 gap-2 text-center text-xs pt-2">
+              <div class="p-2 bg-pastel-50/60 rounded-xl border border-pastel-100">
+                <p class="text-[9px] font-semibold text-slate-500 uppercase">Tarikh Lahir</p>
+                <p id="pb-birth-date" class="font-bold text-slate-800 text-[11px]">15 Mac 2026</p>
+              </div>
+              <div class="p-2 bg-pastel-50/60 rounded-xl border border-pastel-100">
+                <p class="text-[9px] font-semibold text-slate-500 uppercase">Berat Terkini</p>
+                <p id="pb-weight-display" class="font-bold text-slate-800 text-[11px]">7.8 kg</p>
+              </div>
+              <div class="p-2 bg-pastel-50/60 rounded-xl border border-pastel-100">
+                <p class="text-[9px] font-semibold text-slate-500 uppercase">Darah</p>
+                <p id="pb-blood-display" class="font-bold text-slate-800 text-[11px]">Kumpulan O+</p>
+              </div>
+            </div>
+
+            <p id="pb-family-subtitle" class="text-xs text-slate-500 font-medium italic">
+              "Keluarga Siti Sarah & Amir Mustaqim"
+            </p>
+          </div>
+
+          <!-- [MUKA SURAT 2: REKOD KESIHATAN & VAKSINASI KKM] -->
+          <div class="space-y-3 pt-2">
+            <h2 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center space-x-1.5">
+              <span>💉</span>
+              <span>Rekod Kesihatan & Vaksinasi KKM (0 - 24 Bulan)</span>
+            </h2>
+            
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
+                <p class="font-bold text-emerald-900">BCG & Hepatitis B (Dos 1)</p>
+                <p class="text-[10px] text-emerald-700">✓ Selesai Masa Lahir (Hospital)</p>
+              </div>
+              <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
+                <p class="font-bold text-emerald-900">Dos 2 Bulan (6-Serangkai)</p>
+                <p class="text-[10px] text-emerald-700">✓ Selesai di KK</p>
+              </div>
+              <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
+                <p class="font-bold text-emerald-900">Dos 3 Bulan (6-Serangkai)</p>
+                <p class="text-[10px] text-emerald-700">✓ Selesai di KK</p>
+              </div>
+              <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
+                <p class="font-bold text-emerald-900">Dos 5 Bulan (Pneumokokal)</p>
+                <p class="text-[10px] text-emerald-700">✓ Selesai di KK</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- [MUKA SURAT 3: GARIS MASA FOTO KENANGAN] -->
+          <div class="space-y-3 pt-2">
+            <h2 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
+              <span>📸</span>
+              <span>Garis Masa Foto Kenangan Terpilih</span>
+            </h2>
+
+            <div class="space-y-3" id="pb-memories-container">
+              <!-- Dynamically populated memories -->
+            </div>
+          </div>
+
+          <!-- [MUKA SURAT 4: PESANAN KASIH SAYANG IBU & AYAH] -->
+          <div class="bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-2xl border border-pastel-200 text-center space-y-2 pt-3">
+            <span class="text-2xl">💌</span>
+            <p class="text-xs font-bold text-slate-800">Pesanan Kasih Sayang Ibu & Ayah:</p>
+            <p class="text-xs text-slate-600 italic leading-relaxed">
+              "Untuk anakanda tersayang, membesar dengan sihat, ceria, dan menjadi anak yang solehah serta penyejuk hati ibu dan ayah selalu. Kami menyayangimu sepenuh hati."
+            </p>
+            <div class="pt-2 text-[10px] text-slate-400 border-t border-pastel-100 flex justify-between items-center">
+              <span>Diterbitkan melalui <strong>BukuPinkKu.my</strong></span>
+              <span id="pb-current-year">2026</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </div>
 
@@ -1417,6 +1550,125 @@
 
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // ================= LOGIK PHOTOBOOK PDF =================
+    async function openPhotobookModal() {
+      const yearEl = document.getElementById('pb-current-year');
+      if (yearEl) yearEl.innerText = new Date().getFullYear();
+
+      const subtitleEl = document.getElementById('pb-family-subtitle');
+      if (subtitleEl && currentUserName) {
+        subtitleEl.innerText = `"Keluarga ${currentUserName} & Pasangan (Kod: ${currentFamilyCode || 'PINK-8821'})"`;
+      }
+
+      const container = document.getElementById('pb-memories-container');
+      container.innerHTML = '<div class="text-center py-4 text-xs text-slate-400">Menyusun halaman memori photobook... 📖</div>';
+      openModal('modal-photobook-preview');
+
+      let memories = [];
+      if (supabase && currentFamilyId) {
+        try {
+          const { data, error } = await supabase
+            .from('baby_memories')
+            .select('*')
+            .eq('family_id', currentFamilyId)
+            .order('memory_date', { ascending: true });
+          if (!error && data && data.length > 0) {
+            memories = data;
+          }
+        } catch (e) {
+          console.error("Gagal load photobook memories:", e);
+        }
+      }
+
+      // Jika tiada memori tersimpan di Supabase, guna senarai kenangan default
+      if (memories.length === 0) {
+        memories = [
+          {
+            title: "Senyuman Nampak 2 Batang Gigi Comel!",
+            category: "Gigi Pertama",
+            memory_date: "15 November 2026 (Umur 8 Bulan)",
+            notes: "Aisyah pandai gelak kuat bila digeletek ibu & ayah! Gigi bawah dah mula nampak putih comel.",
+            image_url: null
+          },
+          {
+            title: "Rasa Puri Avokado & Pisang Pertama",
+            category: "Makanan Pejal",
+            memory_date: "20 Oktober 2026 (Umur 7 Bulan)",
+            notes: "Hari pertama cuba menu 3-Day Wait Rule. Habis satu mangkuk kecil!",
+            image_url: null
+          },
+          {
+            title: "Merangkak Menuju Mainan Teddy Bear",
+            category: "Milestone Fizikal",
+            memory_date: "05 Oktober 2026 (Umur 6.5 Bulan)",
+            notes: "Laju sangat merangkak sekarang. Ayah kena pasang baby gate di ruang tamu.",
+            image_url: null
+          }
+        ];
+      }
+
+      container.innerHTML = memories.map((m, idx) => `
+        <div class="p-3.5 rounded-2xl border border-pastel-200 bg-white shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-2">
+              <span class="w-6 h-6 rounded-full bg-pastel-100 text-pastel-700 font-bold flex items-center justify-center text-[10px]">#${idx + 1}</span>
+              <strong class="text-slate-800 font-bold text-xs">${m.title}</strong>
+            </div>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-pastel-50 text-pastel-600 font-medium border border-pastel-200">${m.category || 'Memori'}</span>
+          </div>
+          ${m.image_url ? `
+            <div class="w-full max-h-56 rounded-xl overflow-hidden border border-pastel-100 flex items-center justify-center bg-black/5">
+              <img src="${m.image_url}" class="w-full h-auto object-cover rounded-xl" alt="${m.title}">
+            </div>
+          ` : `
+            <div class="p-3 rounded-xl bg-gradient-to-r from-pastel-50 to-pink-50 border border-pastel-100 text-center">
+              <span class="text-3xl block mb-1">👶✨</span>
+              <p class="text-xs text-slate-700 italic">"${m.notes || ''}"</p>
+            </div>
+          `}
+          <div class="text-[10px] text-slate-400 flex justify-between items-center pt-1 border-t border-slate-100">
+            <span>📅 ${m.memory_date}</span>
+            <span>BukuPinkKu Digital Vault</span>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    async function downloadPhotobookPDF() {
+      const btn = document.getElementById('btn-download-pdf');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Menjana Fail PDF...</span>`;
+      btn.disabled = true;
+
+      const element = document.getElementById('photobook-content');
+      const opt = {
+        margin:       [8, 8, 8, 8],
+        filename:     'Buku-Kenangan-Nur-Aisyah-Humaira.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      try {
+        if (window.html2pdf) {
+          await window.html2pdf().set(opt).from(element).save();
+          showToast("🎉 Buku Kenangan PDF berjaya dimuat turun!");
+        } else {
+          window.print();
+        }
+      } catch (err) {
+        console.error("PDF generation error:", err);
+        showToast("Membuka dialog cetakan sistem...");
+        window.print();
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        lucide.createIcons();
+      }
+    }
   </script>
 </body>
 </html>
