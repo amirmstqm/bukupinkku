@@ -2846,8 +2846,35 @@
       return { data: null, error };
     }
 
+    function showCloudSyncNotice(error, savedLocally = false) {
+      const isEn = currentLang === 'en';
+      const msg = (error && error.message) ? String(error.message) : '';
+      if (currentFamilyId === DEMO_FAMILY_ID || msg.includes('DEMO_READ_ONLY')) {
+        showToast(isEn
+          ? 'ℹ️ Demo Mode is read-only. Create your own family profile to save data to cloud.'
+          : 'ℹ️ Mod Demo adalah baca-sahaja. Daftar profil keluarga sendiri untuk simpan ke pelayan.');
+        return;
+      }
+      if (msg.includes('UNAUTHORIZED_FAMILY')) {
+        showToast(isEn
+          ? '🔒 Session unauthorized or expired. Please sign in again with your Family Code & PIN.'
+          : '🔒 Sesi tidak sah atau tamat. Sila log masuk semula dengan Kod Keluarga & PIN.');
+        return;
+      }
+      if (savedLocally) {
+        showToast(isEn
+          ? '⚠️ Saved on this device only — failed to sync to cloud. Check your internet connection.'
+          : '⚠️ Disimpan di peranti ini sahaja — gagal sync ke pelayan. Semak internet anda.');
+        return;
+      }
+      showToast(isEn
+        ? '⚠️ Failed to save to cloud. Check your internet connection and try again.'
+        : '⚠️ Gagal menyimpan ke pelayan awan. Semak internet anda dan cuba lagi.');
+    }
+
     async function secureInsertRecord(table, payload) {
       if (!db || !currentFamilyId) return { data: null, error: new Error('No active session') };
+      if (currentFamilyId === DEMO_FAMILY_ID) return { data: null, error: new Error('DEMO_READ_ONLY') };
       const { data, error } = await db.rpc('family_insert_record', {
         p_family_id: currentFamilyId,
         p_access_token: currentFamilyToken || '',
@@ -2865,6 +2892,7 @@
 
     async function secureUpdateRecord(table, rowId, payload) {
       if (!db || !currentFamilyId) return { data: null, error: new Error('No active session') };
+      if (currentFamilyId === DEMO_FAMILY_ID) return { data: null, error: new Error('DEMO_READ_ONLY') };
       const { data, error } = await db.rpc('family_update_record', {
         p_family_id: currentFamilyId,
         p_access_token: currentFamilyToken || '',
@@ -2883,6 +2911,7 @@
 
     async function secureDeleteRecord(table, { rowId = null, category = null, titleSubstr = null } = {}) {
       if (!db || !currentFamilyId) return { error: new Error('No active session') };
+      if (currentFamilyId === DEMO_FAMILY_ID) return { error: new Error('DEMO_READ_ONLY') };
       const { error } = await db.rpc('family_delete_record', {
         p_family_id: currentFamilyId,
         p_access_token: currentFamilyToken || '',
@@ -5224,6 +5253,7 @@
       };
 
       // 1. Simpan ke Supabase baby_memories
+      let cloudSyncErr = null;
       if (db && currentFamilyId) {
         try {
           const { data, error } = await secureInsertRecord('baby_memories', {
@@ -5233,10 +5263,13 @@
             notes: body,
             uploaded_by: author
           });
-          if (!error && data && data.id) {
+          if (error) {
+            cloudSyncErr = error;
+          } else if (data && data.id) {
             newLetter.id = data.id;
           }
         } catch (e) {
+          cloudSyncErr = e;
           console.warn("Supabase insert letter fallback:", e);
         }
       }
@@ -5254,7 +5287,11 @@
       document.getElementById('inp-letter-title').value = '';
       document.getElementById('inp-letter-body').value = '';
 
-      showToast(isEn ? "💌 Letter saved with love!" : "💌 Warkah kasih berjaya disimpan!");
+      if (cloudSyncErr) {
+        showCloudSyncNotice(cloudSyncErr, true);
+      } else {
+        showToast(isEn ? "💌 Letter saved with love!" : "💌 Warkah kasih berjaya disimpan!");
+      }
       await loadTtcLetters();
     }
 
@@ -5355,9 +5392,14 @@
 
       if (db && currentFamilyId && !String(id).startsWith('letter-')) {
         try {
-          await secureDeleteRecord('baby_memories', { rowId: id });
+          const { error } = await secureDeleteRecord('baby_memories', { rowId: id });
+          if (error) {
+            showCloudSyncNotice(error, false);
+            return;
+          }
         } catch (e) {
-          console.warn("Error deleting letter from Supabase:", e);
+          showCloudSyncNotice(e, false);
+          return;
         }
       }
 
@@ -5393,8 +5435,14 @@
     async function deleteAppointment(id) {
       const isEn = currentLang === 'en';
       if (!confirm(isEn ? "Delete this clinic appointment?" : "Adakah anda pasti mahu memadam rekod janji temu ini?")) return;
-      if (db && currentFamilyId) {
-        await secureDeleteRecord('appointments', { rowId: id });
+      if (!db || !currentFamilyId) {
+        showCloudSyncNotice(new Error('OFFLINE'), false);
+        return;
+      }
+      const { error } = await secureDeleteRecord('appointments', { rowId: id });
+      if (error) {
+        showCloudSyncNotice(error, false);
+        return;
       }
       showToast(isEn ? "🗑️ Clinic appointment deleted." : "🗑️ Rekod janji temu telah dipadam.");
       loadAppointments();
@@ -5418,8 +5466,14 @@
     async function deleteVital(id) {
       const isEn = currentLang === 'en';
       if (!confirm(isEn ? "Delete this vital reading (HB / BP)?" : "Adakah anda pasti mahu memadam rekod bacaan HB / BP ini?")) return;
-      if (db && currentFamilyId) {
-        await secureDeleteRecord('health_vitals', { rowId: id });
+      if (!db || !currentFamilyId) {
+        showCloudSyncNotice(new Error('OFFLINE'), false);
+        return;
+      }
+      const { error } = await secureDeleteRecord('health_vitals', { rowId: id });
+      if (error) {
+        showCloudSyncNotice(error, false);
+        return;
       }
       showToast(isEn ? "🗑️ Vital reading deleted." : "🗑️ Rekod bacaan HB / BP telah dipadam.");
       loadHealthVitals();
@@ -5441,8 +5495,14 @@
     async function deleteAllergy(id) {
       const isEn = currentLang === 'en';
       if (!confirm(isEn ? "Delete this allergy / diet note?" : "Adakah anda pasti mahu memadam nota alahan ini?")) return;
-      if (db && currentFamilyId) {
-        await secureDeleteRecord('allergies', { rowId: id });
+      if (!db || !currentFamilyId) {
+        showCloudSyncNotice(new Error('OFFLINE'), false);
+        return;
+      }
+      const { error } = await secureDeleteRecord('allergies', { rowId: id });
+      if (error) {
+        showCloudSyncNotice(error, false);
+        return;
       }
       showToast(isEn ? "🗑️ Allergy note deleted." : "🗑️ Nota alahan telah dipadam.");
       loadAllergies();
@@ -5580,8 +5640,14 @@
     async function deleteMemory(id) {
       const isEn = currentLang === 'en';
       if (!confirm(isEn ? "Delete this photo memory?" : "Adakah anda pasti mahu memadam kenangan ini?")) return;
-      if (db && currentFamilyId) {
-        await secureDeleteRecord('baby_memories', { rowId: id });
+      if (!db || !currentFamilyId) {
+        showCloudSyncNotice(new Error('OFFLINE'), false);
+        return;
+      }
+      const { error } = await secureDeleteRecord('baby_memories', { rowId: id });
+      if (error) {
+        showCloudSyncNotice(error, false);
+        return;
       }
       showToast(isEn ? "🗑️ Memory deleted." : "🗑️ Kenangan telah dipadam.");
       loadBabyMemories();
@@ -5591,6 +5657,15 @@
     async function handleSaveMemory(e) {
       e.preventDefault();
       const isEn = currentLang === 'en';
+      if (!db || !currentFamilyId) {
+        showCloudSyncNotice(new Error('OFFLINE'), false);
+        return;
+      }
+      if (currentFamilyId === DEMO_FAMILY_ID) {
+        showCloudSyncNotice(new Error('DEMO_READ_ONLY'), false);
+        return;
+      }
+
       const title = document.getElementById('inp-mem-title').value;
       const cat = document.getElementById('inp-mem-cat').value;
       const date = document.getElementById('inp-mem-date').value;
@@ -5601,52 +5676,53 @@
       const btn = document.getElementById('btn-save-memory');
       btn.innerText = isEn ? "Optimizing & Saving..." : "Mengoptimum & Menyimpan...";
 
-      let finalImageUrl = null;
-      if (currentMemoryPendingImage) {
-        finalImageUrl = currentMemoryPendingImage;
-      } else if (fileInput.files && fileInput.files[0]) {
-        try {
-          finalImageUrl = await compressImageFile(fileInput.files[0], 1200, 1200, 0.8);
-        } catch (err) {
-          finalImageUrl = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => resolve(ev.target.result);
-            reader.readAsDataURL(fileInput.files[0]);
-          });
-        }
-      }
-
-      // Percubaan muat naik ke Supabase Storage Bucket jika aktif
-      if (finalImageUrl && finalImageUrl.startsWith('data:image') && db && db.storage && currentFamilyId) {
-        try {
-          const parts = finalImageUrl.split(',');
-          const mime = (parts[0].match(/:(.*?);/) || [])[1] || 'image/jpeg';
-          const byteStr = atob(parts[1]);
-          const ab = new ArrayBuffer(byteStr.length);
-          const ia = new Uint8Array(ab);
-          for (let i = 0; i < byteStr.length; i++) {
-            ia[i] = byteStr.charCodeAt(i);
+      try {
+        let finalImageUrl = null;
+        if (currentMemoryPendingImage) {
+          finalImageUrl = currentMemoryPendingImage;
+        } else if (fileInput.files && fileInput.files[0]) {
+          try {
+            finalImageUrl = await compressImageFile(fileInput.files[0], 1200, 1200, 0.8);
+          } catch (err) {
+            finalImageUrl = await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onload = (ev) => resolve(ev.target.result);
+              reader.readAsDataURL(fileInput.files[0]);
+            });
           }
-          const blob = new Blob([ab], { type: mime });
-          const fileExt = mime.split('/')[1] || 'jpg';
-          const fileName = `${currentFamilyId}/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+        }
 
-          const { data: uploadData, error: uploadErr } = await db.storage
-            .from('baby_memories')
-            .upload(fileName, blob, { contentType: mime, upsert: true });
-
-          if (!uploadErr && uploadData) {
-            const { data: publicData } = db.storage.from('baby_memories').getPublicUrl(fileName);
-            if (publicData && publicData.publicUrl) {
-              finalImageUrl = publicData.publicUrl;
+        // Percubaan muat naik ke Supabase Storage Bucket jika aktif
+        if (finalImageUrl && finalImageUrl.startsWith('data:image') && db && db.storage && currentFamilyId) {
+          try {
+            const parts = finalImageUrl.split(',');
+            const mime = (parts[0].match(/:(.*?);/) || [])[1] || 'image/jpeg';
+            const byteStr = atob(parts[1]);
+            const ab = new ArrayBuffer(byteStr.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteStr.length; i++) {
+              ia[i] = byteStr.charCodeAt(i);
             }
-          }
-        } catch (storageErr) {
-          console.warn("Storage upload bypassed, fallback to optimized compressed Base64:", storageErr);
-        }
-      }
+            const blob = new Blob([ab], { type: mime });
+            const fileExt = mime.split('/')[1] || 'jpg';
+            const fileName = `${currentFamilyId}/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
 
-      if (db && currentFamilyId) {
+            const { data: uploadData, error: uploadErr } = await db.storage
+              .from('baby_memories')
+              .upload(fileName, blob, { contentType: mime, upsert: true });
+
+            if (!uploadErr && uploadData) {
+              const { data: publicData } = db.storage.from('baby_memories').getPublicUrl(fileName);
+              if (publicData && publicData.publicUrl) {
+                finalImageUrl = publicData.publicUrl;
+              }
+            }
+          } catch (storageErr) {
+            console.warn("Storage upload bypassed, fallback to optimized compressed Base64:", storageErr);
+          }
+        }
+
+        let saveRes;
         if (editingMemoryId) {
           const updatePayload = {
             title: title,
@@ -5657,9 +5733,9 @@
           if (finalImageUrl !== null) {
             updatePayload.image_url = finalImageUrl || null;
           }
-          await secureUpdateRecord('baby_memories', editingMemoryId, updatePayload);
+          saveRes = await secureUpdateRecord('baby_memories', editingMemoryId, updatePayload);
         } else {
-          await secureInsertRecord('baby_memories', {
+          saveRes = await secureInsertRecord('baby_memories', {
             title: title,
             category: cat,
             memory_date: date,
@@ -5668,28 +5744,40 @@
             uploaded_by: uploader
           });
         }
-      }
 
-      const wasEditing = !!editingMemoryId;
-      editingMemoryId = null;
-      currentMemoryPendingImage = null;
-      btn.innerHTML = `<i data-lucide="cloud-upload" class="w-4 h-4"></i><span data-i18n="btn_save_cloud">${isEn ? 'Save to Cloud Vault' : 'Simpan Ke Cloud Supabase'}</span>`;
-      closeModal('modal-add-memory');
-      showToast(wasEditing
-        ? (isEn ? `✅ Memory "${title}" updated!` : `✅ Kenangan "${title}" berjaya dikemaskini!`)
-        : (isEn ? `📸 Memory "${title}" saved to Cloud!` : `📸 Kenangan "${title}" disimpan ke Cloud!`));
-      document.getElementById('inp-mem-title').value = '';
-      document.getElementById('inp-mem-notes').value = '';
-      if (fileInput) fileInput.value = '';
-      const previewContainer = document.getElementById('mem-preview-container');
-      if (previewContainer) previewContainer.classList.add('hidden');
-      loadBabyMemories();
+        if (saveRes && saveRes.error) {
+          showCloudSyncNotice(saveRes.error, false);
+          return;
+        }
+
+        const wasEditing = !!editingMemoryId;
+        editingMemoryId = null;
+        currentMemoryPendingImage = null;
+        closeModal('modal-add-memory');
+        showToast(wasEditing
+          ? (isEn ? `✅ Memory "${title}" updated!` : `✅ Kenangan "${title}" berjaya dikemaskini!`)
+          : (isEn ? `📸 Memory "${title}" saved to Cloud!` : `📸 Kenangan "${title}" disimpan ke Cloud!`));
+        document.getElementById('inp-mem-title').value = '';
+        document.getElementById('inp-mem-notes').value = '';
+        if (fileInput) fileInput.value = '';
+        const previewContainer = document.getElementById('mem-preview-container');
+        if (previewContainer) previewContainer.classList.add('hidden');
+        loadBabyMemories();
+      } finally {
+        btn.innerHTML = `<i data-lucide="cloud-upload" class="w-4 h-4"></i><span data-i18n="btn_save_cloud">${isEn ? 'Save to Cloud Vault' : 'Simpan Ke Cloud Supabase'}</span>`;
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+      }
     }
 
     // SIMPAN / KEMASKINI JANJI TEMU KE SUPABASE
     async function handleSaveAppointment(e) {
       e.preventDefault();
       const isEn = currentLang === 'en';
+      if (!db || !currentFamilyId) {
+        showCloudSyncNotice(new Error('OFFLINE'), false);
+        return;
+      }
+
       const title = document.getElementById('inp-appt-title').value;
       const clinic = document.getElementById('inp-appt-clinic').value;
       const date = document.getElementById('inp-appt-date').value;
@@ -5697,25 +5785,29 @@
       const notesEl = document.getElementById('inp-appt-notes');
       const notes = notesEl && notesEl.value.trim() ? notesEl.value.trim() : (isEn ? 'Attend together' : 'Hadir bersama');
 
-      if (db && currentFamilyId) {
-        if (editingApptId) {
-          await secureUpdateRecord('appointments', editingApptId, {
-            title: title,
-            clinic_name: clinic,
-            appointment_date: date,
-            appointment_time: time,
-            notes: notes
-          });
-        } else {
-          await secureInsertRecord('appointments', {
-            title: title,
-            clinic_name: clinic,
-            appointment_date: date,
-            appointment_time: time,
-            notes: notes,
-            category: isEn ? 'Clinic Visit' : 'KKIA Kerajaan'
-          });
-        }
+      let saveRes;
+      if (editingApptId) {
+        saveRes = await secureUpdateRecord('appointments', editingApptId, {
+          title: title,
+          clinic_name: clinic,
+          appointment_date: date,
+          appointment_time: time,
+          notes: notes
+        });
+      } else {
+        saveRes = await secureInsertRecord('appointments', {
+          title: title,
+          clinic_name: clinic,
+          appointment_date: date,
+          appointment_time: time,
+          notes: notes,
+          category: isEn ? 'Clinic Visit' : 'KKIA Kerajaan'
+        });
+      }
+
+      if (saveRes && saveRes.error) {
+        showCloudSyncNotice(saveRes.error, false);
+        return;
       }
 
       const wasEditing = !!editingApptId;
@@ -5736,29 +5828,38 @@
     async function handleSaveVital(e) {
       e.preventDefault();
       const isEn = currentLang === 'en';
+      if (!db || !currentFamilyId) {
+        showCloudSyncNotice(new Error('OFFLINE'), false);
+        return;
+      }
+
       const hb = parseFloat(document.getElementById('inp-vital-hb').value);
       const bp = document.getElementById('inp-vital-bp').value || '120/80';
       const weight = document.getElementById('inp-vital-weight').value || '58.5';
       const dateEl = document.getElementById('inp-vital-date');
       const loggedDate = (dateEl && dateEl.value) ? dateEl.value : new Date().toISOString().split('T')[0];
 
-      if (db && currentFamilyId) {
-        if (editingVitalId) {
-          await secureUpdateRecord('health_vitals', editingVitalId, {
-            hb_reading: hb,
-            blood_pressure: bp,
-            weight: parseFloat(weight),
-            logged_date: loggedDate
-          });
-        } else {
-          await secureInsertRecord('health_vitals', {
-            hb_reading: hb,
-            blood_pressure: bp,
-            weight: parseFloat(weight),
-            gestation_week: isEn ? 'Routine Checkup' : 'Pemeriksaan Rutin',
-            logged_date: loggedDate
-          });
-        }
+      let saveRes;
+      if (editingVitalId) {
+        saveRes = await secureUpdateRecord('health_vitals', editingVitalId, {
+          hb_reading: hb,
+          blood_pressure: bp,
+          weight: parseFloat(weight),
+          logged_date: loggedDate
+        });
+      } else {
+        saveRes = await secureInsertRecord('health_vitals', {
+          hb_reading: hb,
+          blood_pressure: bp,
+          weight: parseFloat(weight),
+          gestation_week: isEn ? 'Routine Checkup' : 'Pemeriksaan Rutin',
+          logged_date: loggedDate
+        });
+      }
+
+      if (saveRes && saveRes.error) {
+        showCloudSyncNotice(saveRes.error, false);
+        return;
       }
 
       const wasEditing = !!editingVitalId;
@@ -5774,26 +5875,35 @@
     async function handleSaveAllergy(e) {
       e.preventDefault();
       const isEn = currentLang === 'en';
+      if (!db || !currentFamilyId) {
+        showCloudSyncNotice(new Error('OFFLINE'), false);
+        return;
+      }
+
       const name = document.getElementById('inp-allergy-name').value;
       const cat = document.getElementById('inp-allergy-cat').value;
       const symp = document.getElementById('inp-allergy-symp').value || (isEn ? 'No notes' : 'Tiada catatan');
       const uploader = currentUserName || (currentRole === 'mother' ? (isEn ? 'Mom' : 'Ibu') : (isEn ? 'Dad' : 'Ayah'));
 
-      if (db && currentFamilyId) {
-        if (editingAllergyId) {
-          await secureUpdateRecord('allergies', editingAllergyId, {
-            item_name: name,
-            category: cat,
-            symptoms: symp
-          });
-        } else {
-          await secureInsertRecord('allergies', {
-            item_name: name,
-            category: cat,
-            symptoms: symp,
-            recorded_by: uploader
-          });
-        }
+      let saveRes;
+      if (editingAllergyId) {
+        saveRes = await secureUpdateRecord('allergies', editingAllergyId, {
+          item_name: name,
+          category: cat,
+          symptoms: symp
+        });
+      } else {
+        saveRes = await secureInsertRecord('allergies', {
+          item_name: name,
+          category: cat,
+          symptoms: symp,
+          recorded_by: uploader
+        });
+      }
+
+      if (saveRes && saveRes.error) {
+        showCloudSyncNotice(saveRes.error, false);
+        return;
       }
 
       const wasEditing = !!editingAllergyId;
@@ -6205,24 +6315,30 @@
         saveVaccinesState(state);
         renderVaccines();
 
+        let cloudSyncErr = null;
         if (db && currentFamilyId) {
           try {
-            if (cloudId) {
-              await secureDeleteRecord('baby_memories', { rowId: cloudId });
-            } else {
-              await secureDeleteRecord('baby_memories', { category: 'Vaksin KKM', titleSubstr: vac.nameMs });
-            }
+            const res = cloudId
+              ? await secureDeleteRecord('baby_memories', { rowId: cloudId })
+              : await secureDeleteRecord('baby_memories', { category: 'Vaksin KKM', titleSubstr: vac.nameMs });
+            if (res && res.error) cloudSyncErr = res.error;
           } catch (e) {
+            cloudSyncErr = e;
             console.warn("Error removing vaccine from Supabase:", e);
           }
         }
-        showToast(isEn ? `Vaccine "${vacTitle}" marked as Not Completed.` : `Status suntikan "${vacTitle}" ditukar ke Belum Selesai.`);
+        if (cloudSyncErr) {
+          showCloudSyncNotice(cloudSyncErr, true);
+        } else {
+          showToast(isEn ? `Vaccine "${vacTitle}" marked as Not Completed.` : `Status suntikan "${vacTitle}" ditukar ke Belum Selesai.`);
+        }
       } else {
         const today = new Date().toISOString().split('T')[0];
         state[vacId] = { done: true, date: today };
         saveVaccinesState(state);
         renderVaccines();
 
+        let cloudSyncErr = null;
         if (db && currentFamilyId) {
           try {
             const { data, error } = await secureInsertRecord('baby_memories', {
@@ -6233,15 +6349,22 @@
               uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
             });
 
-            if (!error && data && data.id) {
+            if (error) {
+              cloudSyncErr = error;
+            } else if (data && data.id) {
               state[vacId].cloudId = data.id;
               saveVaccinesState(state);
             }
           } catch (e) {
+            cloudSyncErr = e;
             console.warn("Error syncing vaccine to Supabase:", e);
           }
         }
-        showToast(isEn ? `🎉 ${vacTitle} marked as COMPLETED!` : `🎉 Suntikan ${vacTitle} ditandakan SELESAI di rekod kesihatan!`);
+        if (cloudSyncErr) {
+          showCloudSyncNotice(cloudSyncErr, true);
+        } else {
+          showToast(isEn ? `🎉 ${vacTitle} marked as COMPLETED!` : `🎉 Suntikan ${vacTitle} ditandakan SELESAI di rekod kesihatan!`);
+        }
       }
     }
 
@@ -6440,21 +6563,28 @@
 
         renderFoodTests();
 
+        let cloudSyncErr = null;
         if (db && currentFamilyId) {
           try {
-            await secureInsertRecord('baby_memories', {
+            const { error } = await secureInsertRecord('baby_memories', {
               title: `Ujian Makanan Selamat: ${test.foodName}`,
               category: 'Ujian Makanan',
               memory_date: new Date().toISOString().split('T')[0],
               notes: `Melepasi Ujian 3 Hari KKM tanpa reaksi alergi. Catatan: ${test.notes || '-'}`,
               uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
             });
+            if (error) cloudSyncErr = error;
           } catch (e) {
+            cloudSyncErr = e;
             console.warn("Food test save to Supabase:", e);
           }
         }
 
-        showToast(isEn ? `🎉 Congrats! "${test.foodName}" successfully passed the 3-Day Rule and is safe for baby!` : `🎉 Tahniah! "${test.foodName}" melepasi Ujian 3 Hari dan disahkan selamat!`);
+        if (cloudSyncErr) {
+          showCloudSyncNotice(cloudSyncErr, true);
+        } else {
+          showToast(isEn ? `🎉 Congrats! "${test.foodName}" successfully passed the 3-Day Rule and is safe for baby!` : `🎉 Tahniah! "${test.foodName}" melepasi Ujian 3 Hari dan disahkan selamat!`);
+        }
       }
     }
 
@@ -6474,21 +6604,31 @@
       renderFoodTests();
 
       // SIMPAN TERUS KE SUPABASE ALLERGIES TABLE
+      let cloudSyncErr = null;
       if (db && currentFamilyId) {
         try {
-          await secureInsertRecord('allergies', {
+          const { error } = await secureInsertRecord('allergies', {
             item_name: foodName,
             category: isEn ? 'Baby Food (3-Day Rule)' : 'Makanan Bayi (Ujian 3 Hari)',
             symptoms: isEn ? 'Skin rash / allergic reaction detected during 3-Day Rule' : 'Reaksi ruam kemerahan / alahan dikesan semasa Ujian 3 Hari KKM',
             recorded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
           });
-          loadAllergies();
+          if (error) {
+            cloudSyncErr = error;
+          } else {
+            loadAllergies();
+          }
         } catch (e) {
+          cloudSyncErr = e;
           console.warn("Error inserting allergy to Supabase:", e);
         }
       }
 
-      showToast(isEn ? `⚠️ Allergic reaction for "${foodName}" saved to Cloud & added to Allergy List!` : `⚠️ Reaksi alahan "${foodName}" direkodkan & disimpan ke Cloud Supabase!`);
+      if (cloudSyncErr) {
+        showCloudSyncNotice(cloudSyncErr, true);
+      } else {
+        showToast(isEn ? `⚠️ Allergic reaction for "${foodName}" saved to Cloud & added to Allergy List!` : `⚠️ Reaksi alahan "${foodName}" direkodkan & disimpan ke Cloud Supabase!`);
+      }
     }
 
     function reportAllergyPrompt(food) {
@@ -6725,29 +6865,43 @@
       const itemTitle = matchedItem ? (isEn ? matchedItem.textEn : matchedItem.textMs) : actualId;
 
       if (nextState) {
+        let cloudSyncErr = null;
         if (db && currentFamilyId && matchedItem) {
           try {
-            await secureInsertRecord('baby_memories', {
+            const { error } = await secureInsertRecord('baby_memories', {
               title: `Milestone: ${matchedItem.textMs}`,
               category: 'Milestone',
               memory_date: new Date().toISOString().split('T')[0],
               notes: JSON.stringify({ msId: actualId, text: matchedItem.textMs }),
               uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
             });
+            if (error) cloudSyncErr = error;
           } catch (e) {
+            cloudSyncErr = e;
             console.warn("Milestone insert error:", e);
           }
         }
-        showToast(isEn ? `🌟 Milestone "${itemTitle}" marked achieved & saved to Cloud!` : `🌟 Perkembangan "${itemTitle}" berjaya dicapai & disimpan ke Cloud!`);
+        if (cloudSyncErr) {
+          showCloudSyncNotice(cloudSyncErr, true);
+        } else {
+          showToast(isEn ? `🌟 Milestone "${itemTitle}" marked achieved & saved to Cloud!` : `🌟 Perkembangan "${itemTitle}" berjaya dicapai & disimpan ke Cloud!`);
+        }
       } else {
+        let cloudSyncErr = null;
         if (db && currentFamilyId && matchedItem) {
           try {
-            await secureDeleteRecord('baby_memories', { category: 'Milestone', titleSubstr: matchedItem.textMs });
+            const { error } = await secureDeleteRecord('baby_memories', { category: 'Milestone', titleSubstr: matchedItem.textMs });
+            if (error) cloudSyncErr = error;
           } catch (e) {
+            cloudSyncErr = e;
             console.warn("Milestone delete error:", e);
           }
         }
-        showToast(isEn ? `Milestone "${itemTitle}" updated.` : `Status milestone "${itemTitle}" dikemaskini.`);
+        if (cloudSyncErr) {
+          showCloudSyncNotice(cloudSyncErr, true);
+        } else {
+          showToast(isEn ? `Milestone "${itemTitle}" updated.` : `Status milestone "${itemTitle}" dikemaskini.`);
+        }
       }
     }
 
@@ -7011,9 +7165,9 @@
       saveGrowthLogsState(logs);
 
       closeModal('modal-add-growth');
-      showToast(isEn ? `✅ Weigh-in record for ${weight} kg saved!` : `✅ Rekod timbangan ${weight} kg berjaya disimpan!`);
       renderGrowthLogs();
 
+      let cloudSyncErr = null;
       if (db && currentFamilyId) {
         try {
           const { data, error } = await secureInsertRecord('baby_memories', {
@@ -7031,13 +7185,21 @@
             uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
           });
 
-          if (!error && data && data.id) {
+          if (error) {
+            cloudSyncErr = error;
+          } else if (data && data.id) {
             newRecord.cloudId = data.id;
             saveGrowthLogsState(logs);
           }
         } catch (err) {
+          cloudSyncErr = err;
           console.warn("Supabase growth insert error:", err);
         }
+      }
+      if (cloudSyncErr) {
+        showCloudSyncNotice(cloudSyncErr, true);
+      } else {
+        showToast(isEn ? `✅ Weigh-in record for ${weight} kg saved!` : `✅ Rekod timbangan ${weight} kg berjaya disimpan!`);
       }
     }
 
@@ -7047,17 +7209,23 @@
 
       let logs = getSavedGrowthLogs();
       const target = logs.find(x => x.id === id || x.cloudId === id);
-      logs = logs.filter(x => x.id !== id && x.cloudId !== id);
-      saveGrowthLogsState(logs);
-      renderGrowthLogs();
 
       if (target && target.cloudId && db && currentFamilyId) {
         try {
-          await secureDeleteRecord('baby_memories', { rowId: target.cloudId });
+          const { error } = await secureDeleteRecord('baby_memories', { rowId: target.cloudId });
+          if (error) {
+            showCloudSyncNotice(error, false);
+            return;
+          }
         } catch (e) {
-          console.warn("Supabase growth delete error:", e);
+          showCloudSyncNotice(e, false);
+          return;
         }
       }
+
+      logs = logs.filter(x => x.id !== id && x.cloudId !== id);
+      saveGrowthLogsState(logs);
+      renderGrowthLogs();
       showToast(isEn ? "🗑️ Weigh-in record deleted." : "🗑️ Rekod timbangan dipadam.");
     }
 
@@ -7388,22 +7556,29 @@
       localStorage.setItem(key, JSON.stringify(logs));
 
       // Sync ke Supabase baby_memories jika ada
+      let cloudSyncErr = null;
       if (db && currentFamilyId) {
         try {
-          await secureInsertRecord('baby_memories', {
+          const { error } = await secureInsertRecord('baby_memories', {
             title: `Log OPK: ${result}`,
             category: 'Ujian OPK',
             memory_date: date,
             notes: `Suhu BBT: ${temp}°C | Catatan: ${notes}`,
             uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
           });
+          if (error) cloudSyncErr = error;
         } catch (err) {
+          cloudSyncErr = err;
           console.warn("OPK sync to Supabase:", err);
         }
       }
 
       closeModal('modal-add-opk');
-      showToast(isEn ? "📊 OPK test reading logged!" : "📊 Rekod ujian OPK berjaya disimpan!");
+      if (cloudSyncErr) {
+        showCloudSyncNotice(cloudSyncErr, true);
+      } else {
+        showToast(isEn ? "📊 OPK test reading logged!" : "📊 Rekod ujian OPK berjaya disimpan!");
+      }
       loadOpkLogs();
 
       // Jika Puncak / Peak Ovulasi, tawarkan notifikasi WhatsApp ke suami
@@ -7680,21 +7855,23 @@
         };
 
         // 1. Simpan ke Pangkalan Data Supabase Pusat Anda
-        if (db) {
-          try {
-            await db.from('feedbacks').insert({
-              family_id: currentFamilyId || null,
-              family_code: code,
-              sender_name: sender,
-              rating: currentFeedbackRating,
-              category: type,
-              message: message,
-              contact_info: contact,
-              created_at: new Date().toISOString()
-            });
-          } catch (dbErr) {
-            console.warn("Supabase feedback insert note:", dbErr);
-          }
+        if (!db) {
+          showToast(isEn ? "⚠️ Server offline. Please check your connection and try again." : "⚠️ Sambungan pelayan tiada. Semak internet dan cuba semula.");
+          return;
+        }
+
+        const { error: fbErr } = await db.from('feedbacks').insert({
+          family_id: currentFamilyId || null,
+          family_code: code,
+          sender_name: sender,
+          rating: currentFeedbackRating,
+          category: type,
+          message: message,
+          contact_info: contact,
+          created_at: new Date().toISOString()
+        });
+        if (fbErr) {
+          throw fbErr;
         }
 
         // 2. Simpan salinan sandaran ke localStorage
@@ -7706,7 +7883,7 @@
         showToast(isEn ? "🎉 Thank you! Your message has been received safely." : "🎉 Terima kasih! Maklum balas anda telah disimpan dengan selamat.");
       } catch (err) {
         console.error("Ralat simpan feedback:", err);
-        showToast(isEn ? "Feedback received. Thank you!" : "Maklum balas diterima. Terima kasih!");
+        showToast(isEn ? "⚠️ Failed to send feedback. Please check your connection and try again." : "⚠️ Gagal menghantar maklum balas ke pelayan. Semak internet dan cuba lagi.");
       } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
