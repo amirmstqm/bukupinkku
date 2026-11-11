@@ -123,7 +123,7 @@
           <img src="./apple-touch-icon.png" alt="BukuPinkKu" class="w-8 h-8 rounded-xl shadow-xs border border-pastel-200 object-cover">
           <div class="flex items-center space-x-1.5">
             <span class="font-black text-slate-900 text-sm sm:text-base tracking-tight">BukuPinkKu</span>
-            <span class="inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-pastel-100 text-pastel-700 border border-pastel-200" data-i18n="land_nav_digital_badge">Digital</span>
+            <span class="inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200" data-i18n="land_nav_digital_badge">Digital</span>
           </div>
         </div>
 
@@ -405,13 +405,18 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           
           <!-- Fasa 1: TTC -->
-          <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-            <div class="flex items-center space-x-2 pb-3 border-b border-slate-100">
-              <span class="text-xl">🌸</span>
-              <div>
-                <h3 class="font-bold text-slate-900 text-sm" data-i18n="land_f1_title">Fasa Ikhtiar Zuriat (TTC)</h3>
-                <p class="text-[10px] text-slate-500" data-i18n="land_f1_sub">Persediaan awal menyambut zuriat</p>
+          <div id="card-phase-ttc" onclick="selectLandingPhaseCard('ttc')" class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover:border-pastel-300 space-y-4 cursor-pointer transition">
+            <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2 min-w-0">
+                <span class="text-xl shrink-0">🌸</span>
+                <div class="min-w-0">
+                  <h3 class="font-bold text-slate-900 text-sm truncate" data-i18n="land_f1_title">Fasa Ikhtiar Zuriat (TTC)</h3>
+                  <p class="text-[10px] text-slate-500 truncate" data-i18n="land_f1_sub">Persediaan awal menyambut zuriat</p>
+                </div>
               </div>
+              <button id="btn-phase-start-ttc" type="button" onclick="event.stopPropagation(); showOnboardingScreen('mother', 'ttc')" class="hidden shrink-0 px-3 py-1.5 bg-pastel-500 hover:bg-pastel-600 text-white text-[10px] font-extrabold rounded-xl shadow-sm transition transform active:scale-95 whitespace-nowrap" data-i18n="land_btn_start_now">
+                Mula Sekarang &rarr;
+              </button>
             </div>
             <ul class="text-xs text-slate-600 space-y-2.5">
               <li class="flex items-start space-x-2">
@@ -434,16 +439,21 @@
           </div>
 
           <!-- Fasa 2: Kehamilan (Buku Pink) -->
-          <div class="bg-white p-5 rounded-3xl border-2 border-pastel-300 shadow-md space-y-4 relative">
+          <div id="card-phase-pregnancy" onclick="selectLandingPhaseCard('pregnancy')" class="bg-white p-5 rounded-3xl border-2 border-pastel-300 shadow-md hover:border-pastel-400 space-y-4 relative cursor-pointer transition">
             <div class="absolute -top-3 right-4 bg-pastel-500 text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm" data-i18n="land_f2_badge">
               Paling Popular
             </div>
-            <div class="flex items-center space-x-2 pb-3 border-b border-slate-100">
-              <span class="text-xl">🤰</span>
-              <div>
-                <h3 class="font-bold text-slate-900 text-sm" data-i18n="land_f2_title">Fasa Kehamilan (Buku Pink)</h3>
-                <p class="text-[10px] text-slate-500" data-i18n="land_f2_sub">Catatan kemas sepanjang 40 minggu</p>
+            <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2 min-w-0">
+                <span class="text-xl shrink-0">🤰</span>
+                <div class="min-w-0">
+                  <h3 class="font-bold text-slate-900 text-sm truncate" data-i18n="land_f2_title">Fasa Kehamilan (Buku Pink)</h3>
+                  <p class="text-[10px] text-slate-500 truncate" data-i18n="land_f2_sub">Catatan kemas sepanjang 40 minggu</p>
+                </div>
               </div>
+              <button id="btn-phase-start-pregnancy" type="button" onclick="event.stopPropagation(); showOnboardingScreen('mother', 'pregnancy')" class="hidden shrink-0 px-3 py-1.5 bg-pastel-500 hover:bg-pastel-600 text-white text-[10px] font-extrabold rounded-xl shadow-sm transition transform active:scale-95 whitespace-nowrap" data-i18n="land_btn_start_now">
+                Mula Sekarang &rarr;
+              </button>
             </div>
             <ul class="text-xs text-slate-600 space-y-2.5">
               <li class="flex items-start space-x-2">
@@ -466,13 +476,18 @@
           </div>
 
           <!-- Fasa 3: Bayi & Anak -->
-          <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-            <div class="flex items-center space-x-2 pb-3 border-b border-slate-100">
-              <span class="text-xl">👶</span>
-              <div>
-                <h3 class="font-bold text-slate-900 text-sm" data-i18n="land_f3_title">Fasa Anak (0 - 3 Tahun)</h3>
-                <p class="text-[10px] text-slate-500" data-i18n="land_f3_sub">Tumbesaran & imunisasi si manja</p>
+          <div id="card-phase-born" onclick="selectLandingPhaseCard('born')" class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover:border-pastel-300 space-y-4 cursor-pointer transition">
+            <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+              <div class="flex items-center space-x-2 min-w-0">
+                <span class="text-xl shrink-0">👶</span>
+                <div class="min-w-0">
+                  <h3 class="font-bold text-slate-900 text-sm truncate" data-i18n="land_f3_title">Fasa Anak (0 - 3 Tahun)</h3>
+                  <p class="text-[10px] text-slate-500 truncate" data-i18n="land_f3_sub">Tumbesaran & imunisasi si manja</p>
+                </div>
               </div>
+              <button id="btn-phase-start-born" type="button" onclick="event.stopPropagation(); showOnboardingScreen('mother', 'born')" class="hidden shrink-0 px-3 py-1.5 bg-pastel-500 hover:bg-pastel-600 text-white text-[10px] font-extrabold rounded-xl shadow-sm transition transform active:scale-95 whitespace-nowrap" data-i18n="land_btn_start_now">
+                Mula Sekarang &rarr;
+              </button>
             </div>
             <ul class="text-xs text-slate-600 space-y-2.5">
               <li class="flex items-start space-x-2">
@@ -541,14 +556,14 @@
                   <div class="space-y-1">
                     <p class="text-xs font-bold text-rose-900 flex items-center justify-center sm:justify-start space-x-1.5">
                       <span>💖</span>
-                      <span data-i18n="land_free_support_title">Infaq Pelayan Awan (Pilihan)</span>
+                      <span data-i18n="land_free_support_title">Sokongan untuk aplikasi (Pilihan)</span>
                     </p>
                     <p data-i18n="land_free_support_desc" class="text-[11px] text-slate-600 leading-relaxed max-w-lg">
                       Jika aplikasi ini membantu memudahkan urusan keluarga anda, sebarang sumbangan kecil amat dihargai bagi menampung kos pelayan agar ia kekal percuma untuk ibu bapa lain.
                     </p>
                   </div>
                   <button onclick="openModal('modal-coffee')" class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md transition transform active:scale-95 shrink-0 flex items-center space-x-1.5">
-                    <span data-i18n="land_free_btn_qr">💝 Kongsi Rezeki (Jika Sudi)</span>
+                    <span data-i18n="land_free_btn_qr">💝 Kongsi Rezeki &rarr;</span>
                   </button>
                 </div>
               </div>
@@ -2698,9 +2713,10 @@
         land_free_badge: "Inisiatif Ikhlas Dari Hati",
         land_free_title: "Kenapa BukuPinkKu Disediakan <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-pastel-600 to-rose-600\">100% Percuma?</span>",
         land_free_body: "<p>Kami membina BukuPinkKu kerana memahami cabaran sebenar yang dihadapi pasangan di Malaysia: isteri sering terbeban mengingati pelbagai tarikh temujanji, jadual ubat harian dan bacaan HB seorang diri, manakala suami pula buntu dan tidak pasti bagaimana mahu membantu secara praktikal di klinik.</p><p>Masalah komunikasi dan keciciran rekod ini tidak sepatutnya menambah tekanan semasa fasa kehamilan. BukuPinkKu hadir sebagai penyelesaian mudah supaya suami dan isteri sentiasa berkongsi maklumat yang sama, saling mengingati, dan bersedia setiap kali melangkah masuk ke bilik rawatan.</p><p class=\"font-medium text-slate-800 bg-rose-50/70 p-3.5 rounded-2xl border border-rose-100\">🌸 <strong>BukuPinkKu dicipta sebagai inisiatif komuniti dan bukan untuk mengaut keuntungan.</strong> Kami percaya setiap keluarga berhak mendapat sistem pemantauan kesihatan yang tersusun, tenang, dan mudah tanpa halangan bayaran langganan atau iklan yang menjengkelkan.</p>",
-        land_free_support_title: "Infaq Pelayan Awan (Pilihan)",
+        land_free_support_title: "Sokongan untuk aplikasi (Pilihan)",
         land_free_support_desc: "Jika aplikasi ini membantu memudahkan urusan keluarga anda, sebarang sumbangan kecil amat dihargai bagi menampung kos pelayan agar ia kekal percuma untuk ibu bapa lain.",
-        land_free_btn_qr: "💝 Kongsi Rezeki (Jika Sudi)",
+        land_free_btn_qr: "💝 Kongsi Rezeki &rarr;",
+        land_btn_start_now: "Mula Sekarang &rarr;",
         land_phase_sub: "Perjalanan Bersama",
         land_phase_h2: "Satu Aplikasi Untuk 3 Fasa Paling Berharga",
         land_phase_desc: "BukuPinkKu menemani anda dari saat merancang zuriat hingga anak berusia 3 tahun.",
@@ -3098,9 +3114,10 @@
         land_free_badge: "Heartfelt Non-Profit Initiative",
         land_free_title: "Why is BukuPinkKu Provided <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-pastel-600 to-rose-600\">100% Free?</span>",
         land_free_body: "<p>We created BukuPinkKu after experiencing firsthand the daily friction faced by expecting couples: mothers feeling overwhelmed juggling clinic dates, medication schedules, and HB readings alone, while fathers feel lost and unsure how to effectively assist at the clinic.</p><p>Miscommunication and misplaced records should never add friction during pregnancy. BukuPinkKu serves as a simple solution so spouses remain on the same page, remind one another, and enter clinic visits confident and prepared.</p><p class=\"font-medium text-slate-800 bg-rose-50/70 p-3.5 rounded-2xl border border-rose-100\">🌸 <strong>BukuPinkKu was founded as a community initiative, not a commercial business for profit.</strong> We believe every family deserves an organized, stress-free health tracking companion without paywalls, subscription fees, or intrusive ads.</p>",
-        land_free_support_title: "Cloud Server Fund (Optional)",
+        land_free_support_title: "App Support (Optional)",
         land_free_support_desc: "If this app brings convenience to your family, any small contribution is warmly appreciated to help offset cloud server fees so it stays free for all parents.",
-        land_free_btn_qr: "💝 Support Server (Optional)",
+        land_free_btn_qr: "💝 Share Blessings &rarr;",
+        land_btn_start_now: "Start Now &rarr;",
         land_phase_sub: "A Shared Journey",
         land_phase_h2: "One Single App for 3 Most Precious Milestones",
         land_phase_desc: "BukuPinkKu walks alongside you from conception planning to your child's 3rd birthday.",
@@ -3574,12 +3591,21 @@
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
-    function showOnboardingScreen(initialRole = 'mother') {
+    function showOnboardingScreen(initialRole = 'mother', preselectPhase = null) {
       const landEl = document.getElementById('screen-landing');
       if (landEl) landEl.classList.add('hidden');
       document.getElementById('screen-onboarding').classList.remove('hidden');
       document.getElementById('screen-dashboard').classList.add('hidden');
       switchAuthTab(initialRole);
+      if (initialRole === 'mother' && preselectPhase) {
+        const phaseRadio = document.querySelector(`input[name="pregnancy_status"][value="${preselectPhase}"]`);
+        if (phaseRadio) {
+          phaseRadio.checked = true;
+          if (typeof togglePregnancyFields === 'function') {
+            togglePregnancyFields(preselectPhase);
+          }
+        }
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
@@ -3606,6 +3632,24 @@
     // ==========================================
     // LOGIK INTERAKTIF LANDING PAGE
     // ==========================================
+    function selectLandingPhaseCard(phase) {
+      const phases = ['ttc', 'pregnancy', 'born'];
+      phases.forEach((p) => {
+        const card = document.getElementById('card-phase-' + p);
+        const btn = document.getElementById('btn-phase-start-' + p);
+        const isSelected = p === phase;
+        if (card) {
+          card.classList.toggle('ring-2', isSelected);
+          card.classList.toggle('ring-pastel-400', isSelected);
+          card.classList.toggle('shadow-lg', isSelected);
+          card.classList.toggle('border-pastel-400', isSelected);
+        }
+        if (btn) {
+          btn.classList.toggle('hidden', !isSelected);
+        }
+      });
+    }
+
     function previewLandingPhase(phase) {
       const btnTtc = document.getElementById('prev-btn-ttc');
       const btnPreg = document.getElementById('prev-btn-preg');
