@@ -684,6 +684,7 @@
             <span class="text-[10px] text-slate-500" data-i18n="land_foot_version">Aplikasi Web Rasmi</span>
           </div>
           <div class="flex flex-wrap justify-center gap-4 text-[11px]">
+            <a href="javascript:void(0)" onclick="openPreAuthSupportModal('lost_code')" class="hover:text-white transition" data-i18n="land_foot_help_pin">🆘 Bantuan PIN / Hilang Kod</a>
             <a href="javascript:void(0)" onclick="openModal('modal-coffee')" class="text-pastel-300 hover:text-white transition" data-i18n="land_foot_support">💝 Tabung Pelayan (Pilihan)</a>
             <a href="javascript:void(0)" onclick="showOnboardingScreen('father')" class="hover:text-white transition" data-i18n="land_foot_enter_code">Masuk Kod Pasangan</a>
             <a href="javascript:void(0)" onclick="showOnboardingScreen('mother')" class="hover:text-white transition" data-i18n="land_foot_register">Daftar Ibu Hamil</a>
@@ -889,8 +890,14 @@
           <button type="button" onclick="toggleForgotPinHelp()" data-i18n="btn_forgot_pin" class="mt-1 text-[11px] font-semibold text-teal-700 hover:text-teal-900 underline">
             Terlupa PIN Keluarga?
           </button>
-          <div id="forgot-pin-help-box" data-i18n="forgot_pin_help" class="hidden mt-1.5 p-2.5 rounded-xl bg-teal-50/80 border border-teal-200 text-[11px] text-slate-600 leading-relaxed">
-            💡 Jika peranti pasangan anda masih log masuk, buka <strong>Menu ☰ → 🔐 Tukar PIN Keluarga</strong> pada peranti tersebut untuk tetapkan PIN 6 digit baharu tanpa perlu tahu PIN lama. Jika semua peranti telah log keluar, hubungi pentadbir sokongan untuk reset PIN.
+          <div id="forgot-pin-help-box" class="hidden mt-1.5 p-2.5 rounded-xl bg-teal-50/80 border border-teal-200 text-[11px] text-slate-600 leading-relaxed space-y-2">
+            <p data-i18n="forgot_pin_help">
+              💡 Jika peranti pasangan anda masih log masuk, buka <strong>Menu ☰ → 🔐 Tukar PIN Keluarga</strong> pada peranti tersebut untuk tetapkan PIN 6 digit baharu tanpa perlu tahu PIN lama. Jika semua peranti telah log keluar, hantarkan permintaan bantuan kepada pentadbir melalui butang di bawah.
+            </p>
+            <button type="button" onclick="openPreAuthSupportModal('forgot_pin')" class="w-full py-2 px-3 rounded-xl bg-white hover:bg-teal-100/70 text-teal-800 border border-teal-300 font-bold text-[11px] flex items-center justify-center space-x-1.5 shadow-2xs transition">
+              <span>🆘</span>
+              <span data-i18n="btn_open_pin_support">Hantar Permintaan Reset PIN / Hilang Kod</span>
+            </button>
           </div>
         </div>
 
@@ -906,7 +913,11 @@
           Atau Terus Cuba Mod Demo (Keluarga Contoh Amir & Sarah)
         </button>
 
-        <!-- Jaminan Privasi Data PDPA Onboarding -->
+        <!-- Jaminan Privasi Data PDPA & Bantuan Pra-Log Masuk -->
+        <button type="button" onclick="openPreAuthSupportModal('lost_code')" data-i18n="onboard_help_account" class="text-[11px] text-teal-700 hover:text-teal-900 font-semibold underline block mx-auto">
+          🆘 Terlupa PIN / Hilang Kod Keluarga? Hantar Tiket Bantuan
+        </button>
+
         <div class="pt-1 flex items-center justify-center space-x-1.5 text-[10px] text-slate-400">
           <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
           <span data-i18n="onboard_privacy_note">Data kesihatan keluarga dilindungi.</span>
@@ -2507,6 +2518,76 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: BANTUAN AKAUN PRA-LOG MASUK (TERLUPA PIN / HILANG KOD) ================= -->
+  <div id="modal-account-support" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 sm:p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700 text-lg">
+            🆘
+          </div>
+          <div>
+            <h3 data-i18n="mdl_sup_title" class="text-sm font-extrabold text-slate-800">Bantuan Akaun &amp; Reset PIN</h3>
+            <p data-i18n="mdl_sup_sub" class="text-[10px] text-slate-400">Dihantar terus ke papan semakan pentadbir sokongan</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-account-support')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <p data-i18n="mdl_sup_desc" class="text-[11px] text-slate-600 leading-relaxed bg-teal-50/70 border border-teal-100 rounded-xl p-2.5">
+        Jika semua peranti keluarga telah log keluar dan anda terlupa PIN atau kehilangan Kod Keluarga, isikan maklumat pengesahan asas di bawah supaya pentadbir dapat menghubungi &amp; membantu anda semula.
+      </p>
+
+      <form onsubmit="handleSendPreAuthSupport(event)" class="space-y-3 text-xs">
+        <div class="hidden" aria-hidden="true">
+          <input type="text" id="sup-hp-website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div>
+          <label data-i18n="lbl_sup_type" class="block font-bold text-slate-700 mb-1">Jenis Bantuan</label>
+          <select id="sup-type" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none font-semibold bg-white">
+            <option value="Bantuan Akaun: Terlupa PIN" data-i18n="opt_sup_pin">🔐 Terlupa PIN Keluarga (Semua Peranti Log Keluar)</option>
+            <option value="Bantuan Akaun: Hilang Kod Keluarga" data-i18n="opt_sup_code">🔑 Hilang / Lupa Kod Keluarga (PINK-XXXXXX)</option>
+            <option value="Bantuan Akaun: Masalah Log Masuk Lain" data-i18n="opt_sup_other">🛠️ Masalah Log Masuk Lain</option>
+          </select>
+        </div>
+
+        <div>
+          <label data-i18n="lbl_sup_name" class="block font-bold text-slate-700 mb-1">Nama Anda</label>
+          <input type="text" id="sup-name" required placeholder="Cth: Sarah / Amir" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+        </div>
+
+        <div>
+          <label data-i18n="lbl_sup_phone_hint" class="block font-bold text-slate-700 mb-1">No. Telefon Berdaftar / 4 Digit Terakhir</label>
+          <input type="text" id="sup-phone-hint" required placeholder="Cth: 012-3456789 atau 6789" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+        </div>
+
+        <div>
+          <label data-i18n="lbl_sup_code" class="block font-bold text-slate-700 mb-1">Kod Keluarga (Jika Masih Ingat - Pilihan)</label>
+          <input type="text" id="sup-family-code" placeholder="Cth: PINK-7K9M2X" class="w-full p-2.5 font-mono uppercase border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+        </div>
+
+        <div>
+          <label data-i18n="lbl_sup_contact" class="block font-bold text-slate-700 mb-1">Cara Dihubungi Semula (WhatsApp / Emel)</label>
+          <input type="text" id="sup-contact" required placeholder="Cth: 012-3456789 atau nama@gmail.com" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <p data-i18n="hint_sup_contact" class="text-[10px] text-slate-400 mt-1">Pentadbir akan menghubungi anda melalui saluran ini selepas menyemak rekod.</p>
+        </div>
+
+        <div>
+          <label data-i18n="lbl_sup_notes" class="block font-bold text-slate-700 mb-1">Catatan Tambahan (Pilihan)</label>
+          <textarea id="sup-notes" rows="2" placeholder="Terangkan ringkas situasi anda (cth: tukar telefon baharu)..." class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300"></textarea>
+        </div>
+
+        <button type="submit" id="btn-submit-support" class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-xl shadow-md transition flex items-center justify-center space-x-2">
+          <i data-lucide="life-buoy" class="w-4 h-4"></i>
+          <span data-i18n="btn_submit_support">Hantar Permintaan Bantuan</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- ================= MODAL: TUKAR PIN KELUARGA (6 DIGIT) ================= -->
   <div id="modal-change-pin" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 sm:p-6 space-y-4 shadow-2xl border border-slate-200">
@@ -3535,7 +3616,24 @@
         btn_copy_link: "Salin Pautan",
         btn_change_pin_sidebar: "Tukar PIN Keluarga",
         btn_forgot_pin: "Terlupa PIN Keluarga?",
-        forgot_pin_help: "💡 Jika peranti pasangan anda masih log masuk, buka <strong>Menu ☰ → 🔐 Tukar PIN Keluarga</strong> pada peranti tersebut untuk tetapkan PIN 6 digit baharu tanpa perlu tahu PIN lama. Jika semua peranti telah log keluar, hubungi pentadbir sokongan untuk reset PIN.",
+        forgot_pin_help: "💡 Jika peranti pasangan anda masih log masuk, buka <strong>Menu ☰ → 🔐 Tukar PIN Keluarga</strong> pada peranti tersebut untuk tetapkan PIN 6 digit baharu tanpa perlu tahu PIN lama. Jika semua peranti telah log keluar, hantarkan permintaan bantuan kepada pentadbir melalui butang di bawah.",
+        btn_open_pin_support: "Hantar Permintaan Reset PIN / Hilang Kod",
+        land_foot_help_pin: "🆘 Bantuan PIN / Hilang Kod",
+        onboard_help_account: "🆘 Terlupa PIN / Hilang Kod Keluarga? Hantar Tiket Bantuan",
+        mdl_sup_title: "Bantuan Akaun &amp; Reset PIN",
+        mdl_sup_sub: "Dihantar terus ke papan semakan pentadbir sokongan",
+        mdl_sup_desc: "Jika semua peranti keluarga telah log keluar dan anda terlupa PIN atau kehilangan Kod Keluarga, isikan maklumat pengesahan asas di bawah supaya pentadbir dapat menghubungi &amp; membantu anda semula.",
+        lbl_sup_type: "Jenis Bantuan",
+        opt_sup_pin: "🔐 Terlupa PIN Keluarga (Semua Peranti Log Keluar)",
+        opt_sup_code: "🔑 Hilang / Lupa Kod Keluarga (PINK-XXXXXX)",
+        opt_sup_other: "🛠️ Masalah Log Masuk Lain",
+        lbl_sup_name: "Nama Anda",
+        lbl_sup_phone_hint: "No. Telefon Berdaftar / 4 Digit Terakhir",
+        lbl_sup_code: "Kod Keluarga (Jika Masih Ingat - Pilihan)",
+        lbl_sup_contact: "Cara Dihubungi Semula (WhatsApp / Emel)",
+        hint_sup_contact: "Pentadbir akan menghubungi anda melalui saluran ini selepas menyemak rekod.",
+        lbl_sup_notes: "Catatan Tambahan (Pilihan)",
+        btn_submit_support: "Hantar Permintaan Bantuan",
         mdl_change_pin_title: "Tukar PIN Keluarga",
         mdl_change_pin_sub: "Tetapkan PIN baharu untuk log masuk peranti",
         mdl_change_pin_desc: "Masukkan PIN 6 digit baharu. PIN ini digunakan bersama Kod Keluarga &amp; 4 digit telefon apabila suami atau isteri log masuk di telefon baharu.",
@@ -3972,7 +4070,24 @@
         btn_copy_link: "Copy Link",
         btn_change_pin_sidebar: "Change Family PIN",
         btn_forgot_pin: "Forgot Family PIN?",
-        forgot_pin_help: "💡 If your partner's device is still signed in, open <strong>Menu ☰ → 🔐 Change Family PIN</strong> on that device to set a new 6-digit PIN without needing the old PIN. If all devices signed out, contact support to reset it.",
+        forgot_pin_help: "💡 If your partner's device is still signed in, open <strong>Menu ☰ → 🔐 Change Family PIN</strong> on that device to set a new 6-digit PIN without needing the old PIN. If all devices signed out, submit a support request below.",
+        btn_open_pin_support: "Submit PIN Reset / Lost Code Request",
+        land_foot_help_pin: "🆘 PIN / Lost Code Help",
+        onboard_help_account: "🆘 Forgot PIN / Lost Family Code? Submit Support Request",
+        mdl_sup_title: "Account Support &amp; PIN Reset",
+        mdl_sup_sub: "Sent directly to our support admin queue",
+        mdl_sup_desc: "If every family device has signed out and you forgot your PIN or lost your Family Code, fill in the basic verification details below so our support team can reach out and help.",
+        lbl_sup_type: "Help Topic",
+        opt_sup_pin: "🔐 Forgot Family PIN (All Devices Signed Out)",
+        opt_sup_code: "🔑 Lost Family Code (PINK-XXXXXX)",
+        opt_sup_other: "🛠️ Other Sign-In Issue",
+        lbl_sup_name: "Your Name",
+        lbl_sup_phone_hint: "Registered Phone Number / Last 4 Digits",
+        lbl_sup_code: "Family Code (If Remembered - Optional)",
+        lbl_sup_contact: "How to Reach You (WhatsApp / Email)",
+        hint_sup_contact: "Support will reply through this contact after reviewing your request.",
+        lbl_sup_notes: "Additional Notes (Optional)",
+        btn_submit_support: "Submit Support Request",
         mdl_change_pin_title: "Change Family PIN",
         mdl_change_pin_sub: "Set a new PIN for device sign-ins",
         mdl_change_pin_desc: "Enter a new 6-digit PIN. This PIN is used along with your Family Code &amp; 4 phone digits whenever Mom or Dad signs in on a new phone.",
@@ -8590,6 +8705,135 @@
       if (lbl) lbl.innerText = labels[stars] || labels[5];
     }
 
+    async function submitFeedbackRecord({ familyId = null, familyCode = 'Unknown', senderName = 'Pengguna', rating = 5, category = 'Umum', message = '', contactInfo = 'Tiada' }) {
+      const isEn = currentLang === 'en';
+      if (!db) {
+        throw new Error(isEn ? 'SERVER_OFFLINE' : 'SERVER_OFFLINE');
+      }
+      const createdAt = new Date().toISOString();
+      const { error: fbErr } = await db.from('feedbacks').insert({
+        family_id: familyId,
+        family_code: familyCode,
+        sender_name: senderName,
+        rating: rating,
+        category: category,
+        message: message,
+        contact_info: contactInfo,
+        created_at: createdAt
+      });
+      if (fbErr) throw fbErr;
+
+      const existingFbs = parseJsonSafe(localStorage.getItem('bukupink_feedbacks'), []);
+      existingFbs.push({
+        date: createdAt,
+        family_id: familyId,
+        family_code: familyCode,
+        sender: senderName,
+        rating: rating,
+        type: category,
+        message: message,
+        contact: contactInfo
+      });
+      localStorage.setItem('bukupink_feedbacks', JSON.stringify(existingFbs));
+    }
+
+    function openPreAuthSupportModal(preset = 'forgot_pin') {
+      const typeEl = document.getElementById('sup-type');
+      const codeEl = document.getElementById('sup-family-code');
+      const nameEl = document.getElementById('sup-name');
+      const phoneEl = document.getElementById('sup-phone-hint');
+      const contactEl = document.getElementById('sup-contact');
+      const notesEl = document.getElementById('sup-notes');
+
+      if (typeEl) {
+        typeEl.value = preset === 'lost_code'
+          ? 'Bantuan Akaun: Hilang Kod Keluarga'
+          : 'Bantuan Akaun: Terlupa PIN';
+      }
+      if (codeEl && !codeEl.value) {
+        const joinCode = document.getElementById('join-invite-code')?.value.trim().toUpperCase();
+        if (joinCode) codeEl.value = joinCode;
+      }
+      if (nameEl && !nameEl.value) {
+        const joinName = document.getElementById('join-dad-name')?.value.trim();
+        const regName = document.getElementById('reg-mom-name')?.value.trim();
+        if (joinName || regName) nameEl.value = joinName || regName;
+      }
+      if (phoneEl && !phoneEl.value) {
+        const joinPhone4 = document.getElementById('join-verify-phone4')?.value.trim();
+        const regPhone = document.getElementById('reg-mom-phone')?.value.trim();
+        if (joinPhone4 || regPhone) phoneEl.value = joinPhone4 || regPhone;
+      }
+      if (contactEl) contactEl.value = '';
+      if (notesEl) notesEl.value = '';
+
+      openModal('modal-account-support');
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    async function handleSendPreAuthSupport(e) {
+      e.preventDefault();
+      const isEn = currentLang === 'en';
+      const hp = document.getElementById('sup-hp-website')?.value.trim();
+      if (hp) return;
+
+      const now = Date.now();
+      const cooldownUntil = parseInt(localStorage.getItem('bukupink_support_cooldown_until') || '0', 10);
+      if (cooldownUntil > now) {
+        const waitSecs = Math.ceil((cooldownUntil - now) / 1000);
+        showToast(isEn
+          ? `⏳ Please wait ${waitSecs}s before sending another support request.`
+          : `⏳ Sila tunggu ${waitSecs} saat sebelum menghantar permintaan bantuan seterusnya.`);
+        return;
+      }
+
+      const type = document.getElementById('sup-type')?.value || 'Bantuan Akaun: Terlupa PIN';
+      const senderName = document.getElementById('sup-name')?.value.trim();
+      const phoneHint = document.getElementById('sup-phone-hint')?.value.trim();
+      const codeInput = document.getElementById('sup-family-code')?.value.trim().toUpperCase() || 'TIDAK_INGAT';
+      const contact = document.getElementById('sup-contact')?.value.trim();
+      const notes = document.getElementById('sup-notes')?.value.trim();
+
+      if (!senderName || !phoneHint || !contact) return;
+
+      const btn = document.getElementById('btn-submit-support');
+      const originalHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.innerText = isEn ? 'Sending...' : 'Menghantar...';
+        btn.disabled = true;
+      }
+
+      try {
+        const composedMsg = `[BANTUAN PRA-LOG MASUK] Telefon/4-Digit: ${phoneHint}${notes ? ' | Catatan: ' + notes : ''}`;
+        await submitFeedbackRecord({
+          familyId: null,
+          familyCode: codeInput,
+          senderName: senderName,
+          rating: 5,
+          category: type,
+          message: composedMsg,
+          contactInfo: contact
+        });
+
+        localStorage.setItem('bukupink_support_cooldown_until', String(Date.now() + 60000));
+        closeModal('modal-account-support');
+        showToast(isEn
+          ? '🆘 Support request sent! Our admin will contact you through the details provided.'
+          : '🆘 Permintaan bantuan berjaya dihantar! Pentadbir akan menghubungi anda melalui saluran yang diberi.');
+      } catch (err) {
+        console.error('Ralat hantar bantuan akaun:', err);
+        showToast(isEn
+          ? '⚠️ Unable to send support request right now. Please check your internet connection.'
+          : '⚠️ Gagal menghantar permintaan bantuan ke pelayan. Sila semak sambungan internet anda.');
+      } finally {
+        if (btn) {
+          btn.innerHTML = originalHtml;
+          btn.disabled = false;
+        }
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+      }
+    }
+
     async function handleSendFeedback(e) {
       e.preventDefault();
       const isEn = currentLang === 'en';
@@ -8605,41 +8849,15 @@
       const code = currentFamilyCode || 'Unknown';
 
       try {
-        const fbEntry = {
-          date: new Date().toISOString(),
-          family_id: currentFamilyId,
-          family_code: code,
-          sender: sender,
-          rating: currentFeedbackRating,
-          type: type,
-          message: message,
-          contact: contact
-        };
-
-        // 1. Simpan ke Pangkalan Data Supabase Pusat Anda
-        if (!db) {
-          showToast(isEn ? "⚠️ Server offline. Please check your connection and try again." : "⚠️ Sambungan pelayan tiada. Semak internet dan cuba semula.");
-          return;
-        }
-
-        const { error: fbErr } = await db.from('feedbacks').insert({
-          family_id: currentFamilyId || null,
-          family_code: code,
-          sender_name: sender,
+        await submitFeedbackRecord({
+          familyId: currentFamilyId || null,
+          familyCode: code,
+          senderName: sender,
           rating: currentFeedbackRating,
           category: type,
           message: message,
-          contact_info: contact,
-          created_at: new Date().toISOString()
+          contactInfo: contact
         });
-        if (fbErr) {
-          throw fbErr;
-        }
-
-        // 2. Simpan salinan sandaran ke localStorage
-        const existingFbs = JSON.parse(localStorage.getItem('bukupink_feedbacks') || '[]');
-        existingFbs.push(fbEntry);
-        localStorage.setItem('bukupink_feedbacks', JSON.stringify(existingFbs));
 
         closeModal('modal-feedback');
         showToast(isEn ? "🎉 Thank you! Your message has been received safely." : "🎉 Terima kasih! Maklum balas anda telah disimpan dengan selamat.");
