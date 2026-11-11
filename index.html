@@ -3287,10 +3287,48 @@
       return `${prefix}_${currentFamilyId || 'default'}`;
     }
 
+    function getActiveChildId() {
+      const active = (typeof getActiveChildRecord === 'function') ? getActiveChildRecord() : null;
+      if (active && active.id) return String(active.id);
+      if (activeChildId) return String(activeChildId);
+      const saved = localStorage.getItem(getFamilyScopedKey('bukupink_active_child_id'));
+      return saved ? String(saved) : null;
+    }
+
+    function getOldestChildId() {
+      if (!cachedChildren || cachedChildren.length === 0) return null;
+      const sorted = cachedChildren.slice().sort((a, b) =>
+        String(a.created_at || '').localeCompare(String(b.created_at || ''))
+      );
+      return sorted[0] && sorted[0].id ? String(sorted[0].id) : String(cachedChildren[cachedChildren.length - 1].id);
+    }
+
+    function isPrimaryLegacyChild(childId = null) {
+      const targetId = childId || getActiveChildId();
+      if (!cachedChildren || cachedChildren.length <= 1) return true;
+      const oldestId = getOldestChildId();
+      return !oldestId || !targetId || String(targetId) === String(oldestId);
+    }
+
+    function getChildScopedKey(prefix) {
+      const cid = getActiveChildId() || 'default';
+      return `${prefix}_${currentFamilyId || 'default'}_${cid}`;
+    }
+
+    function recordMatchesActiveChild(row, targetChildId = null) {
+      if (!row) return false;
+      const cid = targetChildId ? String(targetChildId) : getActiveChildId();
+      if (!cid) return true;
+      if (row.child_id !== null && row.child_id !== undefined && String(row.child_id).trim() !== '') {
+        return String(row.child_id) === cid;
+      }
+      return isPrimaryLegacyChild(cid);
+    }
+
     /**
      * Upsert singleton or keyed sync state into baby_memories without schema changes.
      */
-    async function upsertFamilySyncRecord(category, title, payloadObj, memoryDate = null) {
+    async function upsertFamilySyncRecord(category, title, payloadObj, memoryDate = null, childId = null) {
       if (!db || !currentFamilyId) return { error: new Error('No active session') };
       if (currentFamilyId === DEMO_FAMILY_ID) return { error: new Error('DEMO_READ_ONLY') };
 
@@ -3299,24 +3337,30 @@
       const { data: existingRows, error: fetchErr } = await secureGetRecords('baby_memories', { category });
       if (fetchErr) return { error: fetchErr };
 
-      const existing = (existingRows || []).find(r => r.title === title);
+      const existing = (existingRows || []).find(r =>
+        r.title === title && (!childId || recordMatchesActiveChild(r, childId))
+      );
       if (existing && existing.id) {
-        const { error } = await secureUpdateRecord('baby_memories', existing.id, {
+        const updatePayload = {
           title,
           category,
           memory_date: targetDate,
           notes: serialized
-        });
+        };
+        if (childId) updatePayload.child_id = childId;
+        const { error } = await secureUpdateRecord('baby_memories', existing.id, updatePayload);
         return { error };
       }
 
-      const { error } = await secureInsertRecord('baby_memories', {
+      const insertPayload = {
         title,
         category,
         memory_date: targetDate,
         notes: serialized,
         uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
-      });
+      };
+      if (childId) insertPayload.child_id = childId;
+      const { error } = await secureInsertRecord('baby_memories', insertPayload);
       return { error };
     }
 
@@ -5119,11 +5163,30 @@
     let lastCloudSyncAt = 0;
     let isCloudSyncing = false;
 
-    async function loadAllSupabaseData() {
+    async function reloadChildScopedData() {
       if (!db || !currentFamilyId) return;
       try {
         await Promise.all([
-          loadChildInfo(),
+          loadAppointments(),
+          loadHealthVitals(),
+          loadAllergies(),
+          loadBabyMemories(),
+          loadVaccines(),
+          loadFoodTests(),
+          loadMilestones(),
+          loadGrowthLogs()
+        ]);
+        renderBabyTeeth();
+      } catch (err) {
+        console.warn("Ralat memuatkan data anak aktif:", err);
+      }
+    }
+
+    async function loadAllSupabaseData() {
+      if (!db || !currentFamilyId) return;
+      try {
+        await loadChildInfo();
+        await Promise.all([
           loadFamilyPhaseState(),
           loadTtcSettings(),
           loadDailyMedsState(),
@@ -5183,7 +5246,7 @@
       });
     }
 
-    function selectActiveChild(childId) {
+    async function selectActiveChild(childId) {
       if (!childId) return;
       activeChildId = childId;
       localStorage.setItem(getFamilyScopedKey('bukupink_active_child_id'), String(childId));
@@ -5196,6 +5259,7 @@
           switchPhase(targetPhase);
         }
       }
+      await reloadChildScopedData();
     }
 
     function toggleChildProfileModalFields(status) {
@@ -5323,6 +5387,7 @@
 
         closeModal('modal-child-profile');
         await loadChildInfo();
+        await reloadChildScopedData();
         switchPhase(newPhase);
 
         if (status === 'born' && mode === 'edit') {
@@ -5647,12 +5712,13 @@
     // LOAD APPOINTMENTS
     async function loadAppointments() {
       const { data, error } = await secureGetRecords('appointments');
+      const filtered = (!error && Array.isArray(data)) ? data.filter(item => recordMatchesActiveChild(item)) : [];
 
       const isEn = currentLang === 'en';
       const container = document.getElementById('appointment-list');
       const quickActions = document.getElementById('quick-appt-actions');
 
-      if (error || !data || data.length === 0) {
+      if (error || filtered.length === 0) {
         cachedAppointments = [];
         container.innerHTML = `<div class="p-4 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">${isEn ? "No appointments scheduled yet. Tap '+ Add' to record your first clinic visit." : "Tiada janji temu dijadualkan. Klik '+ Tambah' untuk rekod janji temu pertama anda."}</div>`;
         document.getElementById('quick-appt-text').innerText = isEn ? "No Clinic Appointment Scheduled" : "Tiada Temujanji KK Dijadualkan";
@@ -5661,9 +5727,9 @@
         return;
       }
 
-      cachedAppointments = data;
+      cachedAppointments = filtered;
       container.innerHTML = '';
-      data.forEach(item => {
+      filtered.forEach(item => {
         const card = document.createElement('div');
         card.className = "bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-xs";
         const safeId = escapeHtml(item.id);
@@ -5695,14 +5761,14 @@
         container.appendChild(card);
       });
 
-      if (data[0]) {
-        const topSafeId = escapeHtml(data[0].id);
+      if (filtered[0]) {
+        const topSafeId = escapeHtml(filtered[0].id);
         document.getElementById('quick-appt-text').innerText = isEn
-          ? `Next Visit: ${data[0].appointment_date} (${data[0].appointment_time || 'Morning'})`
-          : `Temujanji KK: ${data[0].appointment_date} (${data[0].appointment_time || 'Pagi'})`;
+          ? `Next Visit: ${filtered[0].appointment_date} (${filtered[0].appointment_time || 'Morning'})`
+          : `Temujanji KK: ${filtered[0].appointment_date} (${filtered[0].appointment_time || 'Pagi'})`;
         document.getElementById('quick-appt-desc').innerHTML = isEn
-          ? `Checkup: <strong>${escapeHtml(data[0].title)}</strong> at ${escapeHtml(data[0].clinic_name || 'Health Clinic')}`
-          : `Pemeriksaan: <strong>${escapeHtml(data[0].title)}</strong> di ${escapeHtml(data[0].clinic_name || 'Klinik Kesihatan')}`;
+          ? `Checkup: <strong>${escapeHtml(filtered[0].title)}</strong> at ${escapeHtml(filtered[0].clinic_name || 'Health Clinic')}`
+          : `Pemeriksaan: <strong>${escapeHtml(filtered[0].title)}</strong> di ${escapeHtml(filtered[0].clinic_name || 'Klinik Kesihatan')}`;
         if (quickActions) {
           quickActions.classList.remove('hidden');
           quickActions.innerHTML = `
@@ -5727,6 +5793,7 @@
     // LOAD HEALTH VITALS
     async function loadHealthVitals() {
       const { data, error } = await secureGetRecords('health_vitals');
+      const filtered = (!error && Array.isArray(data)) ? data.filter(item => recordMatchesActiveChild(item)) : [];
 
       const isEn = currentLang === 'en';
       const container = document.getElementById('vital-logs');
@@ -5737,7 +5804,7 @@
       const quickHbActions = document.getElementById('quick-hb-actions');
       const quickBpActions = document.getElementById('quick-bp-actions');
 
-      if (error || !data || data.length === 0) {
+      if (error || filtered.length === 0) {
         cachedVitals = [];
         container.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">${isEn ? "No vital readings logged yet. Tap '+ Log New Reading' above." : "Tiada rekod bacaan vital lagi. Klik '+ Log Bacaan Baru' di atas."}</div>`;
         hbDisplay.innerText = isEn ? "Not Recorded" : "Belum Direkod";
@@ -5757,9 +5824,9 @@
         return;
       }
 
-      cachedVitals = data;
+      cachedVitals = filtered;
       container.innerHTML = '';
-      data.forEach(item => {
+      filtered.forEach(item => {
         let statusColor = "text-emerald-600 bg-emerald-50 border-emerald-200";
         if (item.hb_reading < 9.0) statusColor = "text-rose-600 bg-rose-50 border-rose-200";
         else if (item.hb_reading < 11.0) statusColor = "text-amber-600 bg-amber-50 border-amber-200";
@@ -5785,8 +5852,8 @@
         container.appendChild(row);
       });
 
-      if (data[0]) {
-        const latestHb = parseFloat(data[0].hb_reading);
+      if (filtered[0]) {
+        const latestHb = parseFloat(filtered[0].hb_reading);
         hbDisplay.innerText = `${latestHb.toFixed(1)} g/dL`;
 
         if (latestHb < 9.0) {
@@ -5809,14 +5876,14 @@
           }
         }
 
-        bpDisplay.innerText = `${data[0].blood_pressure || '120/80'} mmHg`;
+        bpDisplay.innerText = `${filtered[0].blood_pressure || '120/80'} mmHg`;
         bpDisplay.className = "text-lg font-black text-slate-800 my-0.5";
         if (bpBadge) {
           bpBadge.innerText = isEn ? "Recorded ✅" : "Direkod ✅";
           bpBadge.className = "inline-block text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-full";
         }
 
-        const topVitalId = escapeHtml(data[0].id);
+        const topVitalId = escapeHtml(filtered[0].id);
         const actionBtnsHtml = `
           <button onclick="event.stopPropagation(); editVital('${topVitalId}')" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-pastel-50 text-slate-700 font-semibold border border-slate-200 transition">
             ✏️ ${isEn ? 'Edit' : 'Edit'}
@@ -5839,18 +5906,19 @@
     // LOAD ALLERGIES
     async function loadAllergies() {
       const { data, error } = await secureGetRecords('allergies');
+      const filtered = (!error && Array.isArray(data)) ? data.filter(item => recordMatchesActiveChild(item)) : [];
 
       const isEn = currentLang === 'en';
       const container = document.getElementById('allergy-list');
-      if (error || !data || data.length === 0) {
+      if (error || filtered.length === 0) {
         cachedAllergies = [];
         container.innerHTML = `<div class="p-4 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">${isEn ? "No allergies or diet notes recorded yet." : "Tiada pantang atau alahan direkodkan."}</div>`;
         return;
       }
 
-      cachedAllergies = data;
+      cachedAllergies = filtered;
       container.innerHTML = '';
-      data.forEach(item => {
+      filtered.forEach(item => {
         const card = document.createElement('div');
         card.className = "bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-xs space-y-1.5";
         const safeAllergyId = escapeHtml(item.id);
@@ -5883,7 +5951,7 @@
       const isEn = currentLang === 'en';
       const container = document.getElementById('memory-timeline-container');
       const filtered = (data || []).filter(item =>
-        !NON_GALLERY_CATEGORIES.includes(item.category)
+        !NON_GALLERY_CATEGORIES.includes(item.category) && recordMatchesActiveChild(item)
       );
       if (error || filtered.length === 0) {
         cachedMemories = [];
@@ -6468,6 +6536,7 @@
           saveRes = await secureUpdateRecord('baby_memories', editingMemoryId, updatePayload);
         } else {
           saveRes = await secureInsertRecord('baby_memories', {
+            child_id: getActiveChildId(),
             title: title,
             category: cat,
             memory_date: date,
@@ -6528,6 +6597,7 @@
         });
       } else {
         saveRes = await secureInsertRecord('appointments', {
+          child_id: getActiveChildId(),
           title: title,
           clinic_name: clinic,
           appointment_date: date,
@@ -6581,6 +6651,7 @@
         });
       } else {
         saveRes = await secureInsertRecord('health_vitals', {
+          child_id: getActiveChildId(),
           hb_reading: hb,
           blood_pressure: bp,
           weight: parseFloat(weight),
@@ -6626,6 +6697,7 @@
         });
       } else {
         saveRes = await secureInsertRecord('allergies', {
+          child_id: getActiveChildId(),
           item_name: name,
           category: cat,
           symptoms: symp,
@@ -7059,7 +7131,7 @@
     ];
 
     function getVaccineStorageKey() {
-      return 'bukupink_vaccines_' + (currentFamilyId || 'default');
+      return getChildScopedKey('bukupink_vaccines');
     }
 
     function getSavedVaccines() {
@@ -7068,15 +7140,27 @@
       if (raw) {
         try { return JSON.parse(raw); } catch (e) {}
       }
-      // Nilai permulaan (4 daripada 7 selesai - 57%)
-      const initial = {
-        'v_0m': { done: true, date: '2024-01-10' },
-        'v_1m': { done: true, date: '2024-02-12' },
-        'v_2m': { done: true, date: '2024-03-15' },
-        'v_3m': { done: true, date: '2024-04-18' }
-      };
-      localStorage.setItem(key, JSON.stringify(initial));
-      return initial;
+      if (isPrimaryLegacyChild()) {
+        const legacyRaw = localStorage.getItem(getFamilyScopedKey('bukupink_vaccines'));
+        if (legacyRaw) {
+          try {
+            const parsed = JSON.parse(legacyRaw);
+            localStorage.setItem(key, JSON.stringify(parsed));
+            return parsed;
+          } catch (e) {}
+        }
+      }
+      if (currentFamilyId === DEMO_FAMILY_ID) {
+        const initial = {
+          'v_0m': { done: true, date: '2024-01-10' },
+          'v_1m': { done: true, date: '2024-02-12' },
+          'v_2m': { done: true, date: '2024-03-15' },
+          'v_3m': { done: true, date: '2024-04-18' }
+        };
+        localStorage.setItem(key, JSON.stringify(initial));
+        return initial;
+      }
+      return {};
     }
 
     function saveVaccinesState(state) {
@@ -7084,24 +7168,28 @@
     }
 
     async function loadVaccines() {
-      const state = getSavedVaccines();
+      let state = getSavedVaccines();
       if (db && currentFamilyId) {
         try {
           const { data, error } = await secureGetRecords('baby_memories', { category: 'Vaksin KKM' });
-          if (!error && data && data.length > 0) {
-            data.forEach(item => {
+          if (!error && Array.isArray(data)) {
+            const childRows = data.filter(item => recordMatchesActiveChild(item));
+            if (currentFamilyId !== DEMO_FAMILY_ID) {
+              state = {};
+            }
+            childRows.forEach(item => {
               if (item.notes) {
                 try {
                   const parsed = JSON.parse(item.notes);
                   if (parsed && parsed.vacId) {
                     state[parsed.vacId] = { done: true, date: item.memory_date, cloudId: item.id };
+                    return;
                   }
-                } catch (e) {
-                  const found = KKM_VACCINE_LIST.find(v => item.title && item.title.includes(v.nameMs));
-                  if (found) {
-                    state[found.id] = { done: true, date: item.memory_date, cloudId: item.id };
-                  }
-                }
+                } catch (e) {}
+              }
+              const found = KKM_VACCINE_LIST.find(v => item.title && item.title.includes(v.nameMs));
+              if (found) {
+                state[found.id] = { done: true, date: item.memory_date, cloudId: item.id };
               }
             });
             saveVaccinesState(state);
@@ -7125,7 +7213,7 @@
         if (!confirm(isEn ? `Change status of "${vacTitle}" to Not Completed?` : `Tukar status suntikan "${vacTitle}" kepada Belum Selesai?`)) {
           return;
         }
-        const cloudId = state[vacId].cloudId;
+        let cloudId = state[vacId].cloudId;
         delete state[vacId];
         saveVaccinesState(state);
         renderVaccines();
@@ -7133,10 +7221,18 @@
         let cloudSyncErr = null;
         if (db && currentFamilyId) {
           try {
-            const res = cloudId
-              ? await secureDeleteRecord('baby_memories', { rowId: cloudId })
-              : await secureDeleteRecord('baby_memories', { category: 'Vaksin KKM', titleSubstr: vac.nameMs });
-            if (res && res.error) cloudSyncErr = res.error;
+            if (!cloudId) {
+              const { data: rows } = await secureGetRecords('baby_memories', { category: 'Vaksin KKM' });
+              const matchRow = (rows || []).find(r =>
+                recordMatchesActiveChild(r) &&
+                ((r.notes && r.notes.includes(vac.id)) || (r.title && r.title.includes(vac.nameMs)))
+              );
+              if (matchRow) cloudId = matchRow.id;
+            }
+            if (cloudId) {
+              const res = await secureDeleteRecord('baby_memories', { rowId: cloudId });
+              if (res && res.error) cloudSyncErr = res.error;
+            }
           } catch (e) {
             cloudSyncErr = e;
             console.warn("Error removing vaccine from Supabase:", e);
@@ -7157,6 +7253,7 @@
         if (db && currentFamilyId) {
           try {
             const { data, error } = await secureInsertRecord('baby_memories', {
+              child_id: getActiveChildId(),
               title: `Vaksin KKM: ${vac.nameMs}`,
               category: 'Vaksin KKM',
               memory_date: today,
@@ -7261,11 +7358,11 @@
     // CIRI 3: PANDUAN MAKANAN BAYI (3-DAY RULE)
     // ==========================================
     function getFoodTestStorageKey() {
-      return 'bukupink_food_test_' + (currentFamilyId || 'default');
+      return getChildScopedKey('bukupink_food_test');
     }
 
     function getFoodSafeStorageKey() {
-      return 'bukupink_food_safe_' + (currentFamilyId || 'default');
+      return getChildScopedKey('bukupink_food_safe');
     }
 
     function getSavedFoodTest() {
@@ -7274,17 +7371,38 @@
       if (raw) {
         try { return JSON.parse(raw); } catch (e) {}
       }
-      const initial = {
-        foodName: '🍳 Kuning Telur Rebus (Lumat)',
-        currentDay: 2,
-        day1: 'pass',
+      if (isPrimaryLegacyChild()) {
+        const legacyRaw = localStorage.getItem(getFamilyScopedKey('bukupink_food_test'));
+        if (legacyRaw) {
+          try {
+            const parsed = JSON.parse(legacyRaw);
+            localStorage.setItem(key, JSON.stringify(parsed));
+            return parsed;
+          } catch (e) {}
+        }
+      }
+      if (currentFamilyId === DEMO_FAMILY_ID) {
+        const initial = {
+          foodName: '🍳 Kuning Telur Rebus (Lumat)',
+          currentDay: 2,
+          day1: 'pass',
+          day2: 'pending',
+          day3: 'pending',
+          status: 'testing',
+          notes: 'Kukus & lumat bersama susu ibu'
+        };
+        localStorage.setItem(key, JSON.stringify(initial));
+        return initial;
+      }
+      return {
+        foodName: '',
+        currentDay: 1,
+        day1: 'pending',
         day2: 'pending',
         day3: 'pending',
-        status: 'testing',
-        notes: 'Kukus & lumat bersama susu ibu'
+        status: 'idle',
+        notes: ''
       };
-      localStorage.setItem(key, JSON.stringify(initial));
-      return initial;
     }
 
     function getSavedSafeFoods() {
@@ -7293,14 +7411,27 @@
       if (raw) {
         try { return JSON.parse(raw); } catch (e) {}
       }
-      const initial = [
-        '🥣 Bubur Beras Putih',
-        '🥕 Puri Lobak Merah',
-        '🥑 Puri Avokado Lumat',
-        '🍌 Puri Pisang Mas'
-      ];
-      localStorage.setItem(key, JSON.stringify(initial));
-      return initial;
+      if (isPrimaryLegacyChild()) {
+        const legacyRaw = localStorage.getItem(getFamilyScopedKey('bukupink_food_safe'));
+        if (legacyRaw) {
+          try {
+            const parsed = JSON.parse(legacyRaw);
+            localStorage.setItem(key, JSON.stringify(parsed));
+            return parsed;
+          } catch (e) {}
+        }
+      }
+      if (currentFamilyId === DEMO_FAMILY_ID) {
+        const initial = [
+          '🥣 Bubur Beras Putih',
+          '🥕 Puri Lobak Merah',
+          '🥑 Puri Avokado Lumat',
+          '🍌 Puri Pisang Mas'
+        ];
+        localStorage.setItem(key, JSON.stringify(initial));
+        return initial;
+      }
+      return [];
     }
 
     function saveFoodTestState(state) {
@@ -7312,40 +7443,62 @@
     }
 
     async function persistActiveFoodTestToCloud(testState) {
-      return await upsertFamilySyncRecord('Ujian Makanan Aktif', 'STATUS_UJIAN_MAKANAN_AKTIF', testState);
+      const cid = getActiveChildId();
+      const scopedTitle = cid ? `STATUS_UJIAN_MAKANAN_AKTIF_${cid}` : 'STATUS_UJIAN_MAKANAN_AKTIF';
+      return await upsertFamilySyncRecord('Ujian Makanan Aktif', scopedTitle, testState, null, cid);
     }
 
     async function loadFoodTests() {
-      renderFoodTests();
-      if (!db || !currentFamilyId) return;
+      if (!db || !currentFamilyId) {
+        renderFoodTests();
+        return;
+      }
 
       try {
+        const cid = getActiveChildId();
+        const scopedTitle = cid ? `STATUS_UJIAN_MAKANAN_AKTIF_${cid}` : 'STATUS_UJIAN_MAKANAN_AKTIF';
         const [activeRes, safeRes] = await Promise.all([
           secureGetRecords('baby_memories', { category: 'Ujian Makanan Aktif' }),
           secureGetRecords('baby_memories', { category: 'Ujian Makanan' })
         ]);
 
-        if (!activeRes.error && activeRes.data) {
-          const activeRow = activeRes.data.find(r => r.title === 'STATUS_UJIAN_MAKANAN_AKTIF');
+        if (!activeRes.error && Array.isArray(activeRes.data)) {
+          const childActiveRows = activeRes.data.filter(r =>
+            r.title === scopedTitle || (recordMatchesActiveChild(r) && r.title === 'STATUS_UJIAN_MAKANAN_AKTIF')
+          );
+          const activeRow = childActiveRows.find(r => r.title === scopedTitle) || childActiveRows[0];
           const parsedActive = activeRow ? parseJsonSafe(activeRow.notes) : null;
           if (parsedActive && parsedActive.foodName) {
             saveFoodTestState(parsedActive);
+          } else if (currentFamilyId !== DEMO_FAMILY_ID) {
+            saveFoodTestState({
+              foodName: '',
+              currentDay: 1,
+              day1: 'pending',
+              day2: 'pending',
+              day3: 'pending',
+              status: 'idle',
+              notes: ''
+            });
           }
         }
 
-        if (!safeRes.error && safeRes.data && safeRes.data.length > 0) {
+        if (!safeRes.error && Array.isArray(safeRes.data)) {
           const cloudSafeFoods = safeRes.data
+            .filter(item => recordMatchesActiveChild(item))
             .map(r => String(r.title || '').replace(/^Ujian Makanan Selamat:\s*/i, '').trim())
             .filter(Boolean);
           if (cloudSafeFoods.length > 0) {
-            const mergedSafeFoods = [...new Set([...getSavedSafeFoods(), ...cloudSafeFoods])];
-            saveSafeFoodsState(mergedSafeFoods);
+            saveSafeFoodsState([...new Set(cloudSafeFoods)]);
+          } else if (currentFamilyId !== DEMO_FAMILY_ID) {
+            saveSafeFoodsState([]);
           }
         }
 
         renderFoodTests();
       } catch (err) {
         console.warn("Gagal muat ujian makanan dari Supabase:", err);
+        renderFoodTests();
       }
     }
 
@@ -7435,6 +7588,7 @@
             if (activeSync && activeSync.error) cloudSyncErr = activeSync.error;
 
             const { error } = await secureInsertRecord('baby_memories', {
+              child_id: getActiveChildId(),
               title: `Ujian Makanan Selamat: ${test.foodName}`,
               category: 'Ujian Makanan',
               memory_date: getLocalTodayIso(),
@@ -7479,6 +7633,7 @@
           if (activeSync && activeSync.error) cloudSyncErr = activeSync.error;
 
           const { error } = await secureInsertRecord('allergies', {
+            child_id: getActiveChildId(),
             item_name: foodName,
             category: isEn ? 'Baby Food (3-Day Rule)' : 'Makanan Bayi (Ujian 3 Hari)',
             symptoms: isEn ? 'Skin rash / allergic reaction detected during 3-Day Rule' : 'Reaksi ruam kemerahan / alahan dikesan semasa Ujian 3 Hari KKM',
@@ -7515,76 +7670,90 @@
       let statusBadge = '';
       let actionButtons = '';
 
-      if (test.status === 'passed') {
-        statusBadge = `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">✓ ${isEn ? 'Passed & Safe' : 'Lulus Sepenuhnya'}</span>`;
-        actionButtons = `
-          <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
-            <span class="text-xs text-emerald-700 font-bold">${isEn ? '✨ Safe to mix with other foods!' : '✨ Selamat dimakan dan dicampur dengan hidangan lain!'}</span>
-            <button onclick="openNewFoodTestModal()" class="text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1.5 rounded-xl hover:bg-teal-100 transition">
-              + ${isEn ? 'Test Next Food' : 'Uji Makanan Seterusnya'}
-            </button>
-          </div>
-        `;
-      } else if (test.status === 'allergic') {
-        statusBadge = `<span class="bg-rose-100 text-rose-800 text-xs font-bold px-2.5 py-1 rounded-full">⚠️ ${isEn ? 'Allergic Reaction' : 'Reaksi Alahan'}</span>`;
-        actionButtons = `
-          <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
-            <span class="text-xs text-rose-700 font-bold">${isEn ? '🛑 Testing halted. Saved to Pantang/Allergies.' : '🛑 Makanan dihentikan. Telah disimpan ke tab Pantang & Alahan.'}</span>
-            <button onclick="openNewFoodTestModal()" class="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-200 transition">
-              + ${isEn ? 'Test Another Food' : 'Uji Makanan Lain'}
+      if (!test || test.status === 'idle' || !test.foodName) {
+        container.innerHTML = `
+          <div class="bg-white p-5 rounded-2xl border border-dashed border-slate-300 text-center space-y-2.5">
+            <span class="text-2xl">🥣</span>
+            <p class="text-xs font-bold text-slate-800">${isEn ? 'No Active 3-Day Food Test Yet' : 'Belum Ada Ujian Makanan 3 Hari Aktif'}</p>
+            <p class="text-[11px] text-slate-500">${isEn ? 'Start testing one new puree or solid food for 3 days to monitor allergic reactions safely.' : 'Mulakan ujian 1 jenis puri atau makanan baharu selama 3 hari untuk pantau sebarang alahan dengan selamat.'}</p>
+            <button onclick="openNewFoodTestModal()" class="inline-flex items-center space-x-1.5 bg-pastel-500 hover:bg-pastel-600 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs transition">
+              <span>+</span>
+              <span>${isEn ? 'Start 3-Day Food Test' : 'Mulakan Ujian Makanan'}</span>
             </button>
           </div>
         `;
       } else {
-        statusBadge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-1 rounded-full">${isEn ? `Testing Day ${test.currentDay} of 3` : `Sedang Diuji (Hari ke-${test.currentDay} dari 3)`}</span>`;
-        actionButtons = `
-          <div class="flex space-x-2 pt-2 border-t border-slate-100">
-            <button onclick="passFoodTestToday()" class="flex-1 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs rounded-xl border border-emerald-200 transition">
-              ✓ ${isEn ? 'Passed Today (No Rash)' : '✓ Lulus Hari Ini (Tiada Ruam)'}
-            </button>
-            <button onclick="reportFoodAllergy()" class="flex-1 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200 transition">
-              ⚠️ ${isEn ? 'Rash / Allergic Reaction' : '⚠️ Ada Reaksi Ruam'}
-            </button>
+        if (test.status === 'passed') {
+          statusBadge = `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">✓ ${isEn ? 'Passed & Safe' : 'Lulus Sepenuhnya'}</span>`;
+          actionButtons = `
+            <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
+              <span class="text-xs text-emerald-700 font-bold">${isEn ? '✨ Safe to mix with other foods!' : '✨ Selamat dimakan dan dicampur dengan hidangan lain!'}</span>
+              <button onclick="openNewFoodTestModal()" class="text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1.5 rounded-xl hover:bg-teal-100 transition">
+                + ${isEn ? 'Test Next Food' : 'Uji Makanan Seterusnya'}
+              </button>
+            </div>
+          `;
+        } else if (test.status === 'allergic') {
+          statusBadge = `<span class="bg-rose-100 text-rose-800 text-xs font-bold px-2.5 py-1 rounded-full">⚠️ ${isEn ? 'Allergic Reaction' : 'Reaksi Alahan'}</span>`;
+          actionButtons = `
+            <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
+              <span class="text-xs text-rose-700 font-bold">${isEn ? '🛑 Testing halted. Saved to Pantang/Allergies.' : '🛑 Makanan dihentikan. Telah disimpan ke tab Pantang & Alahan.'}</span>
+              <button onclick="openNewFoodTestModal()" class="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-200 transition">
+                + ${isEn ? 'Test Another Food' : 'Uji Makanan Lain'}
+              </button>
+            </div>
+          `;
+        } else {
+          statusBadge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-1 rounded-full">${isEn ? `Testing Day ${test.currentDay} of 3` : `Sedang Diuji (Hari ke-${test.currentDay} dari 3)`}</span>`;
+          actionButtons = `
+            <div class="flex space-x-2 pt-2 border-t border-slate-100">
+              <button onclick="passFoodTestToday()" class="flex-1 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs rounded-xl border border-emerald-200 transition">
+                ✓ ${isEn ? 'Passed Today (No Rash)' : '✓ Lulus Hari Ini (Tiada Ruam)'}
+              </button>
+              <button onclick="reportFoodAllergy()" class="flex-1 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200 transition">
+                ⚠️ ${isEn ? 'Rash / Allergic Reaction' : '⚠️ Ada Reaksi Ruam'}
+              </button>
+            </div>
+          `;
+        }
+
+        const d1Class = test.day1 === 'pass' ? 'bg-emerald-500 text-white' : (test.currentDay === 1 ? 'bg-amber-100 text-amber-800 border-2 border-amber-400 font-bold' : 'bg-slate-100 text-slate-400');
+        const d2Class = test.day2 === 'pass' ? 'bg-emerald-500 text-white' : (test.currentDay === 2 && test.status === 'testing' ? 'bg-amber-100 text-amber-800 border-2 border-amber-400 font-bold' : 'bg-slate-100 text-slate-400');
+        const d3Class = test.day3 === 'pass' ? 'bg-emerald-500 text-white' : (test.currentDay === 3 && test.status === 'testing' ? 'bg-amber-100 text-amber-800 border-2 border-amber-400 font-bold' : 'bg-slate-100 text-slate-400');
+
+        container.innerHTML = `
+          <div class="bg-white p-4 rounded-2xl border-2 ${test.status === 'allergic' ? 'border-rose-300' : (test.status === 'passed' ? 'border-emerald-300' : 'border-amber-300')} shadow-sm space-y-3">
+            <div class="flex justify-between items-start">
+              <div>
+                ${statusBadge}
+                <h4 class="text-sm font-bold text-slate-800 mt-1.5">${escapeHtml(test.foodName)}</h4>
+                ${test.notes ? `<p class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(test.notes)}</p>` : ''}
+              </div>
+              <button onclick="openNewFoodTestModal()" class="text-[11px] text-slate-400 hover:text-slate-600">
+                <i data-lucide="edit" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- 3-Day Steps Visual Tracker -->
+            <div class="grid grid-cols-3 gap-2 text-center text-xs">
+              <div class="p-2 rounded-xl ${d1Class}">
+                <p class="font-bold">${isEn ? 'Day 1' : 'Hari 1'}</p>
+                <p class="text-[10px]">${test.day1 === 'pass' ? (isEn ? 'Passed ✓' : 'Lulus ✓') : (test.currentDay === 1 ? (isEn ? 'Testing' : 'Ujian') : '-')}</p>
+              </div>
+              <div class="p-2 rounded-xl ${d2Class}">
+                <p class="font-bold">${isEn ? 'Day 2' : 'Hari 2'}</p>
+                <p class="text-[10px]">${test.day2 === 'pass' ? (isEn ? 'Passed ✓' : 'Lulus ✓') : (test.currentDay === 2 && test.status === 'testing' ? (isEn ? 'Testing' : 'Ujian') : '-')}</p>
+              </div>
+              <div class="p-2 rounded-xl ${d3Class}">
+                <p class="font-bold">${isEn ? 'Day 3' : 'Hari 3'}</p>
+                <p class="text-[10px]">${test.day3 === 'pass' ? (isEn ? 'Passed ✓' : 'Lulus ✓') : (test.currentDay === 3 && test.status === 'testing' ? (isEn ? 'Testing' : 'Ujian') : '-')}</p>
+              </div>
+            </div>
+
+            ${actionButtons}
           </div>
         `;
       }
-
-      const d1Class = test.day1 === 'pass' ? 'bg-emerald-500 text-white' : (test.currentDay === 1 ? 'bg-amber-100 text-amber-800 border-2 border-amber-400 font-bold' : 'bg-slate-100 text-slate-400');
-      const d2Class = test.day2 === 'pass' ? 'bg-emerald-500 text-white' : (test.currentDay === 2 && test.status === 'testing' ? 'bg-amber-100 text-amber-800 border-2 border-amber-400 font-bold' : 'bg-slate-100 text-slate-400');
-      const d3Class = test.day3 === 'pass' ? 'bg-emerald-500 text-white' : (test.currentDay === 3 && test.status === 'testing' ? 'bg-amber-100 text-amber-800 border-2 border-amber-400 font-bold' : 'bg-slate-100 text-slate-400');
-
-      container.innerHTML = `
-        <div class="bg-white p-4 rounded-2xl border-2 ${test.status === 'allergic' ? 'border-rose-300' : (test.status === 'passed' ? 'border-emerald-300' : 'border-amber-300')} shadow-sm space-y-3">
-          <div class="flex justify-between items-start">
-            <div>
-              ${statusBadge}
-              <h4 class="text-sm font-bold text-slate-800 mt-1.5">${escapeHtml(test.foodName)}</h4>
-              ${test.notes ? `<p class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(test.notes)}</p>` : ''}
-            </div>
-            <button onclick="openNewFoodTestModal()" class="text-[11px] text-slate-400 hover:text-slate-600">
-              <i data-lucide="edit" class="w-4 h-4"></i>
-            </button>
-          </div>
-
-          <!-- 3-Day Steps Visual Tracker -->
-          <div class="grid grid-cols-3 gap-2 text-center text-xs">
-            <div class="p-2 rounded-xl ${d1Class}">
-              <p class="font-bold">${isEn ? 'Day 1' : 'Hari 1'}</p>
-              <p class="text-[10px]">${test.day1 === 'pass' ? (isEn ? 'Passed ✓' : 'Lulus ✓') : (test.currentDay === 1 ? (isEn ? 'Testing' : 'Ujian') : '-')}</p>
-            </div>
-            <div class="p-2 rounded-xl ${d2Class}">
-              <p class="font-bold">${isEn ? 'Day 2' : 'Hari 2'}</p>
-              <p class="text-[10px]">${test.day2 === 'pass' ? (isEn ? 'Passed ✓' : 'Lulus ✓') : (test.currentDay === 2 && test.status === 'testing' ? (isEn ? 'Testing' : 'Ujian') : '-')}</p>
-            </div>
-            <div class="p-2 rounded-xl ${d3Class}">
-              <p class="font-bold">${isEn ? 'Day 3' : 'Hari 3'}</p>
-              <p class="text-[10px]">${test.day3 === 'pass' ? (isEn ? 'Passed ✓' : 'Lulus ✓') : (test.currentDay === 3 && test.status === 'testing' ? (isEn ? 'Testing' : 'Ujian') : '-')}</p>
-            </div>
-          </div>
-
-          ${actionButtons}
-        </div>
-      `;
 
       // Render Safe Foods
       const safeList = getSavedSafeFoods();
@@ -7654,7 +7823,7 @@
     ];
 
     function getMilestoneStorageKey() {
-      return 'bukupink_milestones_' + (currentFamilyId || 'default');
+      return getChildScopedKey('bukupink_milestones');
     }
 
     function getSavedMilestones() {
@@ -7663,19 +7832,31 @@
       if (raw) {
         try { return JSON.parse(raw); } catch (e) {}
       }
-      // Nilai permulaan (peringkat awal selesai, 6-9 bulan separa selesai: 8 daripada 12 = 67%)
-      const initial = {
-        'ms_0_1': true,
-        'ms_0_2': true,
-        'ms_0_3': true,
-        'ms_3_1': true,
-        'ms_3_2': true,
-        'ms_3_3': true,
-        'ms_6_1': true,
-        'ms_6_2': true
-      };
-      localStorage.setItem(key, JSON.stringify(initial));
-      return initial;
+      if (isPrimaryLegacyChild()) {
+        const legacyRaw = localStorage.getItem(getFamilyScopedKey('bukupink_milestones'));
+        if (legacyRaw) {
+          try {
+            const parsed = JSON.parse(legacyRaw);
+            localStorage.setItem(key, JSON.stringify(parsed));
+            return parsed;
+          } catch (e) {}
+        }
+      }
+      if (currentFamilyId === DEMO_FAMILY_ID) {
+        const initial = {
+          'ms_0_1': true,
+          'ms_0_2': true,
+          'ms_0_3': true,
+          'ms_3_1': true,
+          'ms_3_2': true,
+          'ms_3_3': true,
+          'ms_6_1': true,
+          'ms_6_2': true
+        };
+        localStorage.setItem(key, JSON.stringify(initial));
+        return initial;
+      }
+      return {};
     }
 
     function saveMilestonesState(state) {
@@ -7683,17 +7864,21 @@
     }
 
     async function loadMilestones() {
-      const state = getSavedMilestones();
+      let state = getSavedMilestones();
       if (db && currentFamilyId) {
         try {
           const { data, error } = await secureGetRecords('baby_memories', { category: 'Milestone' });
-          if (!error && data && data.length > 0) {
-            data.forEach(item => {
+          if (!error && Array.isArray(data)) {
+            const childRows = data.filter(item => recordMatchesActiveChild(item));
+            if (currentFamilyId !== DEMO_FAMILY_ID) {
+              state = {};
+            }
+            childRows.forEach(item => {
               if (item.notes) {
                 try {
                   const parsed = JSON.parse(item.notes);
                   if (parsed && parsed.msId) {
-                    state[parsed.msId] = true;
+                    state[parsed.msId] = { done: true, cloudId: item.id };
                   }
                 } catch (e) {}
               }
@@ -7722,11 +7907,13 @@
       });
 
       const actualId = matchedItem ? matchedItem.id : msId;
-      const isCurrentlyDone = Boolean(state[actualId]);
+      const prevEntry = state[actualId];
+      const isCurrentlyDone = Boolean(prevEntry && (prevEntry === true || prevEntry.done));
       const nextState = !isCurrentlyDone;
+      let cloudId = (prevEntry && typeof prevEntry === 'object') ? prevEntry.cloudId : null;
 
       if (nextState) {
-        state[actualId] = true;
+        state[actualId] = { done: true };
       } else {
         delete state[actualId];
       }
@@ -7739,14 +7926,20 @@
         let cloudSyncErr = null;
         if (db && currentFamilyId && matchedItem) {
           try {
-            const { error } = await secureInsertRecord('baby_memories', {
+            const { data, error } = await secureInsertRecord('baby_memories', {
+              child_id: getActiveChildId(),
               title: `Milestone: ${matchedItem.textMs}`,
               category: 'Milestone',
               memory_date: new Date().toISOString().split('T')[0],
               notes: JSON.stringify({ msId: actualId, text: matchedItem.textMs }),
               uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
             });
-            if (error) cloudSyncErr = error;
+            if (error) {
+              cloudSyncErr = error;
+            } else if (data && data.id) {
+              state[actualId] = { done: true, cloudId: data.id };
+              saveMilestonesState(state);
+            }
           } catch (e) {
             cloudSyncErr = e;
             console.warn("Milestone insert error:", e);
@@ -7761,8 +7954,18 @@
         let cloudSyncErr = null;
         if (db && currentFamilyId && matchedItem) {
           try {
-            const { error } = await secureDeleteRecord('baby_memories', { category: 'Milestone', titleSubstr: matchedItem.textMs });
-            if (error) cloudSyncErr = error;
+            if (!cloudId) {
+              const { data: rows } = await secureGetRecords('baby_memories', { category: 'Milestone' });
+              const matchRow = (rows || []).find(r =>
+                recordMatchesActiveChild(r) &&
+                ((r.notes && r.notes.includes(actualId)) || (r.title && r.title.includes(matchedItem.textMs)))
+              );
+              if (matchRow) cloudId = matchRow.id;
+            }
+            if (cloudId) {
+              const { error } = await secureDeleteRecord('baby_memories', { rowId: cloudId });
+              if (error) cloudSyncErr = error;
+            }
           } catch (e) {
             cloudSyncErr = e;
             console.warn("Milestone delete error:", e);
@@ -7845,13 +8048,23 @@
     };
 
     function getGrowthStorageKey() {
-      return 'bukupink_growth_logs_' + (currentFamilyId || 'default');
+      return getChildScopedKey('bukupink_growth_logs');
     }
 
     function getSavedGrowthLogs() {
       try {
-        const raw = localStorage.getItem(getGrowthStorageKey());
-        return raw ? JSON.parse(raw) : [];
+        const key = getGrowthStorageKey();
+        const raw = localStorage.getItem(key);
+        if (raw) return JSON.parse(raw);
+        if (isPrimaryLegacyChild()) {
+          const legacyRaw = localStorage.getItem(getFamilyScopedKey('bukupink_growth_logs'));
+          if (legacyRaw) {
+            const parsed = JSON.parse(legacyRaw);
+            localStorage.setItem(key, JSON.stringify(parsed));
+            return parsed;
+          }
+        }
+        return [];
       } catch (e) {
         return [];
       }
@@ -7867,9 +8080,10 @@
         try {
           const { data, error } = await secureGetRecords('baby_memories', { category: 'Tumbesaran' });
 
-          if (!error && data && data.length > 0) {
+          if (!error && Array.isArray(data)) {
+            const childRows = data.filter(item => recordMatchesActiveChild(item));
             const cloudLogs = [];
-            data.forEach(item => {
+            childRows.forEach(item => {
               if (item.notes) {
                 try {
                   const p = JSON.parse(item.notes);
@@ -7887,7 +8101,7 @@
                 } catch (e) {}
               }
             });
-            if (cloudLogs.length > 0) {
+            if (currentFamilyId !== DEMO_FAMILY_ID || cloudLogs.length > 0) {
               logs = cloudLogs;
               saveGrowthLogsState(logs);
             }
@@ -8042,6 +8256,7 @@
       if (db && currentFamilyId) {
         try {
           const { data, error } = await secureInsertRecord('baby_memories', {
+            child_id: getActiveChildId(),
             title: `Tumbesaran ${ageMonths} Bulan: ${weight} kg`,
             category: 'Tumbesaran',
             memory_date: date,
@@ -8793,6 +9008,7 @@
             }
           }
           await loadChildInfo();
+          await reloadChildScopedData();
         } catch (err) {
           syncErr = err;
         }
@@ -9086,7 +9302,7 @@
           const { data, error } = await secureGetRecords('baby_memories');
           if (!error && data && data.length > 0) {
             memories = data
-              .filter(item => !NON_PHOTOBOOK_CATEGORIES.includes(item.category))
+              .filter(item => !NON_PHOTOBOOK_CATEGORIES.includes(item.category) && recordMatchesActiveChild(item))
               .slice()
               .sort((a, b) => String(a.memory_date || '').localeCompare(String(b.memory_date || '')));
           }
