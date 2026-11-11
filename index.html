@@ -1064,6 +1064,14 @@
 
         <!-- TINDAKAN PANTAS KELUARGA & MONETISASI / SOKONGAN -->
         <div class="space-y-2 pt-2 border-t border-slate-100">
+          <button onclick="openChildProfileModal('edit'); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-pastel-50/90 border border-pastel-200 text-pastel-800 text-xs font-bold hover:bg-pastel-100 transition">
+            <span class="flex items-center space-x-2">
+              <span>👶</span>
+              <span data-i18n="btn_child_profile_sidebar">Profil Anak &amp; Peralihan Fasa</span>
+            </span>
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-pastel-600"></i>
+          </button>
+
           <button onclick="openPhotobookModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-900 text-xs font-bold hover:bg-amber-100 transition">
             <span class="flex items-center space-x-2">
               <span>📖</span>
@@ -1427,7 +1435,16 @@
             <div class="w-full bg-white/90 border border-purple-100 h-2.5 rounded-full overflow-hidden p-0.5">
               <div id="hero-progress-bar" class="bg-gradient-to-r from-pastel-400 to-purple-400 h-full rounded-full transition-all duration-500" style="width: 60%"></div>
             </div>
-            <div class="pt-1.5 flex justify-end">
+            <div class="pt-1.5 flex flex-wrap gap-2 justify-end items-center">
+              <select id="hero-preg-child-switcher" onchange="selectActiveChild(this.value)" class="hidden text-[11px] font-bold text-pastel-800 bg-white/95 border border-purple-200 rounded-xl px-2.5 py-1.5 outline-none shadow-2xs"></select>
+              <button onclick="openChildProfileModal('edit')" class="bg-white/90 hover:bg-purple-50 text-slate-700 border border-purple-200 text-[11px] font-bold px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-xs transition">
+                <span>✏️</span>
+                <span data-i18n="btn_edit_edd_name">Kemaskini EDD / Nama</span>
+              </button>
+              <button onclick="openChildProfileModal('born_transition')" class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm transition transform active:scale-95">
+                <span>🎉</span>
+                <span data-i18n="btn_baby_born_now">Bayi Sudah Lahir!</span>
+              </button>
               <button onclick="openModal('modal-add-memory')" class="bg-white hover:bg-pastel-50 text-pastel-700 border border-pastel-200 text-[11px] font-bold px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm transition">
                 <span>📸</span>
                 <span data-i18n="btn_save_scan">+ Simpan Foto Scan 4D / Kenangan</span>
@@ -1566,6 +1583,22 @@
             <div class="bg-white/80 border border-sky-100/80 p-2 rounded-xl shadow-sm">
               <p data-i18n="lbl_feeding_stage" class="text-[10px] font-semibold text-slate-500">Fasa Makan</p>
               <p class="font-bold text-pastel-700">Solid Food</p>
+            </div>
+          </div>
+
+          <div class="pt-2.5 mt-2 border-t border-sky-200/50 relative z-10 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center space-x-1.5">
+              <select id="hero-child-switcher" onchange="selectActiveChild(this.value)" class="hidden text-[11px] font-bold text-sky-900 bg-white/95 border border-sky-200 rounded-xl px-2.5 py-1.5 outline-none shadow-2xs"></select>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button onclick="openChildProfileModal('edit')" class="bg-white hover:bg-sky-50 text-sky-900 border border-sky-200 text-[11px] font-bold px-2.5 py-1.5 rounded-xl flex items-center space-x-1 shadow-2xs transition">
+                <span>✏️</span>
+                <span data-i18n="btn_edit_child_profile">Edit Profil</span>
+              </button>
+              <button onclick="openChildProfileModal('new')" class="bg-sky-600 hover:bg-sky-700 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-xl flex items-center space-x-1 shadow-xs transition">
+                <span>+</span>
+                <span data-i18n="btn_add_next_child">Anak ke-2 / Hamil Baru</span>
+              </button>
             </div>
           </div>
         </div>
@@ -2332,6 +2365,15 @@
         <div class="p-3 bg-white/85 rounded-2xl border border-amber-200/80 text-[11px] text-amber-950 font-serif italic text-center shadow-xs">
           <p data-i18n="bfp_quote">"Maha Suci Tuhan yang mengurniakan zuriat pada waktu yang paling tepat. Kami tumpang gembira atas berita bahagia ini!" 🌸</p>
         </div>
+
+        <div class="p-3 bg-white/95 rounded-2xl border border-rose-200/80 text-left space-y-2 text-xs">
+          <p data-i18n="bfp_setup_hint" class="text-[11px] font-bold text-rose-700">Pilihan: Tetapkan Info Kandungan Sekarang</p>
+          <input type="text" id="bfp-baby-nickname" data-i18n-placeholder="ph_bfp_nickname" placeholder="Nama timangan bayi (cth: Baby Aisyah)" class="w-full p-2 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-rose-200 text-xs">
+          <div>
+            <label data-i18n="lbl_bfp_edd" class="block text-[10px] font-semibold text-slate-500 mb-1">Tarikh Dijangka Bersalin (EDD - Pilihan)</label>
+            <input type="date" id="bfp-edd-date" class="w-full p-2 border border-slate-200 rounded-xl outline-none text-xs">
+          </div>
+        </div>
       </div>
 
       <!-- Butang Tindakan & Petunjuk Klik Skrin -->
@@ -2511,6 +2553,74 @@
         <button type="submit" id="btn-save-new-pin" class="w-full py-3 bg-pastel-500 hover:bg-pastel-600 text-white font-extrabold rounded-xl shadow-md transition flex items-center justify-center space-x-2">
           <i data-lucide="shield-check" class="w-4 h-4"></i>
           <span data-i18n="btn_save_new_pin">Simpan PIN Baharu</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: KEMASKINI / PERALIHAN PROFIL ANAK (TTC -> HAMIL -> LAHIR -> ANAK KE-2) ================= -->
+  <div id="modal-child-profile" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 sm:p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-pastel-50 border border-pastel-200 flex items-center justify-center text-pastel-600 text-lg">
+            👶
+          </div>
+          <div>
+            <h3 id="cp-modal-title" class="text-sm font-extrabold text-slate-800">Kemaskini Profil Anak / Kehamilan</h3>
+            <p id="cp-modal-sub" class="text-[10px] text-slate-400">Diselaraskan terus ke telefon pasangan di Cloud</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-child-profile')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveChildProfile(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="cp-mode" value="edit">
+
+        <div>
+          <label data-i18n="lbl_cp_status" class="block font-bold text-slate-700 mb-1">Status Fasa Profil Ini</label>
+          <select id="cp-status" onchange="toggleChildProfileModalFields(this.value)" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none font-semibold bg-white">
+            <option value="pregnancy" data-i18n="opt_cp_pregnancy">🤰 Sedang Hamil (Buku Pink)</option>
+            <option value="born" data-i18n="opt_cp_born">👶 Sudah Lahir (Anak 0–3 Tahun)</option>
+            <option value="ttc" data-i18n="opt_cp_ttc">🌱 Ikhtiar Hamil (TTC)</option>
+          </select>
+        </div>
+
+        <div>
+          <label data-i18n="lbl_cp_nickname" class="block font-bold text-slate-700 mb-1">Nama Anak / Timangan Bayi</label>
+          <input type="text" id="cp-nickname" required placeholder="Cth: Baby Aisyah / Muhammad" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+        </div>
+
+        <div id="field-cp-edd">
+          <label data-i18n="lbl_cp_edd" class="block font-bold text-slate-700 mb-1">Tarikh Dijangka Bersalin (EDD)</label>
+          <input type="date" id="cp-edd-date" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+        </div>
+
+        <div id="field-cp-birth" class="hidden">
+          <label data-i18n="lbl_cp_birth" class="block font-bold text-slate-700 mb-1">Tarikh Lahir Sebenar</label>
+          <input type="date" id="cp-birth-date" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+        </div>
+
+        <div>
+          <label data-i18n="lbl_cp_blood" class="block font-bold text-slate-700 mb-1">Jenis Darah</label>
+          <select id="cp-blood-type" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="Belum Tahu">Belum Tahu / Not Sure</option>
+          </select>
+        </div>
+
+        <button type="submit" id="btn-save-child-profile" class="w-full py-3 bg-pastel-500 hover:bg-pastel-600 text-white font-extrabold rounded-xl shadow-md transition flex items-center justify-center space-x-2">
+          <i data-lucide="check-circle" class="w-4 h-4"></i>
+          <span data-i18n="btn_save_child_profile">Simpan &amp; Selaraskan Profil</span>
         </button>
       </form>
     </div>
@@ -3373,6 +3483,23 @@
         lbl_rating: "Tahap Kepuasan Pengalaman Anda",
         lbl_feedback_type: "Jenis Maklum Balas",
         opt_fb_1: "💡 Cadangan Ciri Baru",
+        btn_child_profile_sidebar: "Profil Anak &amp; Peralihan Fasa",
+        btn_edit_edd_name: "Kemaskini EDD / Nama",
+        btn_baby_born_now: "Bayi Sudah Lahir!",
+        btn_edit_child_profile: "Edit Profil",
+        btn_add_next_child: "Anak ke-2 / Hamil Baru",
+        bfp_setup_hint: "Pilihan: Tetapkan Info Kandungan Sekarang",
+        ph_bfp_nickname: "Nama timangan bayi (cth: Baby Aisyah)",
+        lbl_bfp_edd: "Tarikh Dijangka Bersalin (EDD - Pilihan)",
+        lbl_cp_status: "Status Fasa Profil Ini",
+        opt_cp_pregnancy: "🤰 Sedang Hamil (Buku Pink)",
+        opt_cp_born: "👶 Sudah Lahir (Anak 0–3 Tahun)",
+        opt_cp_ttc: "🌱 Ikhtiar Hamil (TTC)",
+        lbl_cp_nickname: "Nama Anak / Timangan Bayi",
+        lbl_cp_edd: "Tarikh Dijangka Bersalin (EDD)",
+        lbl_cp_birth: "Tarikh Lahir Sebenar",
+        lbl_cp_blood: "Jenis Darah",
+        btn_save_child_profile: "Simpan &amp; Selaraskan Profil",
         opt_fb_2: "🐛 Laporan Masalah / Bug",
         opt_fb_3: "❤️ Pujian & Ucapan Kasih Sayang",
         opt_fb_4: "📝 Lain-lain",
@@ -3793,6 +3920,23 @@
         lbl_rating: "Your Experience Rating",
         lbl_feedback_type: "Feedback Category",
         opt_fb_1: "💡 Feature Request / Idea",
+        btn_child_profile_sidebar: "Child Profile &amp; Phase Transition",
+        btn_edit_edd_name: "Edit EDD / Name",
+        btn_baby_born_now: "Baby Is Born!",
+        btn_edit_child_profile: "Edit Profile",
+        btn_add_next_child: "Next Child / New Pregnancy",
+        bfp_setup_hint: "Optional: Set Pregnancy Details Now",
+        ph_bfp_nickname: "Baby nickname (e.g., Baby Aisyah)",
+        lbl_bfp_edd: "Estimated Due Date (EDD - Optional)",
+        lbl_cp_status: "Profile Phase Status",
+        opt_cp_pregnancy: "🤰 Pregnant (Pink Book)",
+        opt_cp_born: "👶 Born (Child 0–3 Years)",
+        opt_cp_ttc: "🌱 Trying to Conceive (TTC)",
+        lbl_cp_nickname: "Child Name / Baby Nickname",
+        lbl_cp_edd: "Estimated Due Date (EDD)",
+        lbl_cp_birth: "Actual Date of Birth",
+        lbl_cp_blood: "Blood Type",
+        btn_save_child_profile: "Save &amp; Sync Profile",
         opt_fb_2: "🐛 Bug / Issue Report",
         opt_fb_3: "❤️ Compliment & Love Notes",
         opt_fb_4: "📝 Others",
@@ -4553,6 +4697,8 @@
         currentFamilyId = null;
         currentFamilyToken = '';
         hasAppliedCloudPhaseForFamily = null;
+        cachedChildren = [];
+        activeChildId = null;
         med1Taken = true;
         ttcMedWifeTaken = false;
         ttcMedHusbandTaken = false;
@@ -4718,12 +4864,202 @@
       }
     }
 
-    // LOAD CHILD / PREGNANCY INFO
-    async function loadChildInfo() {
-      const { data: childRows, error } = await secureGetRecords('children');
-      const data = (childRows && childRows.length > 0) ? childRows[0] : null;
+    let cachedChildren = [];
+    let activeChildId = null;
 
-      if (error || !data) return;
+    function parseLocalDate(dateStr) {
+      if (!dateStr || typeof dateStr !== 'string') return null;
+      const m = dateStr.trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (m) return new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+      const d = new Date(dateStr);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    function getActiveChildRecord() {
+      if (!cachedChildren || cachedChildren.length === 0) return null;
+      const savedId = activeChildId || localStorage.getItem(getFamilyScopedKey('bukupink_active_child_id'));
+      return cachedChildren.find(c => String(c.id) === String(savedId)) || cachedChildren[0];
+    }
+
+    function renderChildSwitcher() {
+      const isEn = currentLang === 'en';
+      const ids = ['hero-child-switcher', 'hero-preg-child-switcher'];
+      ids.forEach(selId => {
+        const sel = document.getElementById(selId);
+        if (!sel) return;
+        if (!cachedChildren || cachedChildren.length <= 1) {
+          sel.classList.add('hidden');
+          sel.innerHTML = '';
+          return;
+        }
+        sel.classList.remove('hidden');
+        sel.innerHTML = cachedChildren.map((c, idx) => {
+          const icon = c.status === 'born' ? '👶' : (c.status === 'ttc' ? '🌱' : '🤰');
+          const fallbackName = isEn ? `Child ${idx + 1}` : `Anak ${idx + 1}`;
+          return `<option value="${escapeHtml(c.id)}" ${String(c.id) === String(activeChildId) ? 'selected' : ''}>${icon} ${escapeHtml(c.nickname || fallbackName)}</option>`;
+        }).join('');
+      });
+    }
+
+    function selectActiveChild(childId) {
+      if (!childId) return;
+      activeChildId = childId;
+      localStorage.setItem(getFamilyScopedKey('bukupink_active_child_id'), String(childId));
+      const selected = getActiveChildRecord();
+      renderChildSwitcher();
+      if (selected) {
+        renderActiveChildInfo(selected);
+        const targetPhase = selected.status === 'born' ? 'child' : (selected.status === 'ttc' ? 'ttc' : 'pregnancy');
+        if (currentPhase !== targetPhase) {
+          switchPhase(targetPhase);
+        }
+      }
+    }
+
+    function toggleChildProfileModalFields(status) {
+      const eddBox = document.getElementById('field-cp-edd');
+      const birthBox = document.getElementById('field-cp-birth');
+      const eddInp = document.getElementById('cp-edd-date');
+      const birthInp = document.getElementById('cp-birth-date');
+
+      if (status === 'born') {
+        if (eddBox) eddBox.classList.add('hidden');
+        if (birthBox) birthBox.classList.remove('hidden');
+        if (eddInp) eddInp.required = false;
+        if (birthInp) {
+          birthInp.required = true;
+          if (!birthInp.value) birthInp.value = getLocalTodayIso();
+        }
+      } else if (status === 'pregnancy') {
+        if (eddBox) eddBox.classList.remove('hidden');
+        if (birthBox) birthBox.classList.add('hidden');
+        if (birthInp) birthInp.required = false;
+        if (eddInp) eddInp.required = false;
+      } else {
+        if (eddBox) eddBox.classList.add('hidden');
+        if (birthBox) birthBox.classList.add('hidden');
+        if (eddInp) eddInp.required = false;
+        if (birthInp) birthInp.required = false;
+      }
+    }
+
+    function openChildProfileModal(mode = 'edit') {
+      const isEn = currentLang === 'en';
+      const active = getActiveChildRecord();
+      const modeEl = document.getElementById('cp-mode');
+      const titleEl = document.getElementById('cp-modal-title');
+      const subEl = document.getElementById('cp-modal-sub');
+      const statusEl = document.getElementById('cp-status');
+      const nickEl = document.getElementById('cp-nickname');
+      const eddEl = document.getElementById('cp-edd-date');
+      const birthEl = document.getElementById('cp-birth-date');
+      const bloodEl = document.getElementById('cp-blood-type');
+
+      if (modeEl) modeEl.value = mode === 'new' ? 'new' : 'edit';
+
+      if (mode === 'new') {
+        if (titleEl) titleEl.innerText = isEn ? 'Add Child / New Pregnancy' : 'Tambah Anak ke-2 / Hamil Baru';
+        if (subEl) subEl.innerText = isEn ? 'Creates a new child profile synced to Cloud' : 'Mencipta profil anak baharu & diselaraskan ke Cloud';
+        if (statusEl) statusEl.value = 'pregnancy';
+        if (nickEl) nickEl.value = '';
+        if (eddEl) eddEl.value = '';
+        if (birthEl) birthEl.value = '';
+        if (bloodEl) bloodEl.value = 'O+';
+      } else if (mode === 'born_transition') {
+        if (titleEl) titleEl.innerText = isEn ? '🎉 Alhamdulillah, Baby Is Born!' : '🎉 Alhamdulillah, Bayi Sudah Lahir!';
+        if (subEl) subEl.innerText = isEn ? 'Confirm birth date to switch to Child Tracker (0–3 yrs)' : 'Sahkan tarikh lahir untuk tukar ke Fasa Anak (0–3 tahun)';
+        if (statusEl) statusEl.value = 'born';
+        if (nickEl) nickEl.value = active?.nickname || '';
+        if (eddEl) eddEl.value = active?.edd_date || '';
+        if (birthEl) birthEl.value = active?.birth_date || getLocalTodayIso();
+        if (bloodEl) bloodEl.value = active?.blood_type || 'O+';
+      } else {
+        if (titleEl) titleEl.innerText = isEn ? 'Update Child / Pregnancy Profile' : 'Kemaskini Profil Anak / Kehamilan';
+        if (subEl) subEl.innerText = isEn ? 'Synced in real time with your partner' : 'Diselaraskan terus ke telefon pasangan di Cloud';
+        const fallbackStatus = currentPhase === 'child' ? 'born' : (currentPhase === 'ttc' ? 'ttc' : 'pregnancy');
+        if (statusEl) statusEl.value = active?.status || fallbackStatus;
+        if (nickEl) nickEl.value = active?.nickname || '';
+        if (eddEl) eddEl.value = active?.edd_date || '';
+        if (birthEl) birthEl.value = active?.birth_date || '';
+        if (bloodEl) bloodEl.value = active?.blood_type || 'O+';
+      }
+
+      toggleChildProfileModalFields(statusEl ? statusEl.value : 'pregnancy');
+      openModal('modal-child-profile');
+      lucide.createIcons();
+    }
+
+    async function handleSaveChildProfile(e) {
+      e.preventDefault();
+      const isEn = currentLang === 'en';
+      const mode = document.getElementById('cp-mode')?.value || 'edit';
+      const status = document.getElementById('cp-status')?.value || 'pregnancy';
+      const nickname = document.getElementById('cp-nickname')?.value.trim();
+      const eddDate = document.getElementById('cp-edd-date')?.value || null;
+      const birthDate = document.getElementById('cp-birth-date')?.value || null;
+      const bloodType = document.getElementById('cp-blood-type')?.value || 'O+';
+
+      if (!nickname) return;
+      if (status === 'born' && !birthDate) {
+        showToast(isEn ? '⚠️ Please enter the actual birth date.' : '⚠️ Sila masukkan tarikh lahir sebenar bayi.');
+        return;
+      }
+
+      const payload = {
+        nickname,
+        status,
+        edd_date: status === 'pregnancy' ? eddDate : (status === 'born' ? eddDate : null),
+        birth_date: status === 'born' ? birthDate : null,
+        blood_type: bloodType || 'O+'
+      };
+
+      const btn = document.getElementById('btn-save-child-profile');
+      if (btn) btn.disabled = true;
+
+      try {
+        const active = getActiveChildRecord();
+        let res;
+        if (mode === 'edit' && active && active.id) {
+          res = await secureUpdateRecord('children', active.id, payload);
+        } else {
+          res = await secureInsertRecord('children', payload);
+        }
+
+        if (res && res.error) {
+          showCloudSyncNotice(res.error, false);
+          return;
+        }
+
+        if (res && res.data && res.data.id) {
+          activeChildId = res.data.id;
+          localStorage.setItem(getFamilyScopedKey('bukupink_active_child_id'), String(res.data.id));
+        }
+
+        const newPhase = status === 'born' ? 'child' : (status === 'ttc' ? 'ttc' : 'pregnancy');
+        hasAppliedCloudPhaseForFamily = currentFamilyId;
+        await saveFamilyPhaseState(newPhase);
+
+        closeModal('modal-child-profile');
+        await loadChildInfo();
+        switchPhase(newPhase);
+
+        if (status === 'born' && mode === 'edit') {
+          showToast(isEn ? `🎉 Welcome ${nickname}! Switched to Child Tracker (0–3 Years).` : `🎉 Tahniah atas kelahiran ${nickname}! Fasa Anak 0–3 Tahun diaktifkan.`);
+        } else if (mode === 'new') {
+          showToast(isEn ? `👶 New profile "${nickname}" added & synced!` : `👶 Profil baharu "${nickname}" berjaya ditambah & diselaraskan!`);
+        } else {
+          showToast(isEn ? `✅ Profile "${nickname}" updated & synced!` : `✅ Profil "${nickname}" dikemaskini & diselaraskan ke Cloud!`);
+        }
+      } catch (err) {
+        console.warn("Gagal simpan profil anak:", err);
+        showCloudSyncNotice(err, false);
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function renderActiveChildInfo(data) {
+      if (!data) return;
       const isEn = currentLang === 'en';
 
       // Update hero anak & photobook
@@ -4738,9 +5074,10 @@
         const pbBirth = document.getElementById('pb-birth-date');
         if (pbBirth) pbBirth.innerText = data.birth_date;
 
-        const bDate = new Date(data.birth_date);
+        const bDate = parseLocalDate(data.birth_date) || new Date(data.birth_date);
         const now = new Date();
-        const diffDaysTotal = Math.max(0, Math.floor((now - bDate) / (1000 * 60 * 60 * 24)));
+        const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const diffDaysTotal = Math.max(0, Math.floor((todayMidnight - bDate) / (1000 * 60 * 60 * 24)));
         const months = Math.floor(diffDaysTotal / 30);
         const days = diffDaysTotal % 30;
         document.getElementById('hero-child-age-tag').innerText = isEn
@@ -4750,6 +5087,8 @@
         document.getElementById('hero-child-sub').innerText = isEn
           ? `Blood Type: ${data.blood_type || 'O+'}`
           : `Darah: ${data.blood_type || 'O+'}`;
+        const pbBirth = document.getElementById('pb-birth-date');
+        if (pbBirth) pbBirth.innerText = data.edd_date ? `EDD: ${data.edd_date}` : (isEn ? 'Not born yet' : 'Belum lahir');
         document.getElementById('hero-child-age-tag').innerText = isEn
           ? `👶 In Womb / Newborn`
           : `👶 Dalam Kandungan / Baru Lahir`;
@@ -4762,9 +5101,10 @@
 
       if (data.edd_date) {
         document.getElementById('hero-edd-display').innerText = data.edd_date;
-        const edd = new Date(data.edd_date);
+        const edd = parseLocalDate(data.edd_date) || new Date(data.edd_date);
         const now = new Date();
-        const diffDays = Math.ceil((edd - now) / (1000 * 60 * 60 * 24));
+        const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const diffDays = Math.ceil((edd - todayMidnight) / (1000 * 60 * 60 * 24));
         const daysLeft = diffDays > 0 ? diffDays : 0;
         document.getElementById('hero-days-left').innerText = daysLeft;
 
@@ -4794,6 +5134,26 @@
         document.getElementById('hero-baby-sub').innerText = isEn ? "Daily maternal & baby growth tracker" : "Rekod perkembangan harian ibu & kandungan";
         document.getElementById('hero-progress-text').innerText = isEn ? "Pink Book Tracker" : "Pantauan Buku Pink";
       }
+    }
+
+    // LOAD CHILD / PREGNANCY INFO
+    async function loadChildInfo() {
+      const { data: childRows, error } = await secureGetRecords('children');
+      if (error || !childRows || childRows.length === 0) {
+        cachedChildren = [];
+        activeChildId = null;
+        renderChildSwitcher();
+        return;
+      }
+
+      cachedChildren = childRows;
+      const active = getActiveChildRecord();
+      activeChildId = active ? active.id : null;
+      if (activeChildId) {
+        localStorage.setItem(getFamilyScopedKey('bukupink_active_child_id'), String(activeChildId));
+      }
+      renderChildSwitcher();
+      renderActiveChildInfo(active);
     }
 
     // STATE CACHING & EDIT IDS
@@ -8092,12 +8452,48 @@
     }
 
     async function confirmSwitchToPregnancy() {
+      const bfpNick = document.getElementById('bfp-baby-nickname')?.value.trim() || '';
+      const bfpEdd = document.getElementById('bfp-edd-date')?.value || null;
       closeModal('modal-bfp-celebrate');
       hasAppliedCloudPhaseForFamily = currentFamilyId;
       switchPhase('pregnancy');
+
+      let syncErr = null;
+      const active = getActiveChildRecord();
+      if (db && currentFamilyId && currentFamilyId !== DEMO_FAMILY_ID) {
+        try {
+          if (active && active.id && active.status === 'ttc') {
+            const { error } = await secureUpdateRecord('children', active.id, {
+              nickname: bfpNick || active.nickname || 'Baby',
+              status: 'pregnancy',
+              edd_date: bfpEdd || active.edd_date || null,
+              birth_date: null
+            });
+            if (error) syncErr = error;
+          } else if (bfpNick || bfpEdd || !active || active.status === 'born') {
+            const { data, error } = await secureInsertRecord('children', {
+              nickname: bfpNick || 'Baby',
+              status: 'pregnancy',
+              edd_date: bfpEdd,
+              birth_date: null,
+              blood_type: 'O+'
+            });
+            if (error) {
+              syncErr = error;
+            } else if (data && data.id) {
+              activeChildId = data.id;
+              localStorage.setItem(getFamilyScopedKey('bukupink_active_child_id'), String(data.id));
+            }
+          }
+          await loadChildInfo();
+        } catch (err) {
+          syncErr = err;
+        }
+      }
+
       const { error } = await saveFamilyPhaseState('pregnancy');
-      if (error) {
-        showCloudSyncNotice(error, true);
+      if (syncErr || error) {
+        showCloudSyncNotice(syncErr || error, true);
         return;
       }
       const isEn = currentLang === 'en';
