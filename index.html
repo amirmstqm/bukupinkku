@@ -1143,6 +1143,11 @@
               <span data-i18n="subtab_child_growth">📏 Tumbesaran Anak</span>
             </button>
 
+            <button onclick="navigateFromSidebar('child', 'jaundice')" id="nav-child-jaundice" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <span class="text-base leading-none">🟡</span>
+              <span data-i18n="subtab_child_jaundice">Pantau Jaundis (Kuning)</span>
+            </button>
+
             <button onclick="navigateFromSidebar('child', 'vaccine')" id="nav-child-vaccine" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
               <i data-lucide="syringe" class="w-4 h-4 text-teal-500"></i>
               <span data-i18n="subtab_child_vaccine">💉 Vaksin KKM</span>
@@ -1845,6 +1850,21 @@
             </button>
           </div>
 
+          <!-- Quick Card Jaundis / Kuning Bayi -->
+          <div onclick="switchChildSubtab('jaundice')" class="bg-white p-3.5 rounded-2xl border border-amber-200/80 shadow-sm cursor-pointer hover:border-amber-400 transition flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 min-w-0">
+              <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 text-lg">🟡</div>
+              <div class="min-w-0">
+                <p data-i18n="hdr_child_jaundice_quick" class="text-xs font-bold text-slate-800 truncate">Pantau Jaundis (Kuning Bayi)</p>
+                <p id="overview-jaundice-sub" class="text-[11px] text-slate-500">Tiada rekod kuning lagi</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2 shrink-0">
+              <button type="button" onclick="event.stopPropagation(); switchChildSubtab('jaundice');" class="text-[11px] font-extrabold bg-amber-500 hover:bg-amber-600 text-white px-2.5 py-1 rounded-full shadow-2xs active:scale-95 transition" data-i18n="btn_quick_jaundice">+ Log Bacaan</button>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+            </div>
+          </div>
+
           <div class="flex justify-between items-center">
             <h3 data-i18n="hdr_memory_timeline" class="text-xs font-bold text-slate-800 uppercase tracking-wider">Garis Masa Memori Bayi</h3>
             <button onclick="openModal('modal-add-memory')" class="bg-pastel-500 hover:bg-pastel-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm transition">
@@ -1983,6 +2003,84 @@
 
           <div class="space-y-3 text-xs" id="milestones-container">
             <!-- Dynamic milestones grouped by stages -->
+          </div>
+        </div>
+
+        <!-- [CHILD TAB: PANTAU JAUNDIS / KUNING BAYI] -->
+        <div id="view-child-jaundice" class="hidden space-y-3.5">
+          <div class="bg-white p-4 rounded-2xl border border-amber-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-start gap-2">
+              <div>
+                <h3 data-i18n="jaundice_title" class="text-xs font-bold text-slate-800 uppercase">Pemantauan Jaundis (Kuning Bayi)</h3>
+                <p data-i18n="jaundice_sub" class="text-[11px] text-slate-500 mt-0.5">Catat bacaan kuning dari klinik secara ringkas supaya ibu &amp; suami nampak trend naik atau turun.</p>
+              </div>
+              <span id="jaundice-latest-badge" class="text-[11px] font-extrabold bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-full whitespace-nowrap">--</span>
+            </div>
+
+            <div class="bg-gradient-to-r from-amber-50/80 to-orange-50/50 border border-amber-200/80 p-3.5 rounded-2xl flex items-center justify-between gap-3">
+              <div>
+                <p data-i18n="jaundice_latest_lbl" class="text-[10px] font-bold text-slate-500 uppercase">Bacaan Terkini</p>
+                <p id="jaundice-latest-val" class="text-2xl font-black text-slate-800 mt-0.5">--</p>
+                <p id="jaundice-latest-meta" class="text-[11px] text-slate-600 mt-0.5">--</p>
+              </div>
+              <div class="text-right space-y-1">
+                <span id="jaundice-trend-pill" class="inline-block text-[11px] font-bold px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600">--</span>
+                <p id="jaundice-status-pill" class="text-[11px] font-semibold text-slate-600"></p>
+              </div>
+            </div>
+
+            <form onsubmit="handleAddJaundiceLog(event)" class="space-y-2.5 pt-2 border-t border-slate-100 text-xs">
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label data-i18n="jaundice_date_lbl" class="block font-semibold text-slate-700 mb-1">Tarikh Semak</label>
+                  <input type="date" id="inp-jaundice-date" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-300">
+                </div>
+                <div>
+                  <label data-i18n="jaundice_reading_lbl" class="block font-semibold text-slate-700 mb-1">Bacaan Kuning</label>
+                  <div class="flex gap-1.5">
+                    <input type="number" step="0.1" min="0" max="999" id="inp-jaundice-val" required data-i18n-placeholder="ph_jaundice_val" placeholder="cth: 185" class="w-full min-w-0 p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-300 font-bold text-slate-800">
+                    <select id="inp-jaundice-unit" aria-label="Unit" class="p-2 bg-slate-50 border border-slate-200 rounded-xl outline-none text-[11px] font-bold text-slate-700 shrink-0">
+                      <option value="umol">µmol/L</option>
+                      <option value="mgdl">mg/dL</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                  <label data-i18n="jaundice_status_lbl" class="block font-semibold text-slate-700 mb-1">Keadaan / Tindakan</label>
+                  <select id="inp-jaundice-status" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-300">
+                    <option value="monitor" data-i18n="opt_j_monitor">🟡 Pantau di Rumah</option>
+                    <option value="improving" data-i18n="opt_j_improving">🟢 Menurun / Semakin Baik</option>
+                    <option value="recheck" data-i18n="opt_j_recheck">🟠 Perlu Ulang Klinik</option>
+                    <option value="phototherapy" data-i18n="opt_j_photo">🔵 Rawatan Lampu (Fototerapi)</option>
+                  </select>
+                </div>
+                <div>
+                  <label data-i18n="jaundice_notes_lbl" class="block font-semibold text-slate-700 mb-1">Nota Ringkas (Pilihan)</label>
+                  <input type="text" id="inp-jaundice-notes" maxlength="100" data-i18n-placeholder="ph_jaundice_notes" placeholder="cth: Menyusu kerap, ulang KK esok" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-300">
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs rounded-xl shadow-sm active:scale-[0.99] transition" data-i18n="btn_save_jaundice">
+                + Simpan Bacaan Jaundis
+              </button>
+            </form>
+
+            <div id="jaundice-trend-box" class="hidden pt-2 border-t border-slate-100 space-y-2">
+              <p data-i18n="jaundice_trend_title" class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Trend Bacaan Terkini</p>
+              <div id="jaundice-trend-bars" class="flex items-end gap-2 h-24 pt-3 px-1"></div>
+            </div>
+
+            <p data-i18n="jaundice_guide_note" class="text-[10px] text-slate-500 leading-relaxed bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
+              💡 Kerapkan penyusuan &amp; pantau kencing/najis bayi. Segera ke klinik/hospital jika bayi lemah, enggan menyusu, atau tapak tangan/kaki kelihatan kuning.
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <h4 data-i18n="jaundice_history_title" class="text-xs font-bold text-slate-700 uppercase">Sejarah Bacaan Kuning</h4>
+            <div id="jaundice-history-list" class="space-y-2"></div>
           </div>
         </div>
 
@@ -4014,7 +4112,27 @@
         kicks_timeline_lbl: "Cap Masa Gerakan Hari Ini",
         kicks_safety_late: "⚠️ Sudah melepasi 9:00 malam dan pergerakan belum cukup 10 kali. Jika gerakan bayi terasa berkurang dengan ketara, segera hubungi atau ke klinik/hospital berhampiran.",
         kicks_guide_note: "💡 Panduan KKM: Rekod setiap tendangan, pusingan atau gerakan bayi yang jelas antara 9:00 pagi hingga 9:00 malam. Jika kurang daripada 10 gerakan sebelum 9:00 malam atau pergerakan berkurang ketara, terus dapatkan pemeriksaan klinik/hospital.",
-        kicks_history_title: "Sejarah Kiraan Harian"
+        kicks_history_title: "Sejarah Kiraan Harian",
+        subtab_child_jaundice: "Pantau Jaundis (Kuning)",
+        hdr_child_jaundice_quick: "Pantau Jaundis (Kuning Bayi)",
+        btn_quick_jaundice: "+ Log Bacaan",
+        jaundice_title: "Pemantauan Jaundis (Kuning Bayi)",
+        jaundice_sub: "Catat bacaan kuning dari klinik secara ringkas supaya ibu &amp; suami nampak trend naik atau turun.",
+        jaundice_latest_lbl: "Bacaan Terkini",
+        jaundice_date_lbl: "Tarikh Semak",
+        jaundice_reading_lbl: "Bacaan Kuning",
+        ph_jaundice_val: "cth: 185",
+        jaundice_status_lbl: "Keadaan / Tindakan",
+        opt_j_monitor: "🟡 Pantau di Rumah",
+        opt_j_improving: "🟢 Menurun / Semakin Baik",
+        opt_j_recheck: "🟠 Perlu Ulang Klinik",
+        opt_j_photo: "🔵 Rawatan Lampu (Fototerapi)",
+        jaundice_notes_lbl: "Nota Ringkas (Pilihan)",
+        ph_jaundice_notes: "cth: Menyusu kerap, ulang KK esok",
+        btn_save_jaundice: "+ Simpan Bacaan Jaundis",
+        jaundice_trend_title: "Trend Bacaan Terkini",
+        jaundice_guide_note: "💡 Kerapkan penyusuan &amp; pantau kencing/najis bayi. Segera ke klinik/hospital jika bayi lemah, enggan menyusu, atau tapak tangan/kaki kelihatan kuning.",
+        jaundice_history_title: "Sejarah Bacaan Kuning"
       },
       en: {
         btn_back_home: "Home",
@@ -4579,7 +4697,27 @@
         kicks_timeline_lbl: "Today's Movement Timestamps",
         kicks_safety_late: "⚠️ It is past 9:00 PM and movements are below 10. If your baby's movements feel noticeably reduced, please contact or visit your clinic/hospital promptly.",
         kicks_guide_note: "💡 MOH Guide: Log every clear kick, roll, or movement between 9:00 AM and 9:00 PM. If fewer than 10 movements occur by 9:00 PM or movement slows significantly, seek medical assessment promptly.",
-        kicks_history_title: "Daily Kick History"
+        kicks_history_title: "Daily Kick History",
+        subtab_child_jaundice: "Jaundice Tracker",
+        hdr_child_jaundice_quick: "Newborn Jaundice Tracker",
+        btn_quick_jaundice: "+ Log Reading",
+        jaundice_title: "Baby Jaundice Monitor",
+        jaundice_sub: "Keep a simple log of clinic jaundice readings so Mom &amp; Dad can spot rising or falling trends at a glance.",
+        jaundice_latest_lbl: "Latest Reading",
+        jaundice_date_lbl: "Check Date",
+        jaundice_reading_lbl: "Jaundice Reading",
+        ph_jaundice_val: "e.g. 185",
+        jaundice_status_lbl: "Status / Next Step",
+        opt_j_monitor: "🟡 Monitor at Home",
+        opt_j_improving: "🟢 Dropping / Improving",
+        opt_j_recheck: "🟠 Clinic Recheck Needed",
+        opt_j_photo: "🔵 Phototherapy (Light)",
+        jaundice_notes_lbl: "Quick Note (Optional)",
+        ph_jaundice_notes: "e.g. Feeding well, KK recheck tomorrow",
+        btn_save_jaundice: "+ Save Jaundice Reading",
+        jaundice_trend_title: "Recent Reading Trend",
+        jaundice_guide_note: "💡 Feed frequently and monitor wet diapers/stools. Seek urgent care if baby looks lethargic, feeds poorly, or palms/soles turn yellow.",
+        jaundice_history_title: "Jaundice Reading History"
       }
     };
 
@@ -4693,6 +4831,7 @@
       renderHospitalBagChecklist();
       renderBabyTeeth();
       renderBabyKicks();
+      renderChildJaundice();
       lucide.createIcons();
     }
 
@@ -5487,7 +5626,8 @@
           loadFoodTests(),
           loadMilestones(),
           loadGrowthLogs(),
-          loadBabyKicks()
+          loadBabyKicks(),
+          loadChildJaundice()
         ]);
         renderBabyTeeth();
       } catch (err) {
@@ -5515,7 +5655,8 @@
           loadGrowthLogs(),
           loadHospitalBagChecklist(),
           loadBabyTeeth(),
-          loadBabyKicks()
+          loadBabyKicks(),
+          loadChildJaundice()
         ]);
         lastCloudSyncAt = Date.now();
       } catch (err) {
@@ -7199,7 +7340,7 @@
       const allNavIds = [
         'nav-ttc-fertility', 'nav-ttc-opk', 'nav-ttc-supplements', 'nav-ttc-doa', 'nav-ttc-letters',
         'nav-preg-overview', 'nav-preg-appt', 'nav-preg-vitals', 'nav-preg-kicks', 'nav-preg-pantang', 'nav-preg-beg',
-        'nav-child-memories', 'nav-child-growth', 'nav-child-vaccine', 'nav-child-food', 'nav-child-milestone'
+        'nav-child-memories', 'nav-child-growth', 'nav-child-jaundice', 'nav-child-vaccine', 'nav-child-food', 'nav-child-milestone'
       ];
 
       allNavIds.forEach(id => {
@@ -7299,7 +7440,7 @@
     }
 
     function switchChildSubtab(tab) {
-      const tabs = ['memories', 'growth', 'vaccine', 'food', 'milestone'];
+      const tabs = ['memories', 'growth', 'jaundice', 'vaccine', 'food', 'milestone'];
       tabs.forEach(t => {
         const viewEl = document.getElementById('view-child-' + t);
         if (viewEl) viewEl.classList.add('hidden');
@@ -7312,6 +7453,11 @@
       if (activeSubtab) activeSubtab.className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
       updateSidebarActiveMenu('child', tab);
       if (tab === 'growth') renderGrowthLogs();
+      if (tab === 'jaundice') {
+        const dEl = document.getElementById('inp-jaundice-date');
+        if (dEl && !dEl.value) dEl.value = getLocalTodayIso();
+        renderChildJaundice();
+      }
       if (tab === 'vaccine') renderVaccines();
       if (tab === 'food') renderFoodTests();
       if (tab === 'milestone') renderMilestones();
@@ -10375,6 +10521,326 @@
               </div>
             </div>`;
         }).join('');
+      }
+      lucide.createIcons();
+    }
+
+    // =========================================================
+    // PEMANTAUAN JAUNDIS (KUNING BAYI RINGKAS)
+    // =========================================================
+    let childJaundiceLogs = [];
+
+    function getChildJaundiceScopedTitle() {
+      const cid = getActiveChildId();
+      return cid ? `REKOD_JAUNDIS_BAYI_${cid}` : 'REKOD_JAUNDIS_BAYI';
+    }
+
+    function sanitizeJaundiceLogs(rawList) {
+      if (!Array.isArray(rawList)) return [];
+      return rawList
+        .filter(item => item && typeof item === 'object' && /^\d{4}-\d{2}-\d{2}$/.test(String(item.date || '')))
+        .map(item => ({
+          id: String(item.id || `${item.date}_${Math.random().toString(36).slice(2, 7)}`),
+          date: String(item.date),
+          value: Math.round((parseFloat(item.value) || 0) * 10) / 10,
+          unit: item.unit === 'mgdl' ? 'mgdl' : 'umol',
+          status: ['monitor', 'improving', 'recheck', 'phototherapy'].includes(item.status) ? item.status : 'monitor',
+          notes: String(item.notes || '').slice(0, 120),
+          createdAt: Number(item.createdAt) || 0
+        }))
+        .filter(item => item.value > 0)
+        .sort((a, b) => {
+          if (a.date !== b.date) return b.date.localeCompare(a.date);
+          return (b.createdAt || 0) - (a.createdAt || 0);
+        })
+        .slice(0, 60);
+    }
+
+    function getJaundiceUnitLabel(unit) {
+      return unit === 'mgdl' ? 'mg/dL' : 'µmol/L';
+    }
+
+    function getJaundiceStatusInfo(status, isEn = false) {
+      const map = {
+        improving: {
+          label: isEn ? '🟢 Dropping / Improving' : '🟢 Menurun / Semakin Baik',
+          cls: 'bg-emerald-50 text-emerald-700 border-emerald-200'
+        },
+        recheck: {
+          label: isEn ? '🟠 Clinic Recheck' : '🟠 Ulang Klinik',
+          cls: 'bg-orange-50 text-orange-800 border-orange-200'
+        },
+        phototherapy: {
+          label: isEn ? '🔵 Phototherapy' : '🔵 Rawatan Lampu',
+          cls: 'bg-sky-50 text-sky-800 border-sky-200'
+        },
+        monitor: {
+          label: isEn ? '🟡 Monitor at Home' : '🟡 Pantau di Rumah',
+          cls: 'bg-amber-50 text-amber-800 border-amber-200'
+        }
+      };
+      return map[status] || map.monitor;
+    }
+
+    function getBabyLifeDayLabel(dateStr, isEn = false) {
+      const child = getActiveChildRecord();
+      if (!child || !child.birth_date || !dateStr) return '';
+      const b = parseLocalDate(child.birth_date);
+      const d = parseLocalDate(dateStr);
+      if (!b || !d) return '';
+      const diffDays = Math.floor((d - b) / (1000 * 60 * 60 * 24)) + 1;
+      if (diffDays < 1 || diffDays > 60) return '';
+      return isEn ? `Day ${diffDays}` : `Hari ke-${diffDays}`;
+    }
+
+    async function loadChildJaundice() {
+      childJaundiceLogs = [];
+      const storageKey = getFamilyScopedKey('bukupink_child_jaundice');
+      const localList = parseJsonSafe(localStorage.getItem(storageKey), []);
+      childJaundiceLogs = sanitizeJaundiceLogs(localList);
+
+      if (db && currentFamilyId) {
+        try {
+          const { data, error } = await secureGetRecords('baby_memories', { category: 'Jaundis Bayi' });
+          if (!error && Array.isArray(data) && data.length > 0) {
+            const scopedTitle = getChildJaundiceScopedTitle();
+            const matched = data.filter(r => recordMatchesActiveChild(r));
+            const rec = matched.find(r => r.title === scopedTitle)
+              || matched.find(r => r.title === 'REKOD_JAUNDIS_BAYI')
+              || matched[0];
+            if (rec && rec.notes) {
+              const parsed = parseJsonSafe(rec.notes, null);
+              if (Array.isArray(parsed)) {
+                childJaundiceLogs = sanitizeJaundiceLogs(parsed);
+                localStorage.setItem(storageKey, JSON.stringify(childJaundiceLogs));
+              }
+            }
+          }
+        } catch (err) {
+          console.warn("Jaundice sync warning:", err);
+        }
+      }
+      renderChildJaundice();
+    }
+
+    async function saveChildJaundiceState() {
+      const isEn = currentLang === 'en';
+      childJaundiceLogs = sanitizeJaundiceLogs(childJaundiceLogs);
+      const storageKey = getFamilyScopedKey('bukupink_child_jaundice');
+      localStorage.setItem(storageKey, JSON.stringify(childJaundiceLogs));
+
+      if (db && currentFamilyId && currentFamilyId !== DEMO_FAMILY_ID) {
+        const cid = getActiveChildId();
+        const { error } = await upsertFamilySyncRecord(
+          'Jaundis Bayi',
+          getChildJaundiceScopedTitle(),
+          childJaundiceLogs,
+          getLocalTodayIso(),
+          cid
+        );
+        if (error) {
+          showToast(isEn ? "⚠️ Jaundice reading saved locally (cloud sync failed)." : "⚠️ Bacaan jaundis disimpan setempat (sync awan gagal).");
+        }
+      }
+    }
+
+    async function handleAddJaundiceLog(e) {
+      e.preventDefault();
+      const isEn = currentLang === 'en';
+      const dateEl = document.getElementById('inp-jaundice-date');
+      const valEl = document.getElementById('inp-jaundice-val');
+      const unitEl = document.getElementById('inp-jaundice-unit');
+      const statusEl = document.getElementById('inp-jaundice-status');
+      const notesEl = document.getElementById('inp-jaundice-notes');
+
+      const dateVal = dateEl ? dateEl.value : getLocalTodayIso();
+      const numVal = valEl ? parseFloat(valEl.value) : 0;
+      const unitVal = unitEl ? unitEl.value : 'umol';
+      const statusVal = statusEl ? statusEl.value : 'monitor';
+      const notesVal = notesEl ? notesEl.value.trim() : '';
+
+      if (!dateVal || !numVal || numVal <= 0) return;
+
+      childJaundiceLogs.unshift({
+        id: `j_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        date: dateVal,
+        value: Math.round(numVal * 10) / 10,
+        unit: unitVal === 'mgdl' ? 'mgdl' : 'umol',
+        status: statusVal,
+        notes: notesVal,
+        createdAt: Date.now()
+      });
+
+      if (valEl) valEl.value = '';
+      if (notesEl) notesEl.value = '';
+      renderChildJaundice();
+      await saveChildJaundiceState();
+      showToast(isEn ? "🟡 Jaundice reading saved!" : "🟡 Bacaan jaundis berjaya disimpan!");
+    }
+
+    async function deleteJaundiceLog(logId) {
+      const isEn = currentLang === 'en';
+      const ok = window.confirm(isEn ? "Delete this jaundice reading?" : "Padam bacaan jaundis ini?");
+      if (!ok) return;
+
+      childJaundiceLogs = childJaundiceLogs.filter(x => x.id !== logId);
+      renderChildJaundice();
+      await saveChildJaundiceState();
+      showToast(isEn ? "🗑️ Jaundice reading deleted." : "🗑️ Rekod jaundis dipadam.");
+    }
+
+    function calcJaundiceTrend(newer, older, isEn = false) {
+      if (!newer || !older) return null;
+      const toUmol = item => item.unit === 'mgdl' ? item.value * 17.1 : item.value;
+      const diffRaw = newer.unit === older.unit
+        ? Math.round((newer.value - older.value) * 10) / 10
+        : Math.round((toUmol(newer) - toUmol(older)) * 10) / 10;
+      const unitHint = newer.unit === older.unit ? getJaundiceUnitLabel(newer.unit) : 'µmol/L';
+
+      if (diffRaw < 0) {
+        return {
+          text: isEn ? `📉 Down ${diffRaw} ${unitHint}` : `📉 Turun ${diffRaw} ${unitHint}`,
+          shortText: `↓ ${Math.abs(diffRaw)}`,
+          cls: 'bg-emerald-50 border-emerald-200 text-emerald-700'
+        };
+      }
+      if (diffRaw > 0) {
+        return {
+          text: isEn ? `📈 Up +${diffRaw} ${unitHint}` : `📈 Naik +${diffRaw} ${unitHint}`,
+          shortText: `↑ +${diffRaw}`,
+          cls: 'bg-rose-50 border-rose-200 text-rose-700'
+        };
+      }
+      return {
+        text: isEn ? '➡️ Unchanged' : '➡️ Sama',
+        shortText: '→ 0',
+        cls: 'bg-slate-50 border-slate-200 text-slate-600'
+      };
+    }
+
+    function renderChildJaundice() {
+      const isEn = currentLang === 'en';
+      const logs = sanitizeJaundiceLogs(childJaundiceLogs);
+      const latest = logs[0] || null;
+      const prev = logs[1] || null;
+
+      // 1. Overview Quick Card
+      const ovSub = document.getElementById('overview-jaundice-sub');
+      if (ovSub) {
+        if (!latest) {
+          ovSub.innerText = isEn ? 'No jaundice readings logged yet' : 'Tiada rekod kuning lagi';
+        } else {
+          const dayLbl = getBabyLifeDayLabel(latest.date, isEn);
+          const trend = calcJaundiceTrend(latest, prev, isEn);
+          const unitTxt = getJaundiceUnitLabel(latest.unit);
+          const dayPrefix = dayLbl ? `${dayLbl}: ` : '';
+          const trendSuffix = trend ? ` (${trend.shortText})` : '';
+          ovSub.innerText = `${dayPrefix}${latest.value} ${unitTxt}${trendSuffix}`;
+        }
+      }
+
+      // 2. Main Summary Card
+      const badgeEl = document.getElementById('jaundice-latest-badge');
+      const valEl = document.getElementById('jaundice-latest-val');
+      const metaEl = document.getElementById('jaundice-latest-meta');
+      const trendEl = document.getElementById('jaundice-trend-pill');
+      const statusEl = document.getElementById('jaundice-status-pill');
+
+      if (!latest) {
+        if (badgeEl) badgeEl.innerText = isEn ? '0 Records' : '0 Rekod';
+        if (valEl) valEl.innerText = '--';
+        if (metaEl) metaEl.innerText = isEn ? 'Enter the first reading below' : 'Masukkan bacaan pertama di bawah';
+        if (trendEl) {
+          trendEl.innerText = '--';
+          trendEl.className = 'inline-block text-[11px] font-bold px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-500';
+        }
+        if (statusEl) statusEl.innerText = '';
+      } else {
+        const unitTxt = getJaundiceUnitLabel(latest.unit);
+        const dayLbl = getBabyLifeDayLabel(latest.date, isEn);
+        const dObj = parseLocalDate(latest.date);
+        const datePretty = dObj
+          ? dObj.toLocaleDateString(isEn ? 'en-MY' : 'ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })
+          : latest.date;
+        const stInfo = getJaundiceStatusInfo(latest.status, isEn);
+        const trend = calcJaundiceTrend(latest, prev, isEn);
+
+        if (badgeEl) badgeEl.innerText = dayLbl || `${logs.length} ${isEn ? 'Logs' : 'Rekod'}`;
+        if (valEl) valEl.innerText = `${latest.value} ${unitTxt}`;
+        if (metaEl) metaEl.innerText = dayLbl ? `${datePretty} • ${dayLbl}` : datePretty;
+        if (trendEl) {
+          if (trend) {
+            trendEl.innerText = trend.text;
+            trendEl.className = `inline-block text-[11px] font-bold px-2.5 py-1 rounded-full border ${trend.cls}`;
+          } else {
+            trendEl.innerText = isEn ? 'First log' : 'Rekod pertama';
+            trendEl.className = 'inline-block text-[11px] font-bold px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600';
+          }
+        }
+        if (statusEl) statusEl.innerText = stInfo.label;
+      }
+
+      // 3. Mini Trend Bars (last 8 entries, chronological)
+      const trendBox = document.getElementById('jaundice-trend-box');
+      const barsEl = document.getElementById('jaundice-trend-bars');
+      if (trendBox && barsEl) {
+        if (logs.length < 2) {
+          trendBox.classList.add('hidden');
+          barsEl.innerHTML = '';
+        } else {
+          trendBox.classList.remove('hidden');
+          const chartLogs = logs.slice(0, 8).reverse();
+          const normVals = chartLogs.map(x => (x.unit === 'mgdl' ? x.value * 17.1 : x.value));
+          const maxV = Math.max(...normVals, 100);
+          barsEl.innerHTML = chartLogs.map((item, idx) => {
+            const pctH = Math.max(18, Math.min(100, Math.round((normVals[idx] / maxV) * 100)));
+            const dayTag = getBabyLifeDayLabel(item.date, isEn);
+            const shortDate = item.date.slice(5);
+            const barColor = item.status === 'improving'
+              ? 'bg-emerald-400'
+              : (item.status === 'recheck' ? 'bg-orange-400' : (item.status === 'phototherapy' ? 'bg-sky-400' : 'bg-amber-400'));
+            return `
+              <div class="flex-1 flex flex-col items-center justify-end h-full min-w-0">
+                <span class="text-[9px] font-bold text-slate-700 mb-0.5 truncate">${escapeHtml(String(item.value))}</span>
+                <div class="w-full max-w-[26px] ${barColor} rounded-t-lg transition-all" style="height: ${pctH}%"></div>
+                <span class="text-[9px] text-slate-500 mt-1 truncate">${escapeHtml(dayTag || shortDate)}</span>
+              </div>`;
+          }).join('');
+        }
+      }
+
+      // 4. History List
+      const histEl = document.getElementById('jaundice-history-list');
+      if (histEl) {
+        if (logs.length === 0) {
+          histEl.innerHTML = `<div class="bg-white p-4 rounded-2xl border border-slate-200 text-center text-xs text-slate-400">${isEn ? 'No jaundice readings logged yet.' : 'Belum ada bacaan kuning direkodkan.'}</div>`;
+        } else {
+          histEl.innerHTML = logs.map((item, idx) => {
+            const stInfo = getJaundiceStatusInfo(item.status, isEn);
+            const unitTxt = getJaundiceUnitLabel(item.unit);
+            const dayLbl = getBabyLifeDayLabel(item.date, isEn);
+            const dObj = parseLocalDate(item.date);
+            const datePretty = dObj
+              ? dObj.toLocaleDateString(isEn ? 'en-MY' : 'ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })
+              : item.date;
+            const diffBadge = idx < logs.length - 1 ? calcJaundiceTrend(item, logs[idx + 1], isEn) : null;
+            return `
+              <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs flex items-start justify-between gap-2 text-xs">
+                <div class="min-w-0 space-y-1">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="font-extrabold text-sm text-slate-800">${escapeHtml(String(item.value))} ${escapeHtml(unitTxt)}</span>
+                    ${dayLbl ? `<span class="text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full">${escapeHtml(dayLbl)}</span>` : ''}
+                    ${diffBadge ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${diffBadge.cls}">${escapeHtml(diffBadge.shortText)}</span>` : ''}
+                  </div>
+                  <p class="text-[11px] text-slate-500">${escapeHtml(datePretty)} • <span class="font-semibold">${escapeHtml(stInfo.label)}</span></p>
+                  ${item.notes ? `<p class="text-[11px] text-slate-600 italic">"${escapeHtml(item.notes)}"</p>` : ''}
+                </div>
+                <button type="button" onclick="deleteJaundiceLog('${escapeHtml(item.id)}')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition shrink-0" title="${isEn ? 'Delete reading' : 'Padam rekod'}">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>`;
+          }).join('');
+        }
       }
       lucide.createIcons();
     }
