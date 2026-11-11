@@ -823,11 +823,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
             <label data-i18n="lbl_mom_name" class="block font-bold text-slate-700 mb-1">Nama Penuh Ibu</label>
-            <input type="text" id="reg-mom-name" required placeholder="Cth: Fie Tahir" class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+            <input type="text" id="reg-mom-name" required data-i18n-placeholder="ph_mom_name" placeholder="Cth: Fie Tahir" class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
           </div>
           <div>
             <label data-i18n="lbl_mom_phone" class="block font-bold text-slate-700 mb-1">No. Telefon Ibu (Unik)</label>
-            <input type="tel" id="reg-mom-phone" required placeholder="Cth: 0123456789" class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+            <input type="tel" id="reg-mom-phone" required data-i18n-placeholder="ph_mom_phone" placeholder="Cth: 0123456789" class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
           </div>
         </div>
         <p data-i18n="phone_unique_note" class="text-[10px] text-slate-400 -mt-2">🔒 No. telefon digunakan sebagai ID unik supaya Kod Keluarga tidak bertindih walaupun ada pengguna lain yang berkongsi nama yang sama.</p>
@@ -872,7 +872,7 @@
           </div>
           <div class="min-w-0">
             <label data-i18n="lbl_cycle_len" class="block font-bold text-slate-700 mb-1">Purata Panjang Kitaran Haid (Hari)</label>
-            <input type="number" id="reg-cycle-length" value="28" min="21" max="45" placeholder="Cth: 28 hari" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <input type="number" id="reg-cycle-length" value="28" min="21" max="45" data-i18n-placeholder="ph_cycle_len" placeholder="Cth: 28 hari" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
             <p data-i18n="hint_cycle_len" class="text-[10px] text-slate-400 mt-0.5">Kebiasaan kitaran normal wanita adalah antara 26 – 32 hari.</p>
           </div>
         </div>
@@ -881,7 +881,7 @@
         <div id="field-pregnancy" class="space-y-3 p-3 bg-slate-50/80 rounded-2xl border border-slate-200/80 overflow-hidden">
           <div class="min-w-0">
             <label data-i18n="lbl_baby_nick" class="block font-bold text-slate-700 mb-1">Nama Gelaran Kandungan</label>
-            <input type="text" id="reg-baby-nickname" placeholder="Cth: Baby Aisyah / Ezra" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <input type="text" id="reg-baby-nickname" data-i18n-placeholder="ph_baby_nick" placeholder="Cth: Si Comel Aisyah / Ezra" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
           </div>
           <div class="min-w-0">
             <label data-i18n="lbl_edd" class="block font-bold text-slate-700 mb-1">Tarikh Jangka Bersalin (EDD)</label>
@@ -889,7 +889,7 @@
           </div>
           <div class="min-w-0">
             <label data-i18n="lbl_clinic" class="block font-bold text-slate-700 mb-1">Klinik Kesihatan (KK) / Hospital</label>
-            <input type="text" id="reg-clinic-name" placeholder="Cth: KK Bandar Baru Bangi" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <input type="text" id="reg-clinic-name" data-i18n-placeholder="ph_clinic_name" placeholder="Cth: KK Bandar Baru Bangi" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
           </div>
         </div>
 
@@ -897,7 +897,7 @@
         <div id="field-born" class="hidden space-y-3 p-3 bg-sky-50/50 rounded-2xl border border-sky-100 overflow-hidden">
           <div class="min-w-0">
             <label data-i18n="lbl_child_fullname" class="block font-bold text-slate-700 mb-1">Nama Penuh Anak</label>
-            <input type="text" id="reg-child-fullname" placeholder="Cth: Muhammad Rayyan" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <input type="text" id="reg-child-fullname" data-i18n-placeholder="ph_child_fullname" placeholder="Cth: Muhammad Rayyan" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div class="min-w-0">
@@ -906,7 +906,7 @@
             </div>
             <div class="min-w-0">
               <label data-i18n="lbl_birth_weight" class="block font-bold text-slate-700 mb-1">Berat Lahir (kg)</label>
-              <input type="number" step="0.1" id="reg-birth-weight" placeholder="Cth: 3.2" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+              <input type="number" step="0.1" id="reg-birth-weight" data-i18n-placeholder="ph_birth_weight" placeholder="Cth: 3.2" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
             </div>
           </div>
         </div>
@@ -940,18 +940,18 @@
 
         <div>
           <label data-i18n="lbl_your_name" class="block font-bold text-slate-700 mb-1">Nama Anda</label>
-          <input type="text" id="join-dad-name" required placeholder="Cth: Amir / Fie Tahir" class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <input type="text" id="join-dad-name" required data-i18n-placeholder="ph_join_name" placeholder="Cth: Amir / Fie Tahir" class="w-full p-3 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
         </div>
 
         <div>
           <label data-i18n="lbl_family_code" class="block font-bold text-slate-700 mb-1">Kod Keluarga Tetap Pasangan</label>
-          <input type="text" id="join-invite-code" required placeholder="Cth: PINK-7K9M2X" class="w-full p-3 font-mono font-bold text-base uppercase border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <input type="text" id="join-invite-code" required data-i18n-placeholder="ph_join_code" placeholder="Cth: PINK-7K9M2X" class="w-full p-3 font-mono font-bold text-base uppercase border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
           <p data-i18n="family_code_hint" class="text-[11px] text-slate-500 mt-1">1 pasangan berkongsi 1 Kod Keluarga yang sama selamanya pada semua peranti.</p>
         </div>
 
         <div>
           <label data-i18n="lbl_verify_phone4" class="block font-bold text-slate-700 mb-1">4 Digit Terakhir No. Telefon Berdaftar (Isteri)</label>
-          <input type="text" id="join-verify-phone4" required inputmode="numeric" maxlength="4" pattern="[0-9]{4}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)" placeholder="Cth: 6789" class="w-full p-3 font-mono font-bold text-base tracking-widest border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <input type="text" id="join-verify-phone4" required inputmode="numeric" maxlength="4" pattern="[0-9]{4}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)" data-i18n-placeholder="ph_verify_phone4" placeholder="Cth: 6789" class="w-full p-3 font-mono font-bold text-base tracking-widest border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
           <p data-i18n="verify_phone4_hint" class="text-[11px] text-slate-500 mt-1">🔒 Pengesahan tambahan bagi memastikan orang luar tidak dapat meneka kod keluarga anda.</p>
         </div>
 
@@ -1042,7 +1042,7 @@
             <p id="sidebar-family-title" data-i18n="hdr_happy_family" class="text-[10px] text-slate-500">Keluarga Bahagia</p>
           </div>
         </div>
-        <button onclick="logoutProfile()" title="Log Keluar" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition">
+        <button onclick="logoutProfile()" data-i18n-title="title_logout" title="Log Keluar" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition">
           <i data-lucide="log-out" class="w-4 h-4"></i>
         </button>
       </div>
@@ -1240,7 +1240,7 @@
                 <span id="cloud-badge" class="inline-flex items-center text-[9px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded-full border border-emerald-200">
                   <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1 animate-pulse"></span> Cloud Live
                 </span>
-                <button type="button" id="btn-manual-sync" onclick="event.stopPropagation(); syncFamilyDataNow({ showSuccessToast: true });" title="Sync Data Keluarga" class="inline-flex items-center text-[9px] bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 font-bold px-1.5 py-0.5 rounded-full border border-slate-200 transition">
+                <button type="button" id="btn-manual-sync" onclick="event.stopPropagation(); syncFamilyDataNow({ showSuccessToast: true });" data-i18n-title="title_sync_family" title="Segerakkan Data Keluarga" class="inline-flex items-center text-[9px] bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 font-bold px-1.5 py-0.5 rounded-full border border-slate-200 transition">
                   <i data-lucide="refresh-cw" id="icon-manual-sync" class="w-2.5 h-2.5 mr-0.5"></i>
                   <span data-i18n="btn_sync_now">Sync</span>
                 </button>
@@ -1260,7 +1260,7 @@
             <p id="display-user-name" class="text-xs font-bold text-slate-800">Sarah (Ibu)</p>
             <p id="display-family-title" data-i18n="hdr_happy_family" class="text-[10px] text-slate-500">Keluarga Bahagia</p>
           </div>
-          <button onclick="logoutProfile()" title="Tukar Profil / Log Keluar" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition">
+          <button onclick="logoutProfile()" data-i18n-title="title_switch_logout" title="Tukar Profil / Log Keluar" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition">
             <i data-lucide="log-out" class="w-4 h-4"></i>
           </button>
         </div>
@@ -1577,7 +1577,7 @@
             <div class="space-y-1.5">
               <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 text-xs">
                 <div>
-                  <p class="font-bold text-slate-800">Iberet Folic Acid / Zincofer (1x Pagi)</p>
+                  <p data-i18n="med_daily_label" class="font-bold text-slate-800">Iberet Folic Acid / Zincofer (1x Pagi)</p>
                   <p data-i18n="med_instruction" class="text-[10px] text-slate-500">Minum bersama air kosong atau jus oren</p>
                 </div>
                 <button onclick="toggleMed(1)" id="med-1-status" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800">
@@ -1628,7 +1628,7 @@
             </button>
           </div>
           <div class="space-y-2" id="appointment-list">
-            <div class="p-4 text-center text-xs text-slate-400">Memuatkan data janji temu...</div>
+            <div data-i18n="loading_appts" class="p-4 text-center text-xs text-slate-400">Memuatkan data janji temu...</div>
           </div>
         </div>
 
@@ -1642,7 +1642,7 @@
             </button>
           </div>
           <div class="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 overflow-hidden shadow-sm" id="vital-logs">
-            <div class="p-4 text-center text-xs text-slate-400">Memuatkan rekod vital...</div>
+            <div data-i18n="loading_vitals" class="p-4 text-center text-xs text-slate-400">Memuatkan rekod vital...</div>
           </div>
         </div>
 
@@ -1656,7 +1656,7 @@
             </button>
           </div>
           <div class="space-y-2" id="allergy-list">
-            <div class="p-4 text-center text-xs text-slate-400">Memuatkan rekod alahan...</div>
+            <div data-i18n="loading_allergies" class="p-4 text-center text-xs text-slate-400">Memuatkan rekod alahan...</div>
           </div>
         </div>
 
@@ -1770,7 +1770,7 @@
 
           <!-- TIMELINE CONTAINER -->
           <div class="space-y-3" id="memory-timeline-container">
-            <div class="p-4 text-center text-xs text-slate-400">Memuatkan memori foto...</div>
+            <div data-i18n="loading_memories" class="p-4 text-center text-xs text-slate-400">Memuatkan memori foto...</div>
           </div>
         </div>
 
@@ -1828,7 +1828,7 @@
               <span id="growth-records-count" class="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-full">0 Rekod</span>
             </div>
             <div id="growth-records-container" class="space-y-2.5">
-              <div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">
+              <div data-i18n="loading_growth" class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">
                 Memuatkan rekod timbangan anak...
               </div>
             </div>
@@ -1846,7 +1846,7 @@
           </div>
 
           <div class="space-y-2 text-xs" id="vaccine-list-container">
-            <div class="p-4 text-center text-xs text-slate-400">Memuatkan jadual vaksin KKM...</div>
+            <div data-i18n="loading_vaccines" class="p-4 text-center text-xs text-slate-400">Memuatkan jadual vaksin KKM...</div>
           </div>
         </div>
 
@@ -1980,12 +1980,12 @@
           <div id="mem-preview-container" class="hidden mt-2 relative rounded-xl border border-slate-200 p-2 bg-slate-50 space-y-1.5">
             <div class="relative max-h-44 rounded-lg overflow-hidden bg-black/5 flex items-center justify-center">
               <img id="mem-preview-img" src="" alt="Preview" class="max-h-44 w-auto object-contain rounded-lg">
-              <button type="button" onclick="clearMemoryFile()" class="absolute top-1.5 right-1.5 bg-black/70 hover:bg-black/90 text-white rounded-full p-1 text-[11px] transition" title="Padam gambar">
+              <button type="button" onclick="clearMemoryFile()" class="absolute top-1.5 right-1.5 bg-black/70 hover:bg-black/90 text-white rounded-full p-1 text-[11px] transition" data-i18n-title="title_remove_photo" title="Padam gambar">
                 ✕
               </button>
             </div>
             <div class="flex justify-between items-center text-[10px] px-1">
-              <span id="mem-preview-compression" class="font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+              <span id="mem-preview-compression" data-i18n="badge_auto_opt" class="font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
                 ⚡ Auto-dioptimumkan
               </span>
               <span id="mem-preview-size" class="text-slate-500 font-medium"></span>
@@ -2027,25 +2027,25 @@
           <div>
             <label data-i18n="lbl_growth_age" class="block font-semibold mb-1">Umur Anak</label>
             <select id="inp-growth-age-months" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
-              <option value="0">Lahir (Newborn)</option>
-              <option value="1">1 Bulan</option>
-              <option value="2">2 Bulan</option>
-              <option value="3">3 Bulan</option>
-              <option value="4">4 Bulan</option>
-              <option value="5">5 Bulan</option>
-              <option value="6">6 Bulan</option>
-              <option value="7">7 Bulan</option>
-              <option value="8">8 Bulan</option>
-              <option value="9">9 Bulan</option>
-              <option value="10">10 Bulan</option>
-              <option value="11">11 Bulan</option>
-              <option value="12">12 Bulan (1 Tahun)</option>
-              <option value="15">15 Bulan</option>
-              <option value="18">18 Bulan</option>
-              <option value="21">21 Bulan</option>
-              <option value="24">24 Bulan (2 Tahun)</option>
-              <option value="30">30 Bulan</option>
-              <option value="36">36 Bulan (3 Tahun)</option>
+              <option value="0" data-i18n="opt_age_0">Lahir (Baru Lahir)</option>
+              <option value="1" data-i18n="opt_age_1">1 Bulan</option>
+              <option value="2" data-i18n="opt_age_2">2 Bulan</option>
+              <option value="3" data-i18n="opt_age_3">3 Bulan</option>
+              <option value="4" data-i18n="opt_age_4">4 Bulan</option>
+              <option value="5" data-i18n="opt_age_5">5 Bulan</option>
+              <option value="6" data-i18n="opt_age_6">6 Bulan</option>
+              <option value="7" data-i18n="opt_age_7">7 Bulan</option>
+              <option value="8" data-i18n="opt_age_8">8 Bulan</option>
+              <option value="9" data-i18n="opt_age_9">9 Bulan</option>
+              <option value="10" data-i18n="opt_age_10">10 Bulan</option>
+              <option value="11" data-i18n="opt_age_11">11 Bulan</option>
+              <option value="12" data-i18n="opt_age_12">12 Bulan (1 Tahun)</option>
+              <option value="15" data-i18n="opt_age_15">15 Bulan</option>
+              <option value="18" data-i18n="opt_age_18">18 Bulan</option>
+              <option value="21" data-i18n="opt_age_21">21 Bulan</option>
+              <option value="24" data-i18n="opt_age_24">24 Bulan (2 Tahun)</option>
+              <option value="30" data-i18n="opt_age_30">30 Bulan</option>
+              <option value="36" data-i18n="opt_age_36">36 Bulan (3 Tahun)</option>
             </select>
           </div>
         </div>
@@ -2053,32 +2053,32 @@
         <div class="grid grid-cols-3 gap-2">
           <div>
             <label data-i18n="lbl_growth_weight" class="block font-semibold mb-1">Berat (kg)</label>
-            <input type="number" id="inp-growth-weight" step="0.05" min="1" max="30" required placeholder="Cth: 7.8" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+            <input type="number" id="inp-growth-weight" step="0.05" min="1" max="30" required data-i18n-placeholder="ph_growth_weight" placeholder="Cth: 7.8" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
           </div>
           <div>
             <label data-i18n="lbl_growth_height" class="block font-semibold mb-1">Tinggi (cm)</label>
-            <input type="number" id="inp-growth-height" step="0.1" min="30" max="130" placeholder="Cth: 68.5" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+            <input type="number" id="inp-growth-height" step="0.1" min="30" max="130" data-i18n-placeholder="ph_growth_height" placeholder="Cth: 68.5" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
           </div>
           <div>
             <label data-i18n="lbl_growth_head" class="block font-semibold mb-1">Lilit Kepala (cm)</label>
-            <input type="number" id="inp-growth-head" step="0.1" min="20" max="60" placeholder="Cth: 43.0" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+            <input type="number" id="inp-growth-head" step="0.1" min="20" max="60" data-i18n-placeholder="ph_growth_head" placeholder="Cth: 43.0" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
           </div>
         </div>
 
         <div>
           <label data-i18n="lbl_growth_status" class="block font-semibold mb-1">Penilaian / Jalur Carta KKM</label>
           <select id="inp-growth-status" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
-            <option value="auto">⚡ Auto (Kira Automatik ikut Umur & Berat)</option>
-            <option value="normal">🟢 Normal (Jalur Hijau KKM)</option>
-            <option value="underweight_mild">🟡 Perlu Perhatian / Kurang Berat (Kuning Bawah)</option>
-            <option value="underweight_severe">🔴 Kurang Berat Ketara (Merah)</option>
-            <option value="overweight">🟡 Berat Berlebihan / Tumbesaran Pantas (Kuning Atas)</option>
+            <option value="auto" data-i18n="opt_g_auto">⚡ Auto (Kira Automatik ikut Umur &amp; Berat)</option>
+            <option value="normal" data-i18n="opt_g_normal">🟢 Normal (Jalur Hijau KKM)</option>
+            <option value="underweight_mild" data-i18n="opt_g_uw_mild">🟡 Perlu Perhatian / Kurang Berat (Kuning Bawah)</option>
+            <option value="underweight_severe" data-i18n="opt_g_uw_sev">🔴 Kurang Berat Ketara (Merah)</option>
+            <option value="overweight" data-i18n="opt_g_ow">🟡 Berat Berlebihan / Tumbesaran Pantas (Kuning Atas)</option>
           </select>
         </div>
 
         <div>
           <label data-i18n="lbl_growth_notes" class="block font-semibold mb-1">Catatan Jururawat / Klinik Kesihatan</label>
-          <textarea id="inp-growth-notes" rows="2" placeholder="Cth: Berat naik cantik mengikut carta KKM. Teruskan penyusuan ibu." class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300"></textarea>
+          <textarea id="inp-growth-notes" rows="2" data-i18n-placeholder="ph_growth_notes" placeholder="Cth: Berat naik cantik mengikut carta KKM. Teruskan penyusuan ibu." class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300"></textarea>
         </div>
 
         <button type="submit" id="btn-save-growth" class="w-full py-3 bg-pastel-500 text-white font-bold rounded-xl mt-1 hover:bg-pastel-600 transition shadow-sm flex items-center justify-center space-x-1.5">
@@ -2137,8 +2137,8 @@
             <i data-lucide="calendar" class="w-4 h-4"></i>
           </div>
           <div>
-            <h3 class="text-sm font-bold text-slate-800">Simpan ke Kalendar Telefon</h3>
-            <p class="text-[10px] text-slate-500">Pilih kalendar peranti untuk tetapkan penggera peringatan</p>
+            <h3 data-i18n="mdl_cal_title" class="text-sm font-bold text-slate-800">Simpan ke Kalendar Telefon</h3>
+            <p data-i18n="mdl_cal_sub" class="text-[10px] text-slate-500">Pilih kalendar peranti untuk tetapkan penggera peringatan</p>
           </div>
         </div>
         <button onclick="closeModal('modal-save-calendar')" class="p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100">
@@ -2175,7 +2175,7 @@
               <span class="text-xs font-bold text-slate-800">Google Calendar</span>
               <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-sky-100 text-sky-700">Android / Web</span>
             </div>
-            <p class="text-[10px] text-slate-500 truncate">Buka terus dalam app Google Calendar</p>
+            <p data-i18n="cal_google_sub" class="text-[10px] text-slate-500 truncate">Buka terus dalam app Google Calendar</p>
           </div>
           <i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-sky-600 shrink-0"></i>
         </button>
@@ -2192,7 +2192,7 @@
               <span class="text-xs font-bold text-slate-800">Apple Calendar</span>
               <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-rose-100 text-rose-700">iPhone / Mac</span>
             </div>
-            <p class="text-[10px] text-slate-500 truncate">Muat turun terus ke Kalendar iPhone (.ics)</p>
+            <p data-i18n="cal_apple_sub" class="text-[10px] text-slate-500 truncate">Muat turun terus ke Kalendar iPhone (.ics)</p>
           </div>
           <i data-lucide="download" class="w-4 h-4 text-slate-400 group-hover:text-rose-600 shrink-0"></i>
         </button>
@@ -2206,16 +2206,16 @@
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center space-x-1.5">
-              <span class="text-xs font-bold text-slate-800">WhatsApp Pasangan</span>
-              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-700">Kongsi Segera</span>
+              <span data-i18n="cal_wa_title" class="text-xs font-bold text-slate-800">WhatsApp Pasangan</span>
+              <span data-i18n="cal_wa_badge" class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-700">Kongsi Segera</span>
             </div>
-            <p class="text-[10px] text-slate-500 truncate">Hantar teks lengkap temujanji terus ke WhatsApp</p>
+            <p data-i18n="cal_wa_sub" class="text-[10px] text-slate-500 truncate">Hantar teks lengkap temujanji terus ke WhatsApp</p>
           </div>
           <i data-lucide="send" class="w-4 h-4 text-slate-400 group-hover:text-emerald-600 shrink-0"></i>
         </button>
       </div>
 
-      <button onclick="closeModal('modal-save-calendar')" class="w-full py-2.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+      <button onclick="closeModal('modal-save-calendar')" data-i18n="btn_close" class="w-full py-2.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
         Tutup
       </button>
     </div>
@@ -2312,12 +2312,12 @@
         <div>
           <label data-i18n="lbl_food_presets" class="block font-semibold mb-1.5 text-slate-700">Pilihan Cepat (Cadangan KKM):</label>
           <div class="flex flex-wrap gap-1.5">
-            <button type="button" onclick="setFoodPreset('🍳 Kuning Telur Rebus (Lumat)')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🍳 Kuning Telur</button>
-            <button type="button" onclick="setFoodPreset('🥑 Puri Avokado Lumat')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🥑 Puri Avokado</button>
-            <button type="button" onclick="setFoodPreset('🥕 Puri Lobak Merah')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🥕 Puri Lobak</button>
-            <button type="button" onclick="setFoodPreset('🍌 Puri Pisang Mas')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🍌 Puri Pisang</button>
-            <button type="button" onclick="setFoodPreset('🥣 Bubur Beras Perang')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🥣 Bubur Beras</button>
-            <button type="button" onclick="setFoodPreset('🐟 Puri Ikan Tenggiri / Salmon')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🐟 Puri Ikan</button>
+            <button type="button" data-i18n="preset_food_1" onclick="setFoodPreset('🍳 Kuning Telur Rebus (Lumat)', '🍳 Mashed Boiled Egg Yolk')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🍳 Kuning Telur</button>
+            <button type="button" data-i18n="preset_food_2" onclick="setFoodPreset('🥑 Puri Avokado Lumat', '🥑 Mashed Avocado Puree')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🥑 Puri Avokado</button>
+            <button type="button" data-i18n="preset_food_3" onclick="setFoodPreset('🥕 Puri Lobak Merah', '🥕 Carrot Puree')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🥕 Puri Lobak</button>
+            <button type="button" data-i18n="preset_food_4" onclick="setFoodPreset('🍌 Puri Pisang Mas', '🍌 Mashed Banana Puree')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🍌 Puri Pisang</button>
+            <button type="button" data-i18n="preset_food_5" onclick="setFoodPreset('🥣 Bubur Beras Perang', '🥣 Brown Rice Porridge')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🥣 Bubur Beras</button>
+            <button type="button" data-i18n="preset_food_6" onclick="setFoodPreset('🐟 Puri Ikan Tenggiri / Salmon', '🐟 Mackerel / Salmon Fish Puree')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🐟 Puri Ikan</button>
           </div>
         </div>
 
@@ -2564,24 +2564,24 @@
             <div id="placeholder-qr-duitnow" class="hidden text-center p-3">
               <span class="text-4xl block mb-1">📲</span>
               <span class="text-xs font-black text-rose-600 uppercase tracking-wider block">DuitNow QR</span>
-              <span class="text-[10px] text-slate-500 block leading-tight mt-1.5">Imbas terus menggunakan mana-mana perbankan online atau Touch 'n Go eWallet</span>
+              <span data-i18n="dn_scan_desc" class="text-[10px] text-slate-500 block leading-tight mt-1.5">Imbas terus menggunakan mana-mana perbankan dalam talian atau Touch 'n Go eWallet</span>
             </div>
           </div>
         </div>
 
-        <p class="text-[10px] text-slate-500 font-medium">
-          Diterima oleh: Maybank MAE, CIMB, Bank Islam, RHB, Touch 'n Go eWallet & semua bank di Malaysia.
+        <p data-i18n="dn_accepted_by" class="text-[10px] text-slate-500 font-medium">
+          Diterima oleh: Maybank MAE, CIMB, Bank Islam, RHB, Touch 'n Go eWallet &amp; semua bank di Malaysia.
         </p>
 
         <div class="pt-1 bg-white p-3 rounded-2xl border border-slate-200 text-left space-y-1 shadow-2xs">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Penerima Sumbangan</span>
+            <span data-i18n="dn_recipient_lbl" class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Penerima Sumbangan</span>
             <span class="text-[10px] bg-amber-50 text-amber-800 font-extrabold px-2 py-0.5 rounded-full border border-amber-200">Maybank</span>
           </div>
-          <p class="text-xs font-extrabold text-slate-800">Amir Mustaqim (Pengasas BukuPinkKu)</p>
+          <p data-i18n="dn_founder_lbl" class="text-xs font-extrabold text-slate-800">Amir Mustaqim (Pengasas BukuPinkKu)</p>
           <div class="pt-1.5 border-t border-slate-100 flex items-center justify-between">
             <div>
-              <p class="text-[10px] text-slate-500 font-semibold">No. Akaun Maybank:</p>
+              <p data-i18n="dn_acc_lbl" class="text-[10px] text-slate-500 font-semibold">No. Akaun Maybank:</p>
               <p id="txt-duitnow-id" class="text-sm font-mono font-black text-slate-800 tracking-wider">
                 013032582362
               </p>
@@ -2689,28 +2689,28 @@
 
         <div>
           <label data-i18n="lbl_sup_name" class="block font-bold text-slate-700 mb-1">Nama Anda</label>
-          <input type="text" id="sup-name" required placeholder="Cth: Sarah / Amir" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <input type="text" id="sup-name" required data-i18n-placeholder="ph_sup_name" placeholder="Cth: Sarah / Amir" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
         </div>
 
         <div>
           <label data-i18n="lbl_sup_phone_hint" class="block font-bold text-slate-700 mb-1">No. Telefon Berdaftar / 4 Digit Terakhir</label>
-          <input type="text" id="sup-phone-hint" required placeholder="Cth: 012-3456789 atau 6789" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <input type="text" id="sup-phone-hint" required data-i18n-placeholder="ph_sup_phone" placeholder="Cth: 012-3456789 atau 6789" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
         </div>
 
         <div>
           <label data-i18n="lbl_sup_code" class="block font-bold text-slate-700 mb-1">Kod Keluarga (Jika Masih Ingat - Pilihan)</label>
-          <input type="text" id="sup-family-code" placeholder="Cth: PINK-7K9M2X" class="w-full p-2.5 font-mono uppercase border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <input type="text" id="sup-family-code" data-i18n-placeholder="ph_sup_code" placeholder="Cth: PINK-7K9M2X" class="w-full p-2.5 font-mono uppercase border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
         </div>
 
         <div>
           <label data-i18n="lbl_sup_contact" class="block font-bold text-slate-700 mb-1">Cara Dihubungi Semula (WhatsApp / Emel)</label>
-          <input type="text" id="sup-contact" required placeholder="Cth: 012-3456789 atau nama@gmail.com" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <input type="text" id="sup-contact" required data-i18n-placeholder="ph_sup_contact" placeholder="Cth: 012-3456789 atau nama@gmail.com" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
           <p data-i18n="hint_sup_contact" class="text-[10px] text-slate-400 mt-1">Pentadbir akan menghubungi anda melalui saluran ini selepas menyemak rekod.</p>
         </div>
 
         <div>
           <label data-i18n="lbl_sup_notes" class="block font-bold text-slate-700 mb-1">Catatan Tambahan (Pilihan)</label>
-          <textarea id="sup-notes" rows="2" placeholder="Terangkan ringkas situasi anda (cth: tukar telefon baharu)..." class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300"></textarea>
+          <textarea id="sup-notes" rows="2" data-i18n-placeholder="ph_sup_notes" placeholder="Terangkan ringkas situasi anda (cth: tukar telefon baharu)..." class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300"></textarea>
         </div>
 
         <button type="submit" id="btn-submit-support" class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-xl shadow-md transition flex items-center justify-center space-x-2">
@@ -2804,7 +2804,7 @@
 
         <div>
           <label data-i18n="lbl_cp_nickname" class="block font-bold text-slate-700 mb-1">Nama Anak / Timangan Bayi</label>
-          <input type="text" id="cp-nickname" required placeholder="Cth: Baby Aisyah / Muhammad" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+          <input type="text" id="cp-nickname" required data-i18n-placeholder="ph_cp_nickname" placeholder="Cth: Si Comel Aisyah / Muhammad" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
         </div>
 
         <div id="field-cp-edd">
@@ -2828,7 +2828,7 @@
             <option value="B-">B-</option>
             <option value="AB+">AB+</option>
             <option value="AB-">AB-</option>
-            <option value="Belum Tahu">Belum Tahu / Not Sure</option>
+            <option value="Belum Tahu" data-i18n="opt_blood_unknown">Belum Tahu</option>
           </select>
         </div>
 
@@ -2947,7 +2947,7 @@
           <p id="lightbox-date" class="text-[11px] text-slate-300"></p>
         </div>
         <div class="flex items-center space-x-2">
-          <a id="lightbox-download" href="#" download="bukupinkku-memori.jpg" class="p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition flex items-center space-x-1.5 text-xs shadow-sm" title="Muat Turun Foto">
+          <a id="lightbox-download" href="#" download="bukupinkku-memori.jpg" class="p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition flex items-center space-x-1.5 text-xs shadow-sm" data-i18n-title="title_download_photo" title="Muat Turun Foto">
             <i data-lucide="download" class="w-4 h-4"></i>
             <span data-i18n="btn_download_photo" class="hidden sm:inline text-[11px] font-semibold">Muat Turun</span>
           </a>
@@ -3050,19 +3050,19 @@
             
             <div class="grid grid-cols-2 gap-2 text-[11px]">
               <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
-                <p class="font-bold text-emerald-900">BCG & Hepatitis B (Dose 1)</p>
+                <p data-i18n="pb_vac_0m" class="font-bold text-emerald-900">BCG &amp; Hepatitis B (Dos 1)</p>
                 <p data-i18n="pb_vac_done_hosp" class="text-[10px] text-emerald-700">✓ Selesai Masa Lahir (Hospital)</p>
               </div>
               <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
-                <p class="font-bold text-emerald-900">2 Months (Hexavalent)</p>
+                <p data-i18n="pb_vac_2m" class="font-bold text-emerald-900">2 Bulan (Heksavalen)</p>
                 <p data-i18n="pb_vac_done_kk" class="text-[10px] text-emerald-700">✓ Selesai di KK</p>
               </div>
               <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
-                <p class="font-bold text-emerald-900">3 Months (Hexavalent)</p>
+                <p data-i18n="pb_vac_3m" class="font-bold text-emerald-900">3 Bulan (Heksavalen)</p>
                 <p data-i18n="pb_vac_done_kk" class="text-[10px] text-emerald-700">✓ Selesai di KK</p>
               </div>
               <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
-                <p class="font-bold text-emerald-900">5 Months (Pneumococcal)</p>
+                <p data-i18n="pb_vac_5m" class="font-bold text-emerald-900">5 Bulan (Pneumokokal)</p>
                 <p data-i18n="pb_vac_done_kk" class="text-[10px] text-emerald-700">✓ Selesai di KK</p>
               </div>
             </div>
@@ -3440,7 +3440,7 @@
         land_f2_b1: "Pantau Paras Hemoglobin (HB) & Tekanan Darah (BP)",
         land_f2_b2: "Peringatan Ubat Harian (Iberet / Zincofer)",
         land_f2_b3: "Simpan Jadual Temujanji KK ke Google/Apple Calendar",
-        land_f2_b4: "Senarai Semak Beg Bersalin Hospital (Checklist)",
+        land_f2_b4: "Senarai Semak Beg Bersalin Hospital",
         land_f3_title: "Fasa Anak (0 - 3 Tahun)",
         land_f3_sub: "Tumbesaran & imunisasi si manja",
         land_f3_b1: "Jadual Lengkap 7 Dos Vaksin Imunisasi KKM",
@@ -3681,7 +3681,7 @@
         lbl_mem_title: "Tajuk Memori",
         ph_mem_title: "Cth: Pertama Kali Berjalan / Makan Sendiri",
         lbl_category: "Kategori",
-        cat_mem_1: "Milestone Perkembangan",
+        cat_mem_1: "Pencapaian &amp; Perkembangan",
         cat_mem_2: "Gambar Bulanan (1-36 Bulan)",
         cat_mem_3: "Makan Pertama Kali",
         cat_mem_4: "Hari Jadi",
@@ -3749,10 +3749,10 @@
         btn_child_profile_sidebar: "Profil Anak &amp; Peralihan Fasa",
         btn_edit_edd_name: "Kemaskini EDD / Nama",
         btn_baby_born_now: "Bayi Sudah Lahir!",
-        btn_edit_child_profile: "Edit Profil",
+        btn_edit_child_profile: "Ubah Profil",
         btn_add_next_child: "Anak ke-2 / Hamil Baru",
         bfp_setup_hint: "Pilihan: Tetapkan Info Kandungan Sekarang",
-        ph_bfp_nickname: "Nama timangan bayi (cth: Baby Aisyah)",
+        ph_bfp_nickname: "Nama timangan bayi (cth: Si Comel Aisyah)",
         lbl_bfp_edd: "Tarikh Dijangka Bersalin (EDD - Pilihan)",
         lbl_cp_status: "Status Fasa Profil Ini",
         opt_cp_pregnancy: "🤰 Sedang Hamil (Buku Pink)",
@@ -3824,13 +3824,97 @@
         btn_save_new_pin: "Simpan PIN Baharu",
         subtab_preg_beg: "Beg Bersalin",
         btn_sync_now: "Sync",
-        hdr_preg_bag_title: "Checklist Beg Bersalin Hospital",
+        hdr_preg_bag_title: "Senarai Semak Beg Bersalin Hospital",
         bag_sub_sync: "Tandakan kelengkapan — status terus disinkronkan antara Suami &amp; Isteri.",
         opt_bag_mom: "👩 Beg Ibu",
         opt_bag_baby: "👶 Beg Bayi",
         opt_bag_docs: "📄 Dokumen &amp; Suami",
         ph_bag_item: "Tambah barang sendiri (cth: Stokin tebal)",
-        btn_add_bag_item: "+ Tambah"
+        btn_add_bag_item: "+ Tambah",
+        doc_title: "BukuPinkKu — Buku Pink Digital Ibu Hamil, TTC & Rekod Anak (0-3 Tahun)",
+        lbl_weight: "Berat",
+        lbl_height: "Tinggi",
+        ph_mom_name: "Cth: Siti Aminah",
+        ph_mom_phone: "012-3456789 (Untuk Pengesahan Log Masuk)",
+        ph_cycle_len: "28",
+        ph_baby_nick: "Cth: Baby Aisyah",
+        ph_clinic_name: "Cth: KK Presint 9, Putrajaya",
+        ph_child_fullname: "Nama penuh seperti MyKid",
+        ph_birth_weight: "cth: 3.15",
+        ph_join_name: "Cth: Ahmad (Suami) / Aminah (Ibu)",
+        ph_join_code: "PINK-8829",
+        ph_verify_phone4: "Cth: 6789",
+        ph_growth_weight: "cth: 7.45",
+        ph_growth_height: "cth: 66.5",
+        ph_growth_head: "cth: 43.2",
+        ph_growth_notes: "cth: Semakin berselera makan &amp; aktif...",
+        ph_sup_name: "Cth: Siti Aminah / Ahmad",
+        ph_sup_phone: "Cth: 012-3456789 atau 6789",
+        ph_sup_code: "Cth: PINK-8829 (jika ingat)",
+        ph_sup_contact: "Cth: 012-3456789 (WhatsApp) atau nama@gmail.com",
+        ph_sup_notes: "Cth: Tukar telefon baru dan terlupa PIN 6 digit...",
+        ph_cp_nickname: "Cth: Si Comel Aisyah",
+        title_logout: "Log Keluar",
+        title_sync_family: "Muat semula data keluarga daripada pelayan",
+        title_switch_logout: "Tukar Akaun / Log Keluar",
+        title_remove_photo: "Buang Gambar",
+        title_download_photo: "Muat Turun Gambar Penuh",
+        med_daily_label: "Iberet Folic / Zincofer (1x Pagi)",
+        loading_appts: "Memuatkan janji temu...",
+        loading_vitals: "Memuatkan bacaan...",
+        loading_allergies: "Memuatkan rekod alahan...",
+        loading_memories: "Memuatkan album kenangan...",
+        loading_growth: "Memuatkan rekod tumbesaran...",
+        loading_vaccines: "Memuatkan jadual vaksin...",
+        badge_auto_opt: "⚡ Auto / Pilihan",
+        opt_age_0: "Lahir (Bayi Baru Lahir)",
+        opt_age_1: "1 Bulan",
+        opt_age_2: "2 Bulan",
+        opt_age_3: "3 Bulan",
+        opt_age_4: "4 Bulan",
+        opt_age_5: "5 Bulan",
+        opt_age_6: "6 Bulan",
+        opt_age_7: "7 Bulan",
+        opt_age_8: "8 Bulan",
+        opt_age_9: "9 Bulan",
+        opt_age_10: "10 Bulan",
+        opt_age_11: "11 Bulan",
+        opt_age_12: "12 Bulan (1 Tahun)",
+        opt_age_15: "15 Bulan",
+        opt_age_18: "18 Bulan (1.5 Tahun)",
+        opt_age_21: "21 Bulan",
+        opt_age_24: "24 Bulan (2 Tahun)",
+        opt_age_30: "30 Bulan (2.5 Tahun)",
+        opt_age_36: "36 Bulan (3 Tahun)",
+        opt_g_auto: "✨ Kira Automatik (Ikut Piawaian KKM/WHO)",
+        opt_g_normal: "🟢 Normal (Zon Hijau - Sempurna)",
+        opt_g_uw_mild: "🟡 Kurang Berat Sederhana (Zon Kuning)",
+        opt_g_uw_sev: "🔴 Kurang Berat Ketara (Zon Merah)",
+        opt_g_ow: "🟠 Berat Berlebihan (Pantau Diet)",
+        mdl_cal_title: "Tambah ke Kalendar",
+        mdl_cal_sub: "Pilih aplikasi kalendar untuk menyimpan peringatan",
+        cal_google_sub: "Buka terus di Google Calendar telefon anda",
+        cal_apple_sub: "Muat turun fail .ics (iOS Calendar / Outlook)",
+        cal_wa_title: "Peringatan WhatsApp Pasangan",
+        cal_wa_badge: "Percuma",
+        cal_wa_sub: "Hantar mesej peringatan automatik terus kepada suami/isteri",
+        btn_close: "Tutup",
+        preset_food_1: "🍳 Kuning Telur",
+        preset_food_2: "🥑 Puri Avokado",
+        preset_food_3: "🍌 Pisang Lenyek",
+        preset_food_4: "🐟 Ikan Salmon",
+        preset_food_5: "🥜 Mentega Kacang",
+        preset_food_6: "🌾 Bubur Oat",
+        dn_scan_desc: "Imbas kod QR menggunakan aplikasi perbankan atau e-dompet pilihan anda",
+        dn_accepted_by: "Diterima oleh:",
+        dn_recipient_lbl: "Penerima Rasmi",
+        dn_founder_lbl: "Pengasas BukuPinkKu Digital",
+        dn_acc_lbl: "No. Akaun (Bank Islam)",
+        opt_blood_unknown: "Belum Tahu",
+        pb_vac_0m: "Dos 1",
+        pb_vac_2m: "2 Bulan (Heksavalen)",
+        pb_vac_3m: "3 Bulan (Heksavalen)",
+        pb_vac_5m: "5 Bulan (Heksavalen)"
       },
       en: {
         btn_back_home: "Home",
@@ -4296,15 +4380,103 @@
         opt_bag_baby: "👶 Baby's Bag",
         opt_bag_docs: "📄 Documents &amp; Dad",
         ph_bag_item: "Add custom item (e.g. Thick socks)",
-        btn_add_bag_item: "+ Add"
+        btn_add_bag_item: "+ Add",
+        doc_title: "BukuPinkKu — Digital Maternal Book, TTC & Child Health Tracker (0-3 Years)",
+        lbl_weight: "Weight",
+        lbl_height: "Height",
+        ph_mom_name: "e.g. Siti Aminah",
+        ph_mom_phone: "012-3456789 (For Login Verification)",
+        ph_cycle_len: "28",
+        ph_baby_nick: "e.g. Baby Aisyah",
+        ph_clinic_name: "e.g. KK Presint 9, Putrajaya",
+        ph_child_fullname: "Full name as in MyKid",
+        ph_birth_weight: "e.g. 3.15",
+        ph_join_name: "e.g. Ahmad (Dad) / Aminah (Mom)",
+        ph_join_code: "PINK-8829",
+        ph_verify_phone4: "e.g. 6789",
+        ph_growth_weight: "e.g. 7.45",
+        ph_growth_height: "e.g. 66.5",
+        ph_growth_head: "e.g. 43.2",
+        ph_growth_notes: "e.g. Appetite improving &amp; very active...",
+        ph_sup_name: "e.g. Siti Aminah / Ahmad",
+        ph_sup_phone: "e.g. 012-3456789 or 6789",
+        ph_sup_code: "e.g. PINK-8829 (if remembered)",
+        ph_sup_contact: "e.g. 012-3456789 (WhatsApp) or name@gmail.com",
+        ph_sup_notes: "e.g. Switched to a new phone and forgot my 6-digit PIN...",
+        ph_cp_nickname: "e.g. Baby Aisyah",
+        title_logout: "Log Out",
+        title_sync_family: "Reload family data from server",
+        title_switch_logout: "Switch Account / Log Out",
+        title_remove_photo: "Remove Photo",
+        title_download_photo: "Download Full Photo",
+        med_daily_label: "Iberet Folic Acid / Zincofer (1x Morning)",
+        loading_appts: "Loading appointments...",
+        loading_vitals: "Loading readings...",
+        loading_allergies: "Loading allergy records...",
+        loading_memories: "Loading memory album...",
+        loading_growth: "Loading growth records...",
+        loading_vaccines: "Loading vaccine schedule...",
+        badge_auto_opt: "⚡ Auto / Optional",
+        opt_age_0: "Birth (Newborn)",
+        opt_age_1: "1 Month",
+        opt_age_2: "2 Months",
+        opt_age_3: "3 Months",
+        opt_age_4: "4 Months",
+        opt_age_5: "5 Months",
+        opt_age_6: "6 Months",
+        opt_age_7: "7 Months",
+        opt_age_8: "8 Months",
+        opt_age_9: "9 Months",
+        opt_age_10: "10 Months",
+        opt_age_11: "11 Months",
+        opt_age_12: "12 Months (1 Year)",
+        opt_age_15: "15 Months",
+        opt_age_18: "18 Months (1.5 Years)",
+        opt_age_21: "21 Months",
+        opt_age_24: "24 Months (2 Years)",
+        opt_age_30: "30 Months (2.5 Years)",
+        opt_age_36: "36 Months (3 Years)",
+        opt_g_auto: "✨ Auto Calculate (Follows MOH/WHO Standard)",
+        opt_g_normal: "🟢 Normal (Green Zone - Healthy)",
+        opt_g_uw_mild: "🟡 Moderately Underweight (Yellow Zone)",
+        opt_g_uw_sev: "🔴 Severely Underweight (Red Zone)",
+        opt_g_ow: "🟠 Overweight (Monitor Diet)",
+        mdl_cal_title: "Add to Calendar",
+        mdl_cal_sub: "Choose a calendar app to save your reminder",
+        cal_google_sub: "Open directly in your phone's Google Calendar",
+        cal_apple_sub: "Download .ics file (iOS Calendar / Outlook)",
+        cal_wa_title: "Partner WhatsApp Reminder",
+        cal_wa_badge: "Free",
+        cal_wa_sub: "Send an automatic reminder message straight to Mom/Dad",
+        btn_close: "Close",
+        preset_food_1: "🍳 Egg Yolk",
+        preset_food_2: "🥑 Avocado Puree",
+        preset_food_3: "🍌 Mashed Banana",
+        preset_food_4: "🐟 Salmon",
+        preset_food_5: "🥜 Peanut Butter",
+        preset_food_6: "🌾 Oat Porridge",
+        dn_scan_desc: "Scan the QR code using your preferred banking or e-wallet app",
+        dn_accepted_by: "Accepted by:",
+        dn_recipient_lbl: "Official Recipient",
+        dn_founder_lbl: "Founder of BukuPinkKu Digital",
+        dn_acc_lbl: "Account No. (Bank Islam)",
+        opt_blood_unknown: "Not Sure Yet",
+        pb_vac_0m: "Dose 1",
+        pb_vac_2m: "2 Months (Hexavalent)",
+        pb_vac_3m: "3 Months (Hexavalent)",
+        pb_vac_5m: "5 Months (Hexavalent)"
       }
     };
 
     function switchLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('bukupink_lang', lang);
+      document.documentElement.lang = (lang === 'en' ? 'en' : 'ms');
 
       const dict = I18N[lang] || I18N.ms;
+      if (dict.doc_title) {
+        document.title = dict.doc_title;
+      }
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (dict[key]) {
@@ -4315,6 +4487,12 @@
         const key = el.getAttribute('data-i18n-placeholder');
         if (dict[key]) {
           el.setAttribute('placeholder', dict[key]);
+        }
+      });
+      document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.getAttribute('data-i18n-title');
+        if (dict[key]) {
+          el.setAttribute('title', dict[key]);
         }
       });
 
@@ -4367,11 +4545,29 @@
           : (lang === 'en' ? "Not Taken" : "Belum Ambil");
       }
 
+      // Kemaskini fallback ringkasan vital sekiranya belum ada data
+      if (!cachedVitals || cachedVitals.length === 0) {
+        const isEn = lang === 'en';
+        const hbDisplay = document.getElementById('val-hb-display');
+        const hbBadge = document.getElementById('badge-hb-status');
+        const bpDisplay = document.getElementById('val-bp-display');
+        const bpBadge = document.getElementById('badge-bp-status');
+        if (hbDisplay) hbDisplay.innerText = isEn ? "Not Recorded" : "Belum Direkod";
+        if (hbBadge) hbBadge.innerText = isEn ? "+ Log HB Reading" : "+ Rekod Bacaan HB";
+        if (bpDisplay) bpDisplay.innerText = isEn ? "Not Recorded" : "Belum Direkod";
+        if (bpBadge) bpBadge.innerText = isEn ? "+ Log BP Reading" : "+ Rekod Tekanan BP";
+      }
+
       // Kira semula dan kemaskini teks waktu subur mengikut bahasa aktif
       calculateTtcDates();
       if (currentPhase === 'ttc') {
         loadTtcLetters();
       }
+
+      renderChildSwitcher();
+      renderActiveChildInfo(getActiveChildRecord());
+      renderGrowthLogs();
+      setFeedbackRating(currentFeedbackRating || 5);
 
       if (currentFamilyId) {
         loadAllSupabaseData();
@@ -5406,8 +5602,19 @@
     }
 
     function renderActiveChildInfo(data) {
-      if (!data) return;
       const isEn = currentLang === 'en';
+      if (!data) {
+        const ageTagEl = document.getElementById('hero-child-age-tag');
+        if (ageTagEl) ageTagEl.innerText = isEn ? '👶 Age: --' : '👶 Umur: --';
+        const nameEl = document.getElementById('hero-child-name');
+        if (nameEl) nameEl.innerText = isEn ? 'Sweet Baby' : 'Anak Comel';
+        const subEl = document.getElementById('hero-child-sub');
+        if (subEl) subEl.innerText = isEn ? 'Blood: --' : 'Darah: --';
+        const feedEl = document.getElementById('hero-child-feeding');
+        if (feedEl) feedEl.innerText = isEn ? 'Milk Only (0–6m)' : 'Susu Sahaja';
+        renderBabyTeeth();
+        return;
+      }
 
       // Update hero anak & photobook
       document.getElementById('hero-child-name').innerText = data.nickname || (isEn ? 'Sweet Baby' : 'Anak Comel');
@@ -7508,8 +7715,8 @@
       openModal('modal-add-food-test');
     }
 
-    function setFoodPreset(name) {
-      document.getElementById('inp-food-test-name').value = name;
+    function setFoodPreset(msName, enName = '') {
+      document.getElementById('inp-food-test-name').value = (currentLang === 'en' && enName) ? enName : msName;
     }
 
     async function handleStartNewFoodTest(e) {
