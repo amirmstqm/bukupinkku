@@ -1283,6 +1283,99 @@
     </div>
   </div>
 
+  <!-- MODAL: PILIH KALENDAR TELEFON (GOOGLE / APPLE) -->
+  <div id="modal-save-calendar" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-slate-200">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-xl bg-pastel-100 flex items-center justify-center text-pastel-700">
+            <i data-lucide="calendar" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">Simpan ke Kalendar Telefon</h3>
+            <p class="text-[10px] text-slate-500">Pilih kalendar peranti untuk tetapkan penggera peringatan</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-save-calendar')" class="p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Detail Ringkasan Temujanji -->
+      <div class="bg-gradient-to-br from-pastel-50/70 to-rose-50/40 p-3.5 rounded-2xl border border-pastel-200/70 text-xs space-y-1">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-slate-800 text-xs truncate max-w-[200px]" id="cal-modal-title">Temujanji KK</span>
+          <span class="text-[10px] font-bold text-pastel-700 bg-white px-2 py-0.5 rounded-full border border-pastel-200" id="cal-modal-badge">KKIA</span>
+        </div>
+        <p class="text-[11px] text-slate-600 font-medium flex items-center space-x-1.5">
+          <span>📅</span>
+          <span id="cal-modal-datetime">18 Nov 2026 • 09:00</span>
+        </p>
+        <p class="text-[11px] text-slate-500 flex items-center space-x-1.5">
+          <span>📍</span>
+          <span id="cal-modal-clinic" class="truncate">KK Bandar Baru Bangi</span>
+        </p>
+      </div>
+
+      <!-- Pilihan 1: Google Calendar (Android / Gmail) -->
+      <div class="space-y-2">
+        <button id="btn-choice-google-cal" class="w-full p-3 rounded-2xl bg-white hover:bg-sky-50/50 border border-slate-200 hover:border-sky-300 shadow-sm transition flex items-center space-x-3 text-left group">
+          <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 border border-sky-100 group-hover:scale-105 transition">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-1.5">
+              <span class="text-xs font-bold text-slate-800">Google Calendar</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-sky-100 text-sky-700">Android / Web</span>
+            </div>
+            <p class="text-[10px] text-slate-500 truncate">Buka terus dalam app Google Calendar</p>
+          </div>
+          <i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-sky-600 shrink-0"></i>
+        </button>
+
+        <!-- Pilihan 2: Apple Calendar (iPhone / iPad / Mac) -->
+        <button id="btn-choice-apple-cal" class="w-full p-3 rounded-2xl bg-white hover:bg-rose-50/50 border border-slate-200 hover:border-rose-300 shadow-sm transition flex items-center space-x-3 text-left group">
+          <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100 group-hover:scale-105 transition">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.76 1.06-1.82.94-2.88-.91.04-2.02.61-2.67 1.37-.58.67-1.09 1.75-.95 2.79 1.02.08 2.05-.52 2.68-1.28z"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-1.5">
+              <span class="text-xs font-bold text-slate-800">Apple Calendar</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-rose-100 text-rose-700">iPhone / Mac</span>
+            </div>
+            <p class="text-[10px] text-slate-500 truncate">Muat turun terus ke Kalendar iPhone (.ics)</p>
+          </div>
+          <i data-lucide="download" class="w-4 h-4 text-slate-400 group-hover:text-rose-600 shrink-0"></i>
+        </button>
+
+        <!-- Pilihan 3: WhatsApp Pasangan -->
+        <button id="btn-choice-whatsapp-cal" class="w-full p-3 rounded-2xl bg-white hover:bg-emerald-50/50 border border-slate-200 hover:border-emerald-300 shadow-sm transition flex items-center space-x-3 text-left group">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100 group-hover:scale-105 transition">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-1.5">
+              <span class="text-xs font-bold text-slate-800">WhatsApp Pasangan</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-700">Kongsi Segera</span>
+            </div>
+            <p class="text-[10px] text-slate-500 truncate">Hantar teks lengkap temujanji terus ke WhatsApp</p>
+          </div>
+          <i data-lucide="send" class="w-4 h-4 text-slate-400 group-hover:text-emerald-600 shrink-0"></i>
+        </button>
+      </div>
+
+      <button onclick="closeModal('modal-save-calendar')" class="w-full py-2.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+        Tutup
+      </button>
+    </div>
+  </div>
+
   <!-- MODAL: LOG BACAAN VITAL BARU -->
   <div id="modal-add-vital" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-slate-200">
@@ -3124,7 +3217,101 @@
     let editingAllergyId = null;
     let editingMemoryId = null;
 
-    // MUAT TURUN KALENDAR JANJI TEMU (.ICS)
+    // ==========================================
+    // SISTEM INTEGRASI KALENDAR TELEFON & NOTIFIKASI
+    // (GOOGLE CALENDAR, APPLE CALENDAR & WHATSAPP)
+    // ==========================================
+    let activeCalendarAppt = null;
+
+    function openGoogleCalendarUrl(title, dateStr, timeStr, clinicStr, notesStr) {
+      if (!dateStr) return;
+      const isEn = currentLang === 'en';
+      const cleanDate = dateStr.replace(/-/g, '');
+      let startDT, endDT;
+      const hasTime = timeStr && /^\d{1,2}:\d{2}/.test(timeStr.trim());
+
+      if (hasTime) {
+        const parts = timeStr.trim().split(':');
+        const hh = parts[0].padStart(2, '0');
+        const mm = (parts[1] || '00').slice(0, 2);
+        startDT = `${cleanDate}T${hh}${mm}00`;
+        let nextHour = ((parseInt(hh, 10) + 1) % 24).toString().padStart(2, '0');
+        endDT = `${cleanDate}T${nextHour}${mm}00`;
+      } else {
+        startDT = cleanDate;
+        const dObj = new Date(dateStr);
+        dObj.setDate(dObj.getDate() + 1);
+        endDT = dObj.toISOString().split('T')[0].replace(/-/g, '');
+      }
+
+      const summary = (title || (isEn ? 'Clinic Visit' : 'Temujanji KK')) + (clinicStr ? ` - ${clinicStr}` : '');
+      const details = (notesStr ? `${notesStr}\n\n` : '') + 
+        (isEn ? '⚠️ Friendly tip: Please bring physical Pink Book (KKM), MyKad & urine sample.\nCreated via BukuPinkKu (https://bukupinkku.my)' 
+              : '⚠️ Peringatan mesra: Sila bawa Buku Pink fizikal KKM, kad pengenalan & sampel urin.\nDicipta melalui BukuPinkKu (https://bukupinkku.my)');
+      const location = clinicStr || (isEn ? 'Health Clinic (KK)' : 'Klinik Kesihatan (KK)');
+
+      const gUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(summary)}&dates=${startDT}/${endDT}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
+      window.open(gUrl, '_blank');
+      showToast(isEn ? "📅 Opening Google Calendar..." : "📅 Membuka Google Calendar...");
+    }
+
+    function openWhatsAppAppointment(title, dateStr, timeStr, clinicStr, notesStr) {
+      const isEn = currentLang === 'en';
+      const t = title || (isEn ? 'Clinic Checkup' : 'Pemeriksaan KK');
+      const d = dateStr || '-';
+      const tm = timeStr || (isEn ? 'Morning' : 'Pagi');
+      const c = clinicStr || (isEn ? 'Health Clinic (KK)' : 'Klinik Kesihatan (KK)');
+      const n = notesStr ? `\n📝 ${isEn ? 'Notes' : 'Catatan'}: ${notesStr}` : '';
+
+      const msg = isEn
+        ? `Salam sayang! ❤️ Friendly reminder for our clinic checkup:\n\n🏥 Treatment: ${t}\n📅 Date: ${d}\n⏰ Time: ${tm}\n📍 Location: ${c}${n}\n\n⚠️ Friendly tip: Please remember to bring our physical Pink Book (KKM) & MyKad! 📋👶\n\nSynced via BukuPinkKu: https://bukupinkku.my`
+        : `Salam sayang! ❤️ Ingatan mesra untuk temujanji klinik kita:\n\n🏥 Rawatan: ${t}\n📅 Tarikh: ${d}\n⏰ Masa: ${tm}\n📍 Tempat: ${c}${n}\n\n⚠️ Peringatan mesra: Jangan lupa bawa Buku Pink fizikal KKM & kad pengenalan ya! 📋👶\n\nDiselaraskan melalui BukuPinkKu: https://bukupinkku.my`;
+
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+      showToast(isEn ? "📲 WhatsApp reminder opened!" : "📲 Peringatan WhatsApp telah dibuka!");
+    }
+
+    function openCalendarChoiceModal(title, dateStr, timeStr, clinicStr, notesStr, category) {
+      activeCalendarAppt = { title, dateStr, timeStr, clinicStr, notesStr, category };
+      const isEn = currentLang === 'en';
+      
+      const titleEl = document.getElementById('cal-modal-title');
+      const badgeEl = document.getElementById('cal-modal-badge');
+      const dtEl = document.getElementById('cal-modal-datetime');
+      const clinicEl = document.getElementById('cal-modal-clinic');
+
+      if (titleEl) titleEl.innerText = title || (isEn ? 'Clinic Visit' : 'Temujanji KK');
+      if (badgeEl) badgeEl.innerText = category || 'KKIA';
+      if (dtEl) dtEl.innerText = `${dateStr} ${timeStr ? `• ${timeStr}` : ''}`;
+      if (clinicEl) clinicEl.innerText = clinicStr || (isEn ? 'Health Clinic (KK)' : 'Klinik Kesihatan (KK)');
+
+      // Bind actions
+      const btnG = document.getElementById('btn-choice-google-cal');
+      const btnA = document.getElementById('btn-choice-apple-cal');
+      const btnW = document.getElementById('btn-choice-whatsapp-cal');
+
+      if (btnG) {
+        btnG.onclick = () => {
+          openGoogleCalendarUrl(title, dateStr, timeStr, clinicStr, notesStr);
+        };
+      }
+      if (btnA) {
+        btnA.onclick = () => {
+          downloadAppointmentICS(title, dateStr, timeStr, clinicStr, notesStr);
+        };
+      }
+      if (btnW) {
+        btnW.onclick = () => {
+          openWhatsAppAppointment(title, dateStr, timeStr, clinicStr, notesStr);
+        };
+      }
+
+      openModal('modal-save-calendar');
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    // MUAT TURUN KALENDAR JANJI TEMU (APPLE / ICAL .ICS)
     function downloadAppointmentICS(title, dateStr, timeStr, clinicStr, notesStr) {
       if (!dateStr) return;
       const isEn = currentLang === 'en';
@@ -3147,7 +3334,9 @@
       const uid = 'bukupinkku-' + Date.now() + '@bukupinkku.my';
       const now = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
       const summary = (title || (isEn ? 'Clinic Visit' : 'Temujanji KK')) + (clinicStr ? ` - ${clinicStr}` : '');
-      const description = (notesStr ? `${notesStr}\n\n` : '') + 'Dicipta melalui BukuPinkKu (https://bukupinkku.my)';
+      const description = (notesStr ? `${notesStr}\n\n` : '') + 
+        (isEn ? '⚠️ Friendly tip: Please bring physical Pink Book (KKM), MyKad & urine sample.\nCreated via BukuPinkKu (https://bukupinkku.my)' 
+              : '⚠️ Peringatan mesra: Sila bawa Buku Pink fizikal KKM, kad pengenalan & sampel urin.\nDicipta melalui BukuPinkKu (https://bukupinkku.my)');
       const location = clinicStr || (isEn ? 'Health Clinic (KK)' : 'Klinik Kesihatan (KK)');
 
       const icsLines = [
@@ -3188,7 +3377,7 @@
       tempLink.click();
       document.body.removeChild(tempLink);
       URL.revokeObjectURL(downloadUrl);
-      showToast(isEn ? "📅 Calendar (.ics) file downloaded! Open to save to Google / Apple / Samsung Calendar." : "📅 Fail kalendar (.ics) dimuat turun! Buka fail untuk simpan ke Google / Apple / Samsung Calendar.");
+      showToast(isEn ? "🍏 Apple Calendar (.ics) file ready! Tap to save to Calendar." : "🍏 Fail Kalendar Apple (.ics) sedia! Buka untuk simpan ke Kalendar iPhone.");
     }
 
     // LOAD APPOINTMENTS
@@ -3232,7 +3421,7 @@
           <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-500 gap-2">
             <span class="truncate max-w-[150px]">${item.notes || (isEn ? 'Attend together' : 'Hadir bersama')}</span>
             <div class="flex items-center space-x-1.5 shrink-0">
-              <button onclick="downloadAppointmentICS('${escapedTitle}', '${item.appointment_date}', '${item.appointment_time || ''}', '${escapedClinic}', '${escapedNotes}')" class="px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold border border-sky-200 transition flex items-center space-x-1" title="${isEn ? 'Add to Calendar' : 'Muat Turun ke Kalendar'}">
+              <button onclick="openCalendarChoiceModal('${escapedTitle}', '${item.appointment_date}', '${item.appointment_time || ''}', '${escapedClinic}', '${escapedNotes}', '${item.category || 'KKIA'}')" class="px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold border border-sky-200 transition flex items-center space-x-1" title="${isEn ? 'Add to Google / Apple Calendar' : 'Simpan ke Google / Apple Calendar'}">
                 <span>📅</span>
                 <span>${isEn ? 'Calendar' : 'Kalendar'}</span>
               </button>
@@ -3261,9 +3450,9 @@
           const topClinic = (data[0].clinic_name || '').replace(/'/g, "\\'");
           const topNotes = (data[0].notes || '').replace(/'/g, "\\'");
           quickActions.innerHTML = `
-            <button onclick="event.stopPropagation(); downloadAppointmentICS('${topTitle}', '${data[0].appointment_date}', '${data[0].appointment_time || ''}', '${topClinic}', '${topNotes}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold border border-sky-200 transition flex items-center space-x-1">
+            <button onclick="event.stopPropagation(); openCalendarChoiceModal('${topTitle}', '${data[0].appointment_date}', '${data[0].appointment_time || ''}', '${topClinic}', '${topNotes}', '${data[0].category || 'KKIA'}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold border border-sky-200 transition flex items-center space-x-1" title="${isEn ? 'Save to Google / Apple Calendar' : 'Simpan ke Google / Apple Calendar'}">
               <span>📅</span>
-              <span>${isEn ? 'Calendar (.ICS)' : 'Kalendar (.ICS)'}</span>
+              <span>${isEn ? 'Add to Calendar' : 'Simpan Kalendar'}</span>
             </button>
             <button onclick="event.stopPropagation(); sendNudge('appt')" class="text-[11px] px-2.5 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold border border-teal-200 transition">
               🔔 ${isEn ? 'Remind Partner' : 'Ingatkan Pasangan'}
@@ -4059,6 +4248,11 @@
         ? (isEn ? `✅ Appointment "${title}" updated!` : `✅ Janji temu "${title}" berjaya dikemaskini!`)
         : (isEn ? `Appointment "${title}" saved & shared! 📲` : `Janji temu "${title}" disimpan & dikongsi! 📲`));
       loadAppointments();
+
+      // Buka modal pilihan kalendar secara automatik supaya pengguna boleh simpan ke Google/Apple Calendar
+      setTimeout(() => {
+        openCalendarChoiceModal(title, date, time, clinic, notes, isEn ? 'Clinic Visit' : 'KKIA Kerajaan');
+      }, 400);
     }
 
     // SIMPAN / KEMASKINI VITAL KE SUPABASE
