@@ -835,8 +835,14 @@
 
         <div>
           <label data-i18n="lbl_family_code" class="block font-bold text-slate-700 mb-1">Kod Keluarga Tetap Pasangan</label>
-          <input type="text" id="join-invite-code" required placeholder="Cth: PINK-1147" class="w-full p-3 font-mono font-bold text-base uppercase border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <input type="text" id="join-invite-code" required placeholder="Cth: PINK-7K9M2X" class="w-full p-3 font-mono font-bold text-base uppercase border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
           <p data-i18n="family_code_hint" class="text-[11px] text-slate-500 mt-1">1 pasangan berkongsi 1 Kod Keluarga yang sama selamanya pada semua peranti.</p>
+        </div>
+
+        <div>
+          <label data-i18n="lbl_verify_phone4" class="block font-bold text-slate-700 mb-1">4 Digit Terakhir No. Telefon Berdaftar (Isteri)</label>
+          <input type="text" id="join-verify-phone4" required inputmode="numeric" maxlength="4" pattern="[0-9]{4}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)" placeholder="Cth: 6789" class="w-full p-3 font-mono font-bold text-base tracking-widest border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+          <p data-i18n="verify_phone4_hint" class="text-[11px] text-slate-500 mt-1">🔒 Pengesahan tambahan bagi memastikan orang luar tidak dapat meneka kod keluarga anda.</p>
         </div>
 
         <button type="submit" id="btn-submit-join" class="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-2xl shadow-md transition flex items-center justify-center space-x-2">
@@ -2859,6 +2865,8 @@
         lbl_your_name: "Nama Anda",
         lbl_family_code: "Kod Keluarga Tetap Pasangan",
         family_code_hint: "1 pasangan berkongsi 1 Kod Keluarga yang sama selamanya pada semua peranti.",
+        lbl_verify_phone4: "4 Digit Terakhir No. Telefon Berdaftar (Isteri)",
+        verify_phone4_hint: "🔒 Pengesahan tambahan bagi memastikan orang luar tidak dapat meneka kod keluarga anda.",
         btn_login_code: "Log Masuk Ke Kod Keluarga",
         btn_demo_mode: "Atau Terus Cuba Mod Demo (Keluarga Contoh Amir & Sarah)",
         hdr_family_code: "Kod Keluarga:",
@@ -3259,6 +3267,8 @@
         lbl_your_name: "Your Name",
         lbl_family_code: "Permanent Partner Family Code",
         family_code_hint: "1 couple shares 1 permanent Family Code across all devices.",
+        lbl_verify_phone4: "Last 4 Digits of Registered Phone (Wife)",
+        verify_phone4_hint: "🔒 Extra verification to prevent outsiders from guessing your family code.",
         btn_login_code: "Log In With Family Code",
         btn_demo_mode: "Or Try Demo Mode (Sample Family Amir & Sarah)",
         hdr_family_code: "Family Code:",
@@ -3564,14 +3574,15 @@
       const urlParams = new URLSearchParams(window.location.search);
       const inviteCodeParam = urlParams.get('code');
 
-      if (inviteCodeParam) {
-        switchAuthTab('father');
-        document.getElementById('join-invite-code').value = inviteCodeParam.toUpperCase();
-        showToast(`Kod jemputan ${inviteCodeParam} dikesan! Masukkan nama anda.`);
-      }
-
-      if (currentFamilyId) {
+      if (currentFamilyId && !inviteCodeParam) {
         showDashboardScreen();
+      } else if (inviteCodeParam) {
+        showOnboardingScreen('father');
+        const joinInput = document.getElementById('join-invite-code');
+        if (joinInput) joinInput.value = inviteCodeParam.trim().toUpperCase();
+        showToast(currentLang === 'en'
+          ? `Invite code ${inviteCodeParam.toUpperCase()} detected! Enter your name and the last 4 digits of your wife's phone number.`
+          : `Kod jemputan ${inviteCodeParam.toUpperCase()} dikesan! Masukkan nama & 4 digit terakhir no. telefon isteri.`);
       } else {
         showLandingScreen();
       }
@@ -3719,6 +3730,24 @@
       }
     }
 
+    // PENJANA KOD KELUARGA SELAMAT (6 AKSARA ALFANUMERIK, >1 BILION KOMBINASI)
+    function generateSecureFamilyCode() {
+      const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let suffix = '';
+      if (window.crypto && window.crypto.getRandomValues) {
+        const bytes = new Uint8Array(6);
+        window.crypto.getRandomValues(bytes);
+        for (let i = 0; i < 6; i++) {
+          suffix += alphabet[bytes[i] % alphabet.length];
+        }
+      } else {
+        for (let i = 0; i < 6; i++) {
+          suffix += alphabet[Math.floor(Math.random() * alphabet.length)];
+        }
+      }
+      return `PINK-${suffix}`;
+    }
+
     // DAFTAR KELUARGA BARU (ATAU GUNA SEMULA KOD TETAP BERDASARKAN NO. TELEFON UNIK)
     async function handleRegisterMother(e) {
       e.preventDefault();
@@ -3770,13 +3799,22 @@
       const submitBtn = document.getElementById('btn-submit-register');
       submitBtn.innerText = "Menyemak ID Unik Keluarga...";
 
-      const randomDigits = Math.floor(1000 + Math.random() * 9000);
-      let finalCode = `PINK-${randomDigits}`;
+      let finalCode = generateSecureFamilyCode();
       let newFamilyId = 'local-' + Date.now();
       let isExistingFamily = false;
 
       try {
         if (db) {
+          // Pastikan Kod Keluarga baharu tidak bertindih dalam pangkalan data
+          for (let attempt = 0; attempt < 5; attempt++) {
+            const { data: dupCheck } = await db
+              .from('families')
+              .select('id')
+              .eq('invite_code', finalCode)
+              .limit(1);
+            if (!dupCheck || dupCheck.length === 0) break;
+            finalCode = generateSecureFamilyCode();
+          }
           // 1. Semak berdasarkan No. Telefon Unik Ibu dahulu!
           const { data: phoneMatch } = await db
             .from('families')
@@ -3873,7 +3911,7 @@
       }
     }
 
-    // LOG MASUK MENGGUNAKAN KOD KELUARGA TETAP (SUAMI ATAU ISTERI)
+    // LOG MASUK MENGGUNAKAN KOD KELUARGA TETAP + PENGESAHAN 4 DIGIT TELEFON (SUAMI ATAU ISTERI)
     async function handleJoinFather(e) {
       e.preventDefault();
 
@@ -3884,16 +3922,58 @@
         return;
       }
 
+      // Sekatan Had Percubaan Gagal (Cooldown 60 saat selepas 5 kali gagal)
+      const now = Date.now();
+      const lockUntil = parseInt(localStorage.getItem('bukupink_join_lock_until') || '0', 10);
+      if (lockUntil > now) {
+        const waitSecs = Math.ceil((lockUntil - now) / 1000);
+        showToast(currentLang === 'en'
+          ? `⏳ Too many failed attempts. Please wait ${waitSecs}s before trying again.`
+          : `⏳ Terlalu banyak percubaan gagal. Sila tunggu ${waitSecs} saat lagi.`);
+        return;
+      }
+
       const userName = document.getElementById('join-dad-name').value.trim();
       const enteredCode = document.getElementById('join-invite-code').value.trim().toUpperCase();
+      const verifyPhone4Raw = document.getElementById('join-verify-phone4') ? document.getElementById('join-verify-phone4').value.trim() : '';
+      const verifyPhone4 = verifyPhone4Raw.replace(/[^0-9]/g, '');
+
+      if (!/^\d{4}$/.test(verifyPhone4)) {
+        showToast(currentLang === 'en'
+          ? "⚠️ Please enter the last 4 digits of the registered wife's phone number."
+          : "⚠️ Sila masukkan 4 digit terakhir no. telefon berdaftar isteri.");
+        return;
+      }
+
       const selectedRoleEl = document.querySelector('input[name="join_role"]:checked');
       const selectedRole = selectedRoleEl ? selectedRoleEl.value : 'father';
       const roleLabel = selectedRole === 'mother' ? 'Ibu' : 'Ayah';
 
       const submitBtn = document.getElementById('btn-submit-join');
-      submitBtn.innerText = "Menyemak kod keluarga...";
+      submitBtn.innerText = currentLang === 'en' ? "Verifying family code..." : "Mengesahkan kod keluarga...";
+
+      const recordJoinFailure = () => {
+        const fails = parseInt(localStorage.getItem('bukupink_join_fails') || '0', 10) + 1;
+        if (fails >= 5) {
+          localStorage.setItem('bukupink_join_lock_until', String(Date.now() + 60000));
+          localStorage.setItem('bukupink_join_fails', '0');
+          showToast(currentLang === 'en'
+            ? "🔒 Verification failed 5 times. Please wait 60 seconds before trying again."
+            : "🔒 5 kali percubaan tidak sepadan. Sila tunggu 60 saat sebelum mencuba semula.");
+        } else {
+          localStorage.setItem('bukupink_join_fails', String(fails));
+          showToast(currentLang === 'en'
+            ? "❌ Family code or last 4 phone digits do not match."
+            : "❌ Kod keluarga atau 4 digit terakhir no. telefon tidak sepadan.");
+        }
+      };
 
       try {
+        if (!db) {
+          showToast(currentLang === 'en' ? "⚠️ Cloud server is not connected." : "⚠️ Sambungan pelayan tidak tersedia.");
+          return;
+        }
+
         const { data: familyData, error } = await db
           .from('families')
           .select('*')
@@ -3901,13 +3981,21 @@
           .single();
 
         if (error || !familyData) {
-          showToast("❌ Kod keluarga tidak dijumpai. Sila pastikan kod betul!");
-          submitBtn.innerHTML = `<span>Log Masuk Ke Kod Keluarga</span><i data-lucide="link" class="w-4 h-4"></i>`;
-          lucide.createIcons();
+          recordJoinFailure();
           return;
         }
 
-        // Pautan berjaya!
+        // Pengesahan Pilihan A: Padankan 4 digit terakhir no. telefon isteri yang disimpan dalam [cleanPhone]
+        const phoneMatch = (familyData.family_name || '').match(/\[(\d+)\]/);
+        if (!phoneMatch || verifyPhone4 !== phoneMatch[1].slice(-4)) {
+          recordJoinFailure();
+          return;
+        }
+
+        // Pautan berjaya! Kosongkan kiraan gagal
+        localStorage.removeItem('bukupink_join_fails');
+        localStorage.removeItem('bukupink_join_lock_until');
+
         localStorage.setItem('bukupink_family_id', familyData.id);
         localStorage.setItem('bukupink_role', selectedRole);
         localStorage.setItem('bukupink_user_name', `${userName} (${roleLabel})`);
@@ -3924,9 +4012,12 @@
 
       } catch (err) {
         console.error("Ralat sambung kod keluarga:", err);
-        showToast("Ralat menyambung kod keluarga.");
+        showToast(currentLang === 'en' ? "Error connecting with family code." : "Ralat menyambung kod keluarga.");
       } finally {
-        submitBtn.innerHTML = `<span>Log Masuk Ke Kod Keluarga</span><i data-lucide="link" class="w-4 h-4"></i>`;
+        const loginText = (typeof I18N !== 'undefined' && I18N[currentLang]?.btn_login_code)
+          ? I18N[currentLang].btn_login_code
+          : 'Log Masuk Ke Kod Keluarga';
+        submitBtn.innerHTML = `<span data-i18n="btn_login_code">${loginText}</span><i data-lucide="link" class="w-4 h-4"></i>`;
         lucide.createIcons();
       }
     }
@@ -3964,7 +4055,7 @@
     // KONGSI KOD WHATSAPP KEPADA SUAMI
     function shareWhatsAppInvite() {
       const code = currentFamilyCode || 'PINK-8821';
-      const msg = encodeURIComponent(`Sayang, jom pantau perkembangan anak kita di BukuPinkKu sama-sama! Klik pautan ini untuk sambung akaun kita terus: https://bukupinkku.my?code=${code}`);
+      const msg = encodeURIComponent(`Sayang, jom pantau perkembangan kita di BukuPinkKu sama-sama! Klik pautan ini untuk sambung akaun kita terus (masukkan 4 digit terakhir no. telefon saya untuk pengesahan): https://bukupinkku.my?code=${code}`);
       window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
     }
 
