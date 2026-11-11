@@ -110,13 +110,515 @@
   </div>
 
   <!-- ============================================================== -->
+  <!-- [SKRIN 0] LANDING PAGE RASMI BUKUPINKKU (LAMAN UTAMA)           -->
+  <!-- ============================================================== -->
+  <div id="screen-landing" class="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+
+    <!-- 1. STICKY TOP NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 transition-all">
+      <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-2.5 cursor-pointer" onclick="showLandingScreen()">
+          <img src="./apple-touch-icon.png" alt="BukuPinkKu" class="w-9 h-9 rounded-xl shadow-sm border border-pastel-200 object-cover">
+          <div>
+            <div class="flex items-center space-x-1.5">
+              <span class="font-black text-slate-900 text-base tracking-tight">BukuPinkKu</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-pastel-100 text-pastel-700 border border-pastel-200">Digital</span>
+            </div>
+            <p class="text-[10px] text-slate-500 font-medium hidden sm:block">Peneman Ibu Hamil & Pasangan</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <!-- Pilihan Bahasa -->
+          <div class="inline-flex bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-[11px] font-bold">
+            <button type="button" onclick="switchLanguage('ms')" id="btn-lang-land-ms" class="px-2 py-1 rounded-lg bg-white text-pastel-600 shadow-sm transition">🇲🇾 BM</button>
+            <button type="button" onclick="switchLanguage('en')" id="btn-lang-land-en" class="px-2 py-1 rounded-lg text-slate-500 hover:text-slate-800 transition">🇬🇧 EN</button>
+          </div>
+
+          <!-- Butang Masuk Kod Pasangan (Header) -->
+          <button onclick="showOnboardingScreen('father')" class="px-3 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition border border-slate-200 flex items-center space-x-1">
+            <span class="text-sm">🔑</span>
+            <span data-i18n="landing_nav_enter_code" class="hidden xs:inline">Masuk Kod</span>
+          </button>
+
+          <!-- Butang Mula Guna (Header) -->
+          <button onclick="showOnboardingScreen('mother')" class="px-3.5 py-1.5 text-xs font-bold text-white bg-pastel-500 hover:bg-pastel-600 rounded-xl shadow-sm transition flex items-center space-x-1">
+            <span data-i18n="landing_nav_get_started">Mula Percuma</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. HERO SECTION -->
+    <section class="relative overflow-hidden pt-8 pb-12 sm:pt-14 sm:pb-16 bg-gradient-to-b from-pastel-50/70 via-white to-slate-50">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          
+          <!-- Kiri: Penerangan & Call-To-Action (7 Cols) -->
+          <div class="lg:col-span-7 space-y-5 text-center lg:text-left">
+            
+            <div class="inline-flex items-center space-x-2 bg-pastel-100/80 border border-pastel-200/90 px-3 py-1 rounded-full text-xs font-bold text-pastel-800 shadow-sm">
+              <span class="animate-pulse">🌸</span>
+              <span data-i18n="landing_hero_badge">Peneman Digital Kehamilan & Anak #1 Malaysia</span>
+            </div>
+
+            <h1 data-i18n="landing_hero_h1" class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.2]">
+              Buku Pink Digital Yang Menghubungkan <span class="text-transparent bg-clip-text bg-gradient-to-r from-pastel-600 to-rose-500">Suami & Isteri.</span>
+            </h1>
+
+            <p data-i18n="landing_hero_desc" class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
+              Daripada ikhtiar zuriat (TTC), rekod temujanji & paras HB kehamilan, sehinggalah jadual vaksin anak umur 3 tahun. Telefon suami sentiasa diselaraskan secara masa nyata.
+            </p>
+
+            <!-- Butang Tindakan Utama -->
+            <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
+              <button onclick="showOnboardingScreen('mother')" class="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-pastel-500 to-rose-500 hover:from-pastel-600 hover:to-rose-600 text-white font-bold text-sm rounded-2xl shadow-lg shadow-pastel-500/25 transition transform active:scale-95 flex items-center justify-center space-x-2">
+                <span class="text-base">🌸</span>
+                <span data-i18n="landing_hero_cta_start">Mula Guna Percuma Sekarang</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+
+              <button onclick="showOnboardingScreen('father')" class="w-full sm:w-auto px-5 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-2xl border border-slate-300 shadow-sm transition flex items-center justify-center space-x-2">
+                <span class="text-base">🔑</span>
+                <span data-i18n="landing_hero_cta_code">Saya Pasangan (Masuk Kod)</span>
+              </button>
+            </div>
+
+            <!-- Trust micro-copy -->
+            <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-xs text-slate-500 font-medium">
+              <span class="flex items-center space-x-1 text-emerald-700">
+                <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                <span>100% Percuma</span>
+              </span>
+              <span class="flex items-center space-x-1 text-emerald-700">
+                <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                <span>Tanpa Iklan Mengganggu</span>
+              </span>
+              <span class="flex items-center space-x-1 text-emerald-700">
+                <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                <span>Tiada Muat Turun App Berat</span>
+              </span>
+            </div>
+
+            <!-- Penafian Rasmi KKM (Legal Compliance Badge) -->
+            <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 text-left text-xs text-amber-900 space-y-1">
+              <div class="flex items-center space-x-1.5 font-bold text-[11px] text-amber-800 uppercase tracking-wide">
+                <span>🛡️</span>
+                <span>Peringatan Rasmi Kesihatan (KKM)</span>
+              </div>
+              <p data-i18n="landing_kkm_notice" class="text-[11px] text-amber-800/90 leading-relaxed">
+                BukuPinkKu adalah aplikasi peneman digital untuk membantu ibu dan pasangan memahami maklumat kehamilan & kesihatan anak. <strong>Ia BUKAN pengganti buku pink fizikal KKM yang sah</strong> — anda tetap wajib membawa Buku Pink fizikal setiap kali hadir ke Klinik Kesihatan atau hospital.
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Kanan: Interaktif Phone Mockup Preview (5 Cols) -->
+          <div class="lg:col-span-5 flex justify-center">
+            <div class="relative w-full max-w-[340px]">
+              
+              <!-- Subtle decorative gradient glow behind mockup -->
+              <div class="absolute -inset-2 bg-gradient-to-tr from-pastel-300/40 via-rose-200/30 to-tealsoft-200/40 rounded-[2.5rem] blur-xl opacity-75"></div>
+
+              <!-- Phone Mockup Container -->
+              <div class="relative bg-white rounded-[2.2rem] p-3 shadow-2xl border-4 border-slate-800 text-xs space-y-2.5 overflow-hidden">
+                
+                <!-- Phone Header Notch & Status -->
+                <div class="flex justify-between items-center px-2 pt-1 pb-2 border-b border-slate-100">
+                  <div class="flex items-center space-x-1">
+                    <span class="text-sm">🌸</span>
+                    <span class="font-bold text-slate-800 text-[11px]">BukuPinkKu</span>
+                    <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-700">Cloud Live</span>
+                  </div>
+                  <span class="text-[10px] font-bold text-slate-400">9:41 AM</span>
+                </div>
+
+                <!-- Kad Pautkan Pasangan (Green Banner) -->
+                <div class="p-2.5 rounded-xl bg-tealsoft-50/90 border border-tealsoft-200 text-[11px] space-y-1">
+                  <div class="flex justify-between items-center">
+                    <span class="font-bold text-tealsoft-800 flex items-center space-x-1">
+                      <span>📲</span>
+                      <span>Pautkan Pasangan</span>
+                    </span>
+                    <span class="text-[9px] font-bold bg-white text-tealsoft-700 px-1.5 py-0.2 rounded border border-tealsoft-200">PINK-8821</span>
+                  </div>
+                  <p class="text-[10px] text-tealsoft-700">Rekod disegerakkan secara masa nyata ke telefon suami.</p>
+                </div>
+
+                <!-- Interactive Tab Switcher in Mockup -->
+                <div class="bg-slate-100 p-1 rounded-xl flex text-[10px] font-bold">
+                  <button type="button" onclick="previewLandingPhase('ttc')" id="prev-btn-ttc" class="flex-1 py-1.5 rounded-lg text-center transition bg-white text-pastel-700 shadow-sm font-bold">
+                    TTC Subur
+                  </button>
+                  <button type="button" onclick="previewLandingPhase('preg')" id="prev-btn-preg" class="flex-1 py-1.5 rounded-lg text-center transition text-slate-500 font-medium hover:text-slate-800">
+                    Buku Pink
+                  </button>
+                  <button type="button" onclick="previewLandingPhase('baby')" id="prev-btn-baby" class="flex-1 py-1.5 rounded-lg text-center transition text-slate-500 font-medium hover:text-slate-800">
+                    Anak 0-3 Thn
+                  </button>
+                </div>
+
+                <!-- PREVIEW CARD 1: FASA TTC -->
+                <div id="prev-card-ttc" class="space-y-2">
+                  <div class="p-3 rounded-2xl bg-pastel-50/80 border border-pastel-200/80 space-y-1.5">
+                    <div class="flex justify-between items-center">
+                      <span class="text-[10px] font-bold text-pastel-700 bg-white px-2 py-0.5 rounded-full border border-pastel-200">🌸 Waktu Paling Subur</span>
+                      <span class="text-rose-600 font-extrabold text-xs">2 HARI LAGI</span>
+                    </div>
+                    <p class="font-bold text-slate-800 text-sm">Ikhtiar Zuriat Comel</p>
+                    <p class="text-[11px] text-slate-600">Jendela Subur: <strong>10 Nov – 14 Nov</strong></p>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[10px] text-slate-600 flex items-center space-x-2">
+                    <span class="text-sm">💡</span>
+                    <span>Peluang persenyawaan tinggi! Bersama selang 1-2 hari.</span>
+                  </div>
+                </div>
+
+                <!-- PREVIEW CARD 2: FASA HAMIL (BUKU PINK) -->
+                <div id="prev-card-preg" class="hidden space-y-2">
+                  <div class="p-3 rounded-2xl bg-rose-50/60 border border-rose-200/80 space-y-1.5">
+                    <div class="flex justify-between items-center">
+                      <span class="text-[10px] font-bold text-rose-700 bg-white px-2 py-0.5 rounded-full border border-rose-200">Checkup Minggu 28</span>
+                      <span class="text-emerald-700 font-bold text-[10px]">✓ Normal</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                      <div>
+                        <span class="text-[10px] text-slate-500">Paras HB</span>
+                        <p class="font-extrabold text-slate-800 text-sm">11.8 g/dL</p>
+                      </div>
+                      <div>
+                        <span class="text-[10px] text-slate-500">Tekanan Darah</span>
+                        <p class="font-bold text-slate-800">118/76</p>
+                      </div>
+                      <div>
+                        <span class="text-[10px] text-slate-500">Berat</span>
+                        <p class="font-bold text-slate-800">58.5 kg</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-2 rounded-xl bg-sky-50 border border-sky-200 text-[10px] text-sky-800 flex justify-between items-center">
+                    <span>📅 Temujanji KK: <strong>18 Nov (8:30 Pagi)</strong></span>
+                    <span class="font-bold text-sky-600">Simpan Kalendar</span>
+                  </div>
+                </div>
+
+                <!-- PREVIEW CARD 3: FASA ANAK -->
+                <div id="prev-card-baby" class="hidden space-y-2">
+                  <div class="p-3 rounded-2xl bg-teal-50/70 border border-teal-200 space-y-1.5">
+                    <div class="flex justify-between items-center">
+                      <span class="text-[10px] font-bold text-teal-800 bg-white px-2 py-0.5 rounded-full border border-teal-200">Jadual Vaksin KKM</span>
+                      <span class="text-teal-700 font-extrabold text-xs">4 / 7 Selesai</span>
+                    </div>
+                    <p class="font-bold text-slate-800 text-xs">Akan Datang: Campak / MMR (9 Bulan)</p>
+                    <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                      <div class="bg-teal-500 h-full rounded-full" style="width: 57%"></div>
+                    </div>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[10px] text-slate-600 flex items-center justify-between">
+                    <span>👶 Berat Anak: <strong>7.8 kg</strong> (Normal KKM)</span>
+                    <span class="text-pastel-600 font-bold">📸 Jurnal</span>
+                  </div>
+                </div>
+
+                <!-- Mockup Bottom CTA Button -->
+                <button onclick="showOnboardingScreen('mother')" class="w-full py-2 bg-pastel-500 hover:bg-pastel-600 text-white font-bold rounded-xl text-center text-xs shadow-sm transition">
+                  Cuba Aplikasi Ini Percuma &rarr;
+                </button>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. MASALAH SEBENAR & SOLUSI BUKUPINKKU -->
+    <section class="py-12 sm:py-16 bg-white border-y border-slate-200/80">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 space-y-10">
+        
+        <div class="text-center space-y-2 max-w-2xl mx-auto">
+          <span class="text-xs font-bold text-pastel-600 uppercase tracking-wider">Kenapa Pasangan Malaysia Perlukan Ini?</span>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">
+            Direka Khas Untuk Menyelesaikan Masalah Harian Pasangan
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Tiada lagi salah faham, tiada lagi suami duduk termangu, dan tiada lagi rekod tercicir.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          
+          <!-- Kad 1: Suami Blur di Klinik -->
+          <div class="bg-slate-50/80 p-5 rounded-3xl border border-slate-200/80 space-y-3 hover:border-pastel-300 transition">
+            <div class="w-12 h-12 rounded-2xl bg-pastel-100 text-pastel-700 flex items-center justify-center text-2xl shadow-sm">
+              😶
+            </div>
+            <h3 class="font-bold text-slate-900 text-base">Menjawab Isu "Suami Blur" di Klinik</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Bila jururawat tanya: <em>"Suami tahu ke bacaan HB isteri berapa?"</em> Suami tak lagi diam kaku. Sekali isteri rekod, telefon suami terus kemaskini secara automatik.
+            </p>
+          </div>
+
+          <!-- Kad 2: Integrasi Google & Apple Calendar -->
+          <div class="bg-slate-50/80 p-5 rounded-3xl border border-slate-200/80 space-y-3 hover:border-sky-300 transition">
+            <div class="w-12 h-12 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center text-2xl shadow-sm">
+              📅
+            </div>
+            <h3 class="font-bold text-slate-900 text-base">Simpan ke Google & Apple Calendar</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Sekali klik, temujanji KK tersimpan dalam kalendar telefon bersama 2 kali penggera (1 hari & 2 jam sebelum) lengkap dengan senarai dokumen wajib dibawa.
+            </p>
+          </div>
+
+          <!-- Kad 3: Pautkan Pasangan Cloud Sync -->
+          <div class="bg-slate-50/80 p-5 rounded-3xl border border-slate-200/80 space-y-3 hover:border-emerald-300 transition">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl shadow-sm">
+              🔗
+            </div>
+            <h3 class="font-bold text-slate-900 text-base">Pautkan Pasangan (1 Kod Keluarga)</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Hanya kongsi satu kod (cth: PINK-8821) melalui WhatsApp. Suami boleh terus akses tanpa perlu isteri hantar tangkap layar gambar berulang kali.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. LENGKAP UNTUK 3 FASA KELUARGA -->
+    <section class="py-12 sm:py-16 bg-slate-50">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 space-y-10">
+        
+        <div class="text-center space-y-2 max-w-2xl mx-auto">
+          <span class="text-xs font-bold text-tealsoft-700 uppercase tracking-wider">Perjalanan Bersama</span>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">
+            Satu Aplikasi Untuk 3 Fasa Paling Berharga
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600">
+            BukuPinkKu menemani anda dari saat merancang zuriat hingga anak berusia 3 tahun.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          
+          <!-- Fasa 1: TTC -->
+          <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center space-x-2 pb-3 border-b border-slate-100">
+              <span class="text-xl">🌸</span>
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm">Fasa TTC (Ikhtiar Hamil)</h3>
+                <p class="text-[10px] text-slate-500">Persediaan awal menyambut zuriat</p>
+              </div>
+            </div>
+            <ul class="text-xs text-slate-600 space-y-2.5">
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Kalkulator Ovulasi & Jendela Hari Subur</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Peringatan Ambil Asid Folik Harian</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Tips Waktu Bersama Pasangan Paling Berkesan</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Ruang Warkah Buat Bakal Anak</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Fasa 2: Kehamilan (Buku Pink) -->
+          <div class="bg-white p-5 rounded-3xl border-2 border-pastel-300 shadow-md space-y-4 relative">
+            <div class="absolute -top-3 right-4 bg-pastel-500 text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+              Paling Popular
+            </div>
+            <div class="flex items-center space-x-2 pb-3 border-b border-slate-100">
+              <span class="text-xl">🤰</span>
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm">Fasa Hamil (Buku Pink)</h3>
+                <p class="text-[10px] text-slate-500">Catatan kemas sepanjang 40 minggu</p>
+              </div>
+            </div>
+            <ul class="text-xs text-slate-600 space-y-2.5">
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Pantau Paras Hemoglobin (HB) & Tekanan Darah (BP)</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Peringatan Ubat Harian (Iberet / Zincofer)</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Simpan Jadual Temujanji KK ke Google/Apple Calendar</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Senarai Semak Beg Bersalin Hospital (Checklist)</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Fasa 3: Bayi & Anak -->
+          <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center space-x-2 pb-3 border-b border-slate-100">
+              <span class="text-xl">👶</span>
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm">Fasa Anak (0 - 3 Tahun)</h3>
+                <p class="text-[10px] text-slate-500">Tumbesaran & imunisasi si manja</p>
+              </div>
+            </div>
+            <ul class="text-xs text-slate-600 space-y-2.5">
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Jadual Lengkap 7 Dos Vaksin Imunisasi KKM</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Log Berat Badan, Ketinggian & Lilit Kepala</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Ujian Makanan Alahan Bayi (3-Day Rule)</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="text-emerald-500 font-bold">✓</span>
+                <span>Jurnal Album Foto Kenangan Membesar</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. SOALAN LAZIM (FAQ ACCORDION) -->
+    <section class="py-12 sm:py-16 bg-white border-t border-slate-200/80">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 space-y-8">
+        
+        <div class="text-center space-y-2">
+          <span class="text-xs font-bold text-pastel-600 uppercase tracking-wider">Soalan Lazim</span>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Ada Pertanyaan?</h2>
+          <p class="text-xs sm:text-sm text-slate-600">Jawapan pantas untuk soalan yang biasa ditanya oleh ibu bapa.</p>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          
+          <!-- FAQ 1 -->
+          <div class="border border-slate-200 rounded-2xl overflow-hidden">
+            <button onclick="toggleFaq(1)" class="w-full p-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex justify-between items-center transition">
+              <span>1. Adakah BukuPinkKu percuma untuk digunakan?</span>
+              <span id="faq-icon-1" class="text-slate-400 transition transform">▼</span>
+            </button>
+            <div id="faq-ans-1" class="p-4 bg-white text-slate-600 leading-relaxed border-t border-slate-100">
+              Ya, BukuPinkKu adalah <strong>100% percuma</strong> tanpa sebarang yuran langganan. Ia dibangunkan khas sebagai inisiatif membantu keluarga Malaysia merekod dan memahami kesihatan ibu dan anak dengan lebih mudah.
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="border border-slate-200 rounded-2xl overflow-hidden">
+            <button onclick="toggleFaq(2)" class="w-full p-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex justify-between items-center transition">
+              <span>2. Kena muat turun daripada Google Play Store atau Apple App Store ke?</span>
+              <span id="faq-icon-2" class="text-slate-400 transition transform">▼</span>
+            </button>
+            <div id="faq-ans-2" class="p-4 bg-white text-slate-600 leading-relaxed border-t border-slate-100">
+              Tidak perlu! BukuPinkKu adalah <em>Progressive Web App (PWA)</em>. Anda boleh terus buka melalui pelayar web telefon dan tekan butang <strong>"Add to Home Screen" (Tambah ke Skrin Utama)</strong> untuk menjadikannya seperti aplikasi tanpa memakan ruang memori telefon yang besar.
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="border border-slate-200 rounded-2xl overflow-hidden">
+            <button onclick="toggleFaq(3)" class="w-full p-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex justify-between items-center transition">
+              <span>3. Adakah aplikasi ini menggantikan Buku Pink fizikal KKM?</span>
+              <span id="faq-icon-3" class="text-slate-400 transition transform">▼</span>
+            </button>
+            <div id="faq-ans-3" class="p-4 bg-white text-slate-600 leading-relaxed border-t border-slate-100">
+              <strong>Tidak sama sekali.</strong> Buku Pink fizikal rasmi KKM tetap <strong>wajib</strong> dibawa ke setiap pemeriksaan di Klinik Kesihatan atau hospital kerajaan/swasta. BukuPinkKu adalah peneman digital peribadi anda untuk memudahkan pasangan melihat salinan rekod, memantau graf HB/BP, dan menetapkan peringatan temujanji.
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="border border-slate-200 rounded-2xl overflow-hidden">
+            <button onclick="toggleFaq(4)" class="w-full p-4 text-left font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 flex justify-between items-center transition">
+              <span>4. Macam mana cara suami nak sambung akaun dengan isteri?</span>
+              <span id="faq-icon-4" class="text-slate-400 transition transform">▼</span>
+            </button>
+            <div id="faq-ans-4" class="p-4 bg-white text-slate-600 leading-relaxed border-t border-slate-100">
+              Sangat mudah! Selepas isteri mendaftar, isteri akan mendapat satu <strong>Kod Keluarga</strong> unik (contoh: <code>PINK-8821</code>). Isteri hanya perlu tekan butang "WhatsApp Pasangan", dan suami hanya perlu buka pautan tersebut atau masukkan kod tersebut di skrin "Masuk Kod Keluarga".
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. BOTTOM CALL-TO-ACTION BANNER -->
+    <section class="py-12 sm:py-16 bg-gradient-to-r from-pastel-500 via-rose-500 to-pastel-600 text-white text-center">
+      <div class="max-w-3xl mx-auto px-4 space-y-5">
+        <h2 class="text-2xl sm:text-3xl font-black tracking-tight">
+          Sedia Mudahkan Perjalanan Kehamilan Bersama Pasangan?
+        </h2>
+        <p class="text-xs sm:text-sm text-pastel-100 max-w-lg mx-auto">
+          Daftar sekarang dalam masa 30 saat. Percuma, selamat, dan terus diselaraskan bersama pasangan tercinta.
+        </p>
+        <div class="pt-2">
+          <button onclick="showOnboardingScreen('mother')" class="px-8 py-3.5 bg-white hover:bg-slate-100 text-pastel-600 font-extrabold text-sm rounded-2xl shadow-xl transition transform active:scale-95 inline-flex items-center space-x-2">
+            <span>🌸</span>
+            <span>Daftar Percuma Sekarang</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. FOOTER RASMI -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 space-y-6 text-center sm:text-left">
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div class="flex items-center space-x-2">
+            <img src="./apple-touch-icon.png" alt="BukuPinkKu Logo" class="w-7 h-7 rounded-lg object-cover">
+            <span class="font-bold text-white text-sm">BukuPinkKu.my</span>
+            <span class="text-[10px] text-slate-500">v2.0 PWA</span>
+          </div>
+          <div class="flex flex-wrap justify-center gap-4 text-[11px]">
+            <a href="javascript:void(0)" onclick="openModal('modal-coffee')" class="text-pastel-300 hover:text-white transition">💝 Sokong Pembangunan (DuitNow)</a>
+            <a href="javascript:void(0)" onclick="showOnboardingScreen('father')" class="hover:text-white transition">Masuk Kod Pasangan</a>
+            <a href="javascript:void(0)" onclick="showOnboardingScreen('mother')" class="hover:text-white transition">Daftar Ibu Hamil</a>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-2 text-[10px] text-slate-500">
+          <p>&copy; 2026 BukuPinkKu.my. Hak cipta terpelihara. Dibangunkan dengan penuh kasih sayang untuk keluarga Malaysia. 🇲🇾</p>
+          <p>Bukan pengganti buku pink fizikal KKM.</p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+
+  <!-- ============================================================== -->
   <!-- [SKRIN 1] ONBOARDING & DAFTAR KELUARGA (PENGGUNA BARU)        -->
   <!-- ============================================================== -->
-  <div id="screen-onboarding" class="min-h-screen flex items-center justify-center p-4">
+  <div id="screen-onboarding" class="min-h-screen flex items-center justify-center p-4 hidden">
     <div class="max-w-md w-full bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80 space-y-5">
       
-      <!-- Pilihan Bahasa (BM / EN) di Atas Onboarding -->
-      <div class="flex justify-end">
+      <!-- Header Onboarding: Butang Kembali ke Laman Utama & Pilihan Bahasa -->
+      <div class="flex justify-between items-center">
+        <button type="button" onclick="showLandingScreen()" class="inline-flex items-center space-x-1.5 text-xs text-slate-500 hover:text-pastel-600 font-bold transition">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          <span data-i18n="btn_back_home">Laman Utama</span>
+        </button>
         <div class="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-[11px] font-bold">
           <button type="button" onclick="switchLanguage('ms')" id="btn-lang-onboard-ms" class="px-2.5 py-1 rounded-lg bg-white text-pastel-600 shadow-sm transition">🇲🇾 BM</button>
           <button type="button" onclick="switchLanguage('en')" id="btn-lang-onboard-en" class="px-2.5 py-1 rounded-lg text-slate-500 hover:text-slate-800 transition">🇬🇧 EN</button>
@@ -441,6 +943,15 @@
               <span data-i18n="btn_export_book">Buku Kenangan PDF</span>
             </span>
             <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-700"></i>
+          </button>
+
+          <!-- 🌐 LAMAN UTAMA & PENERANGAN BUKUPINKKU -->
+          <button onclick="showLandingScreen(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200 transition">
+            <span class="flex items-center space-x-2">
+              <span class="text-base">🌐</span>
+              <span data-i18n="btn_view_landing">Laman Utama & Info</span>
+            </span>
+            <span class="text-[10px] text-slate-400">&rarr;</span>
           </button>
 
           <!-- 💖 DUITNOW INFAQ / SUPPORT BUTTON -->
@@ -2075,6 +2586,16 @@
     // KAMUS DWIBAHASA (BAHASA MELAYU & ENGLISH)
     const I18N = {
       ms: {
+        btn_back_home: "Laman Utama",
+        btn_view_landing: "Laman Utama & Info",
+        landing_nav_enter_code: "Masuk Kod",
+        landing_nav_get_started: "Mula Percuma",
+        landing_hero_badge: "Peneman Digital Kehamilan & Anak #1 Malaysia",
+        landing_hero_h1: "Buku Pink Digital Yang Menghubungkan <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-pastel-600 to-rose-500\">Suami & Isteri.</span>",
+        landing_hero_desc: "Daripada ikhtiar zuriat (TTC), rekod temujanji & paras HB kehamilan, sehinggalah jadual vaksin anak umur 3 tahun. Telefon suami sentiasa diselaraskan secara masa nyata.",
+        landing_hero_cta_start: "Mula Guna Percuma Sekarang",
+        landing_hero_cta_code: "Saya Pasangan (Masuk Kod)",
+        landing_kkm_notice: "BukuPinkKu adalah aplikasi peneman digital untuk membantu ibu dan pasangan memahami maklumat kehamilan & kesihatan anak. <strong>Ia BUKAN pengganti buku pink fizikal KKM yang sah</strong> — anda tetap wajib membawa Buku Pink fizikal setiap kali hadir ke Klinik Kesihatan atau hospital.",
         onboard_subtitle: "Peneman Digital Kehamilan Buku Pink sehingga Anak Umur 3 Tahun bersama Pasangan",
         tab_new_mom: "🤰 Daftar Baru (Ibu)",
         tab_enter_code: "🔑 Masuk Kod Keluarga",
@@ -2378,6 +2899,16 @@
         btn_close_privacy: "Faham & Tutup"
       },
       en: {
+        btn_back_home: "Home",
+        btn_view_landing: "Home & Info",
+        landing_nav_enter_code: "Enter Code",
+        landing_nav_get_started: "Get Started",
+        landing_hero_badge: "Malaysia's #1 Digital Pregnancy Companion",
+        landing_hero_h1: "The Digital Pink Book Companion Connecting <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-pastel-600 to-rose-500\">Husband & Wife.</span>",
+        landing_hero_desc: "From fertility planning (TTC), pregnancy clinic visits & HB levels, to KKM child vaccine schedules. Kept in sync with your partner's phone in real-time.",
+        landing_hero_cta_start: "Start Free Now",
+        landing_hero_cta_code: "I Am a Partner (Enter Code)",
+        landing_kkm_notice: "BukuPinkKu is a digital companion web app designed to help parents easily understand and monitor health records. <strong>It is NOT a replacement for the official physical KKM Pink Book</strong> — you are still required to bring your physical Pink Book to every clinic visit.",
         onboard_subtitle: "Digital Pregnancy (Pink Book) & Child Growth Companion (0–3 Years) for Couples",
         tab_new_mom: "🤰 New Registration (Mom)",
         tab_enter_code: "🔑 Enter Family Code",
@@ -2710,6 +3241,13 @@
       const obEn = document.getElementById('btn-lang-onboard-en');
       const dbMs = document.getElementById('btn-lang-dash-ms');
       const dbEn = document.getElementById('btn-lang-dash-en');
+      const landMs = document.getElementById('btn-lang-land-ms');
+      const landEn = document.getElementById('btn-lang-land-en');
+
+      if (landMs && landEn) {
+        landMs.className = lang === 'ms' ? "px-2 py-1 rounded-lg bg-white text-pastel-600 shadow-sm transition" : "px-2 py-1 rounded-lg text-slate-500 hover:text-slate-800 transition";
+        landEn.className = lang === 'en' ? "px-2 py-1 rounded-lg bg-white text-pastel-600 shadow-sm transition" : "px-2 py-1 rounded-lg text-slate-500 hover:text-slate-800 transition";
+      }
 
       if (obMs && obEn) {
         obMs.className = lang === 'ms' ? activeOnboard : inactiveOnboard;
@@ -2789,16 +3327,32 @@
       if (currentFamilyId) {
         showDashboardScreen();
       } else {
-        showOnboardingScreen();
+        showLandingScreen();
       }
     }
 
-    function showOnboardingScreen() {
+    function showLandingScreen() {
+      const landEl = document.getElementById('screen-landing');
+      if (landEl) landEl.classList.remove('hidden');
+      document.getElementById('screen-onboarding').classList.add('hidden');
+      document.getElementById('screen-dashboard').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function showOnboardingScreen(initialRole = 'mother') {
+      const landEl = document.getElementById('screen-landing');
+      if (landEl) landEl.classList.add('hidden');
       document.getElementById('screen-onboarding').classList.remove('hidden');
       document.getElementById('screen-dashboard').classList.add('hidden');
+      switchAuthTab(initialRole);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function showDashboardScreen() {
+      const landEl = document.getElementById('screen-landing');
+      if (landEl) landEl.classList.add('hidden');
       document.getElementById('screen-onboarding').classList.add('hidden');
       document.getElementById('screen-dashboard').classList.remove('hidden');
 
@@ -2813,6 +3367,45 @@
 
       // Muat data dari Supabase
       loadAllSupabaseData();
+    }
+
+    // ==========================================
+    // LOGIK INTERAKTIF LANDING PAGE
+    // ==========================================
+    function previewLandingPhase(phase) {
+      const btnTtc = document.getElementById('prev-btn-ttc');
+      const btnPreg = document.getElementById('prev-btn-preg');
+      const btnBaby = document.getElementById('prev-btn-baby');
+      const cardTtc = document.getElementById('prev-card-ttc');
+      const cardPreg = document.getElementById('prev-card-preg');
+      const cardBaby = document.getElementById('prev-card-baby');
+
+      if (!btnTtc || !btnPreg || !btnBaby) return;
+
+      const activeClass = "flex-1 py-1.5 rounded-lg text-center transition bg-white text-pastel-700 shadow-sm font-bold";
+      const inactiveClass = "flex-1 py-1.5 rounded-lg text-center transition text-slate-500 font-medium hover:text-slate-800";
+
+      btnTtc.className = phase === 'ttc' ? activeClass : inactiveClass;
+      btnPreg.className = phase === 'preg' ? activeClass : inactiveClass;
+      btnBaby.className = phase === 'baby' ? activeClass : inactiveClass;
+
+      if (cardTtc) cardTtc.classList.toggle('hidden', phase !== 'ttc');
+      if (cardPreg) cardPreg.classList.toggle('hidden', phase !== 'preg');
+      if (cardBaby) cardBaby.classList.toggle('hidden', phase !== 'baby');
+    }
+
+    function toggleFaq(index) {
+      const ans = document.getElementById('faq-ans-' + index);
+      const icon = document.getElementById('faq-icon-' + index);
+      if (!ans) return;
+      const isHidden = ans.classList.contains('hidden');
+      if (isHidden) {
+        ans.classList.remove('hidden');
+        if (icon) icon.style.transform = 'rotate(180deg)';
+      } else {
+        ans.classList.add('hidden');
+        if (icon) icon.style.transform = 'rotate(0deg)';
+      }
     }
 
     // ONBOARDING TAB TOGGLE
