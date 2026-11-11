@@ -1070,6 +1070,15 @@
             </span>
             <i data-lucide="message-square-plus" class="w-3.5 h-3.5 text-pastel-500"></i>
           </button>
+
+          <!-- 🌷 RECOMMEND TO A FRIEND (PUBLIC LINK ONLY) -->
+          <button onclick="recommendWebsiteToFriend(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 border border-emerald-200 text-emerald-900 text-xs font-bold transition">
+            <span class="flex items-center space-x-2">
+              <span>🌷</span>
+              <span data-i18n="btn_recommend_sidebar">Cadangkan Kepada Kawan</span>
+            </span>
+            <i data-lucide="share-2" class="w-3.5 h-3.5 text-emerald-600"></i>
+          </button>
         </div>
 
       </div>
@@ -1688,6 +1697,27 @@
         </div>
 
       </div>
+
+      <!-- KAD CADANGKAN KEPADA KAWAN (PAUTAN UMUM SAHAJA — TIADA KOD KELUARGA) -->
+      <section class="bg-gradient-to-r from-pink-50/90 via-rose-50/70 to-amber-50/60 border border-pastel-200/80 rounded-2xl p-4 shadow-sm space-y-3">
+        <div class="flex items-start space-x-3">
+          <div class="w-9 h-9 rounded-xl bg-white border border-pastel-200 flex items-center justify-center text-lg shrink-0 shadow-2xs">🌷</div>
+          <div class="min-w-0 flex-1 space-y-0.5">
+            <h3 data-i18n="card_recommend_title" class="text-xs font-extrabold text-slate-800">Suka guna BukuPinkKu? Kongsi dengan kawan!</h3>
+            <p data-i18n="card_recommend_desc" class="text-[11px] text-slate-600 leading-relaxed">Hanya pautan laman web umum dihantar — kod &amp; data keluarga anda kekal rahsia.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="recommendWebsiteToFriend()" class="flex-1 py-2 px-3 rounded-xl bg-pastel-500 hover:bg-pastel-600 text-white font-bold text-xs shadow-sm flex items-center justify-center space-x-1.5 transition active:scale-95">
+            <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+            <span data-i18n="btn_recommend_share">Cadangkan ke Kawan</span>
+          </button>
+          <button type="button" onclick="copyPublicWebsiteLink()" class="py-2 px-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200 shadow-2xs flex items-center justify-center space-x-1.5 transition active:scale-95 shrink-0">
+            <i data-lucide="copy" class="w-3.5 h-3.5 text-slate-500"></i>
+            <span data-i18n="btn_copy_link">Salin Pautan</span>
+          </button>
+        </div>
+      </section>
 
     </main>
 
@@ -3194,7 +3224,12 @@
         pdpa_sec4_desc: "Selaras dengan Akta Perlindungan Data Peribadi 2010 (PDPA Malaysia), anda mempunyai hak mutlak untuk memadam sebarang rekod klinikal, nota, atau memohon pemadaman penuh profil keluarga anda pada bila-bila masa melalui ruang Maklum Balas.",
         pdpa_sec5_title: "5. Keselamatan Pelayan & Enkripsi",
         pdpa_sec5_desc: "Semua transaksi data antara telefon anda dan pangkalan data dilindungi dengan sambungan selamat disulitkan (HTTPS / TLS Enkripsi).",
-        btn_close_privacy: "Faham & Tutup"
+        btn_close_privacy: "Faham & Tutup",
+        btn_recommend_sidebar: "Cadangkan Kepada Kawan",
+        card_recommend_title: "Suka guna BukuPinkKu? Kongsi dengan kawan!",
+        card_recommend_desc: "Hanya pautan laman web umum dihantar — kod & data keluarga anda kekal rahsia.",
+        btn_recommend_share: "Cadangkan ke Kawan",
+        btn_copy_link: "Salin Pautan"
       },
       en: {
         btn_back_home: "Home",
@@ -3596,7 +3631,12 @@
         pdpa_sec4_desc: "In compliance with Malaysia's Personal Data Protection Act 2010 (PDPA), you retain full rights to delete individual health records or request full family profile deletion anytime via the Feedback form.",
         pdpa_sec5_title: "5. Server Security & Encryption",
         pdpa_sec5_desc: "All data transmitted between your device and the cloud database is secured with strong industry-standard encryption (HTTPS / TLS).",
-        btn_close_privacy: "Understood & Close"
+        btn_close_privacy: "Understood & Close",
+        btn_recommend_sidebar: "Recommend to a Friend",
+        card_recommend_title: "Love using BukuPinkKu? Tell a friend!",
+        card_recommend_desc: "Only the public website link is shared — your family code & data stay private.",
+        btn_recommend_share: "Recommend to Friend",
+        btn_copy_link: "Copy Link"
       }
     };
 
@@ -4286,6 +4326,60 @@
       const code = currentFamilyCode || 'PINK-8821';
       const msg = encodeURIComponent(`Sayang, jom pantau perkembangan kita di BukuPinkKu sama-sama! Klik pautan ini untuk sambung akaun kita terus (masukkan 4 digit terakhir no. telefon saya untuk pengesahan): https://bukupinkku.my?code=${code}`);
       window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+    }
+
+    // CADANGKAN LAMAN WEB UMUM KEPADA KAWAN (TANPA KOD KELUARGA)
+    function getPublicSharePayload() {
+      const isEn = currentLang === 'en';
+      return {
+        url: 'https://bukupinkku.my',
+        title: isEn ? 'BukuPinkKu — Digital Pink Book for Couples' : 'BukuPinkKu — Buku Pink Digital Suami & Isteri',
+        text: isEn
+          ? 'Try BukuPinkKu! A free digital companion to track TTC, pregnancy appointments, HB readings, and baby growth (0-3 years) together with your spouse:'
+          : 'Jom guna BukuPinkKu! Buku Pink Digital percuma untuk ibu & suami pantau ikhtiar hamil, temujanji klinik, bacaan HB & tumbesaran anak 0-3 tahun:'
+      };
+    }
+
+    async function recommendWebsiteToFriend() {
+      const payload = getPublicSharePayload();
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: payload.title, text: payload.text, url: payload.url });
+          return;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;
+        }
+      }
+      const msg = encodeURIComponent(`${payload.text} ${payload.url}`);
+      window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+    }
+
+    async function copyPublicWebsiteLink() {
+      const isEn = currentLang === 'en';
+      const publicUrl = 'https://bukupinkku.my';
+      let copied = false;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(publicUrl);
+          copied = true;
+        } catch (_) {}
+      }
+      if (!copied) {
+        const tmp = document.createElement('input');
+        tmp.value = publicUrl;
+        tmp.setAttribute('readonly', '');
+        tmp.style.position = 'fixed';
+        tmp.style.opacity = '0';
+        document.body.appendChild(tmp);
+        tmp.select();
+        try {
+          copied = document.execCommand('copy');
+        } catch (_) {}
+        document.body.removeChild(tmp);
+      }
+      showToast(copied
+        ? (isEn ? '🔗 Link bukupinkku.my copied! Ready to share with friends.' : '🔗 Pautan bukupinkku.my disalin! Sedia dikongsi kepada rakan.')
+        : (isEn ? 'Copy link: https://bukupinkku.my' : 'Salin pautan: https://bukupinkku.my'));
     }
 
     // LOAD ALL SUPABASE DATA UNTUK KELUARGA SEMASA
