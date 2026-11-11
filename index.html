@@ -99,6 +99,27 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+    input, select, textarea {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    input[type="date"],
+    input[type="time"],
+    input[type="datetime-local"] {
+      -webkit-appearance: none;
+      appearance: none;
+      display: block;
+      width: 100%;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      min-height: 2.5rem;
+      line-height: 1.25rem;
+    }
+    input[type="date"]::-webkit-date-and-time-value,
+    input[type="time"]::-webkit-date-and-time-value {
+      text-align: left;
+      min-height: 1.25rem;
+    }
   </style>
 </head>
 <body class="bg-[#f8fafc] text-slate-800 min-h-screen pb-24 md:pb-12">
@@ -755,48 +776,48 @@
         </div>
 
         <!-- Bahagian TTC (Ikhtiar Hamil) -->
-        <div id="field-ttc" class="hidden space-y-3 p-3 bg-pink-50/60 rounded-2xl border border-pink-100">
-          <div>
+        <div id="field-ttc" class="hidden space-y-3 p-3 bg-pink-50/60 rounded-2xl border border-pink-100 overflow-hidden">
+          <div class="min-w-0">
             <label data-i18n="lbl_lmp_date" class="block font-bold text-slate-700 mb-1">Tarikh Hari Pertama Haid Terakhir (LMP)</label>
-            <input type="date" id="reg-lmp-date" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <input type="date" id="reg-lmp-date" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
           </div>
-          <div>
+          <div class="min-w-0">
             <label data-i18n="lbl_cycle_len" class="block font-bold text-slate-700 mb-1">Purata Panjang Kitaran Haid (Hari)</label>
-            <input type="number" id="reg-cycle-length" value="28" min="21" max="45" placeholder="Cth: 28 hari" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <input type="number" id="reg-cycle-length" value="28" min="21" max="45" placeholder="Cth: 28 hari" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
             <p data-i18n="hint_cycle_len" class="text-[10px] text-slate-400 mt-0.5">Kebiasaan kitaran normal wanita adalah antara 26 – 32 hari.</p>
           </div>
         </div>
 
         <!-- Bahagian Hamil -->
-        <div id="field-pregnancy" class="space-y-3 p-3 bg-slate-50/80 rounded-2xl border border-slate-200/80">
-          <div>
+        <div id="field-pregnancy" class="space-y-3 p-3 bg-slate-50/80 rounded-2xl border border-slate-200/80 overflow-hidden">
+          <div class="min-w-0">
             <label data-i18n="lbl_baby_nick" class="block font-bold text-slate-700 mb-1">Nama Gelaran Kandungan</label>
-            <input type="text" id="reg-baby-nickname" placeholder="Cth: Baby Aisyah / Ezra" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <input type="text" id="reg-baby-nickname" placeholder="Cth: Baby Aisyah / Ezra" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
           </div>
-          <div>
+          <div class="min-w-0">
             <label data-i18n="lbl_edd" class="block font-bold text-slate-700 mb-1">Tarikh Jangka Bersalin (EDD)</label>
-            <input type="date" id="reg-edd-date" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <input type="date" id="reg-edd-date" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
           </div>
-          <div>
+          <div class="min-w-0">
             <label data-i18n="lbl_clinic" class="block font-bold text-slate-700 mb-1">Klinik Kesihatan (KK) / Hospital</label>
-            <input type="text" id="reg-clinic-name" placeholder="Cth: KK Bandar Baru Bangi" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <input type="text" id="reg-clinic-name" placeholder="Cth: KK Bandar Baru Bangi" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
           </div>
         </div>
 
         <!-- Bahagian Anak Dah Lahir -->
-        <div id="field-born" class="hidden space-y-3 p-3 bg-sky-50/50 rounded-2xl border border-sky-100">
-          <div>
+        <div id="field-born" class="hidden space-y-3 p-3 bg-sky-50/50 rounded-2xl border border-sky-100 overflow-hidden">
+          <div class="min-w-0">
             <label data-i18n="lbl_child_fullname" class="block font-bold text-slate-700 mb-1">Nama Penuh Anak</label>
-            <input type="text" id="reg-child-fullname" placeholder="Cth: Muhammad Rayyan" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+            <input type="text" id="reg-child-fullname" placeholder="Cth: Muhammad Rayyan" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
           </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div class="min-w-0">
               <label data-i18n="lbl_birth_date" class="block font-bold text-slate-700 mb-1">Tarikh Lahir</label>
-              <input type="date" id="reg-birth-date" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+              <input type="date" id="reg-birth-date" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
             </div>
-            <div>
+            <div class="min-w-0">
               <label data-i18n="lbl_birth_weight" class="block font-bold text-slate-700 mb-1">Berat Lahir (kg)</label>
-              <input type="number" step="0.1" id="reg-birth-weight" placeholder="Cth: 3.2" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+              <input type="number" step="0.1" id="reg-birth-weight" placeholder="Cth: 3.2" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
             </div>
           </div>
         </div>
@@ -1851,14 +1872,14 @@
           <label data-i18n="lbl_appt_clinic" class="block font-semibold mb-1">Klinik / Tempat</label>
           <input type="text" id="inp-appt-clinic" data-i18n-placeholder="ph_appt_clinic" required placeholder="Cth: KK Bandar Baru Bangi" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
         </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div class="min-w-0">
             <label data-i18n="lbl_date" class="block font-semibold mb-1">Tarikh</label>
-            <input type="date" id="inp-appt-date" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+            <input type="date" id="inp-appt-date" required class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none">
           </div>
-          <div>
+          <div class="min-w-0">
             <label data-i18n="lbl_time" class="block font-semibold mb-1">Masa</label>
-            <input type="time" id="inp-appt-time" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+            <input type="time" id="inp-appt-time" required class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none">
           </div>
         </div>
         <div>
