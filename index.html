@@ -755,6 +755,17 @@
         <p data-i18n="phone_unique_note" class="text-[10px] text-slate-400 -mt-2">🔒 No. telefon digunakan sebagai ID unik supaya Kod Keluarga tidak bertindih walaupun ada pengguna lain yang berkongsi nama yang sama.</p>
 
         <div>
+          <label data-i18n="lbl_family_pin" class="block font-bold text-slate-700 mb-1">Cipta PIN Keselamatan Keluarga (6 Digit)</label>
+          <div class="relative">
+            <input type="password" id="reg-family-pin" required inputmode="numeric" maxlength="6" pattern="[0-9]{6}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6)" placeholder="••••••" autocomplete="new-password" class="w-full p-3 pr-11 font-mono font-bold text-base tracking-widest border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+            <button type="button" onclick="togglePinVisibility('reg-family-pin', this)" aria-label="Tunjuk/Sembunyi PIN" class="absolute inset-y-0 right-0 px-3 flex items-center text-slate-400 hover:text-slate-600">
+              <i data-lucide="eye" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <p data-i18n="family_pin_hint" class="text-[10px] text-slate-400 mt-1">🔑 Diperlukan setiap kali ibu atau suami log masuk semula menggunakan Kod Keluarga.</p>
+        </div>
+
+        <div>
           <label data-i18n="lbl_current_status" class="block font-bold text-slate-700 mb-1">Status Semasa</label>
           <div class="grid grid-cols-3 gap-1.5">
             <label class="flex flex-col items-center justify-center p-2 border border-slate-200 rounded-xl bg-slate-50/70 cursor-pointer text-center">
@@ -823,7 +834,7 @@
         </div>
 
         <button type="submit" id="btn-submit-register" class="w-full py-3.5 bg-pastel-500 hover:bg-pastel-600 text-white font-extrabold rounded-2xl shadow-md transition flex items-center justify-center space-x-2">
-          <span data-i18n="btn_create_profile">Buka / Cipta Profil Keluarga Tetap</span>
+          <span data-i18n="btn_create_profile">Cipta Profil Keluarga Baharu</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
       </form>
@@ -864,6 +875,17 @@
           <label data-i18n="lbl_verify_phone4" class="block font-bold text-slate-700 mb-1">4 Digit Terakhir No. Telefon Berdaftar (Isteri)</label>
           <input type="text" id="join-verify-phone4" required inputmode="numeric" maxlength="4" pattern="[0-9]{4}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)" placeholder="Cth: 6789" class="w-full p-3 font-mono font-bold text-base tracking-widest border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
           <p data-i18n="verify_phone4_hint" class="text-[11px] text-slate-500 mt-1">🔒 Pengesahan tambahan bagi memastikan orang luar tidak dapat meneka kod keluarga anda.</p>
+        </div>
+
+        <div>
+          <label data-i18n="lbl_join_pin" class="block font-bold text-slate-700 mb-1">PIN Keluarga (6 Digit)</label>
+          <div class="relative">
+            <input type="password" id="join-family-pin" required inputmode="numeric" maxlength="6" pattern="[0-9]{6}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6)" placeholder="••••••" autocomplete="current-password" class="w-full p-3 pr-11 font-mono font-bold text-base tracking-widest border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+            <button type="button" onclick="togglePinVisibility('join-family-pin', this)" aria-label="Tunjuk/Sembunyi PIN" class="absolute inset-y-0 right-0 px-3 flex items-center text-slate-400 hover:text-slate-600">
+              <i data-lucide="eye" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <p data-i18n="join_pin_hint" class="text-[11px] text-slate-500 mt-1">🔑 Masukkan PIN 6 digit yang dicipta semasa daftar (atau tetapkan PIN baharu untuk akaun lama yang belum ada PIN).</p>
         </div>
 
         <button type="submit" id="btn-submit-join" class="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-2xl shadow-md transition flex items-center justify-center space-x-2">
@@ -3010,7 +3032,9 @@
         lbl_child_fullname: "Nama Penuh Anak",
         lbl_birth_date: "Tarikh Lahir",
         lbl_birth_weight: "Berat Lahir (kg)",
-        btn_create_profile: "Buka / Cipta Profil Keluarga Tetap",
+        lbl_family_pin: "Cipta PIN Keselamatan Keluarga (6 Digit)",
+        family_pin_hint: "🔑 Diperlukan setiap kali ibu atau suami log masuk semula menggunakan Kod Keluarga.",
+        btn_create_profile: "Cipta Profil Keluarga Baharu",
         lbl_login_as: "Anda Log Masuk Sebagai:",
         role_father: "👨 Suami (Ayah)",
         role_mother: "🤰 Isteri (Ibu)",
@@ -3019,6 +3043,8 @@
         family_code_hint: "1 pasangan berkongsi 1 Kod Keluarga yang sama selamanya pada semua peranti.",
         lbl_verify_phone4: "4 Digit Terakhir No. Telefon Berdaftar (Isteri)",
         verify_phone4_hint: "🔒 Pengesahan tambahan bagi memastikan orang luar tidak dapat meneka kod keluarga anda.",
+        lbl_join_pin: "PIN Keluarga (6 Digit)",
+        join_pin_hint: "🔑 Masukkan PIN 6 digit yang dicipta semasa daftar (atau tetapkan PIN baharu untuk akaun lama yang belum ada PIN).",
         btn_login_code: "Log Masuk Ke Kod Keluarga",
         btn_demo_mode: "Atau Terus Cuba Mod Demo (Keluarga Contoh Amir & Sarah)",
         hdr_family_code: "Kod Keluarga:",
@@ -3417,7 +3443,9 @@
         lbl_child_fullname: "Child's Full Name",
         lbl_birth_date: "Date of Birth",
         lbl_birth_weight: "Birth Weight (kg)",
-        btn_create_profile: "Open / Create Permanent Family Profile",
+        lbl_family_pin: "Create Family Security PIN (6 Digits)",
+        family_pin_hint: "🔑 Required whenever Mom or Dad signs back in using the Family Code.",
+        btn_create_profile: "Create New Family Profile",
         lbl_login_as: "Log In As:",
         role_father: "👨 Husband (Dad)",
         role_mother: "🤰 Wife (Mom)",
@@ -3426,6 +3454,8 @@
         family_code_hint: "1 couple shares 1 permanent Family Code across all devices.",
         lbl_verify_phone4: "Last 4 Digits of Registered Phone (Wife)",
         verify_phone4_hint: "🔒 Extra verification to prevent outsiders from guessing your family code.",
+        lbl_join_pin: "Family PIN (6 Digits)",
+        join_pin_hint: "🔑 Enter the 6-digit PIN set during sign-up (or set a new PIN for an older account without one yet).",
         btn_login_code: "Log In With Family Code",
         btn_demo_mode: "Or Try Demo Mode (Sample Family Amir & Sarah)",
         hdr_family_code: "Family Code:",
@@ -3928,9 +3958,23 @@
       return `PINK-${suffix}`;
     }
 
-    // DAFTAR KELUARGA BARU (ATAU GUNA SEMULA KOD TETAP BERDASARKAN NO. TELEFON UNIK)
+    function togglePinVisibility(inputId, btn) {
+      const inp = document.getElementById(inputId);
+      if (!inp) return;
+      const isHidden = inp.type === 'password';
+      inp.type = isHidden ? 'text' : 'password';
+      if (btn) {
+        btn.innerHTML = isHidden
+          ? '<i data-lucide="eye-off" class="w-4 h-4"></i>'
+          : '<i data-lucide="eye" class="w-4 h-4"></i>';
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
+      }
+    }
+
+    // DAFTAR KELUARGA BARU (WAJIB PIN 6 DIGIT & SEKAT LOG MASUK AUTOMATIK TANPA KOD)
     async function handleRegisterMother(e) {
       e.preventDefault();
+      const isEn = currentLang === 'en';
 
       // 1. Sekatan Anti-Bot: Honeypot Trap
       const honeypot = document.getElementById('reg-hp-website') ? document.getElementById('reg-hp-website').value.trim() : '';
@@ -3943,7 +3987,7 @@
       const now = Date.now();
       const lastReg = parseInt(localStorage.getItem('bukupink_last_reg_ts') || '0');
       if (now - lastReg < 5000) {
-        showToast(currentLang === 'en'
+        showToast(isEn
           ? "⏳ Please wait a moment before submitting again."
           : "⏳ Sila tunggu sebentar sebelum menghantar semula.");
         return;
@@ -3959,9 +4003,18 @@
       }
       const myPhoneRegex = /^01[0-46-9][0-9]{7,8}$/;
       if (!myPhoneRegex.test(cleanPhone)) {
-        showToast(currentLang === 'en'
+        showToast(isEn
           ? "⚠️ Please enter a valid Malaysian mobile number (e.g. 0123456789)"
           : "⚠️ Sila masukkan no. telefon Malaysia yang sah (cth: 0123456789)");
+        return;
+      }
+
+      const familyPinRaw = document.getElementById('reg-family-pin') ? document.getElementById('reg-family-pin').value.trim() : '';
+      const familyPin = familyPinRaw.replace(/[^0-9]/g, '');
+      if (!/^\d{6}$/.test(familyPin)) {
+        showToast(isEn
+          ? "⚠️ Please create a 6-digit security PIN (numbers only)."
+          : "⚠️ Sila cipta PIN keselamatan tepat 6 digit angka.");
         return;
       }
 
@@ -3986,10 +4039,11 @@
 
       try {
         if (db) {
-          // Gunakan Supabase RPC selamat (RLS aktif — tiada SELECT terbuka pada jadual families)
+          // Gunakan Supabase RPC selamat (RLS aktif & sekat auto-login tanpa Kod Keluarga + PIN)
           const { data: regRows, error: regErr } = await db.rpc('register_or_login_mother', {
             p_mom_name: momName,
-            p_phone: cleanPhone
+            p_phone: cleanPhone,
+            p_pin: familyPin
           });
 
           const isMissingRpc = isMissingRpcError(regErr);
@@ -4014,7 +4068,17 @@
               });
             }
           } else if (isMissingRpc) {
-            // Fallback sementara jika skrip RPC Supabase belum dijalankan
+            // Fallback sementara jika skrip RPC baharu belum dijalankan
+            const { data: phoneMatch } = await db
+              .from('families')
+              .select('id')
+              .ilike('family_name', `%[${cleanPhone}]%`)
+              .limit(1);
+
+            if (phoneMatch && phoneMatch.length > 0) {
+              throw new Error('PHONE_ALREADY_REGISTERED');
+            }
+
             for (let attempt = 0; attempt < 5; attempt++) {
               const { data: dupCheck } = await db
                 .from('families')
@@ -4024,56 +4088,29 @@
               if (!dupCheck || dupCheck.length === 0) break;
               finalCode = generateSecureFamilyCode();
             }
-            const { data: phoneMatch } = await db
+
+            const { data: familyData, error: famErr } = await db
               .from('families')
-              .select('*')
-              .ilike('family_name', `%[${cleanPhone}]%`)
-              .limit(1);
+              .insert({
+                family_name: `Keluarga ${momName} [${cleanPhone}]`,
+                invite_code: finalCode
+              })
+              .select()
+              .single();
 
-            if (phoneMatch && phoneMatch.length > 0) {
-              newFamilyId = phoneMatch[0].id;
-              finalCode = phoneMatch[0].invite_code;
-              isExistingFamily = true;
-            } else {
-              const { data: legacyMatch } = await db
-                .from('families')
-                .select('*')
-                .ilike('family_name', `Keluarga ${momName}`)
-                .limit(1);
+            if (!famErr && familyData) {
+              newFamilyId = familyData.id;
 
-              if (legacyMatch && legacyMatch.length > 0 && !legacyMatch[0].family_name.includes('[')) {
-                newFamilyId = legacyMatch[0].id;
-                finalCode = legacyMatch[0].invite_code;
-                isExistingFamily = true;
-                await db
-                  .from('families')
-                  .update({ family_name: `Keluarga ${momName} [${cleanPhone}]` })
-                  .eq('id', newFamilyId);
-              } else {
-                const { data: familyData, error: famErr } = await db
-                  .from('families')
-                  .insert({
-                    family_name: `Keluarga ${momName} [${cleanPhone}]`,
-                    invite_code: finalCode
-                  })
-                  .select()
-                  .single();
-
-                if (!famErr && familyData) {
-                  newFamilyId = familyData.id;
-
-                  await db
-                    .from('children')
-                    .insert({
-                      family_id: newFamilyId,
-                      nickname: status === 'born' ? childName : babyNickname,
-                      status: status,
-                      edd_date: eddDate,
-                      birth_date: birthDate,
-                      blood_type: 'O+'
-                    });
-                }
-              }
+              await db
+                .from('children')
+                .insert({
+                  family_id: newFamilyId,
+                  nickname: status === 'born' ? childName : babyNickname,
+                  status: status,
+                  edd_date: eddDate,
+                  birth_date: birthDate,
+                  blood_type: 'O+'
+                });
             }
           } else if (regErr) {
             throw regErr;
@@ -4117,10 +4154,29 @@
         }
 
       } catch (err) {
-        console.error("Ralat pendaftaran:", err);
-        showToast("Ralat mendaftar profil. Sila cuba lagi.");
+        const msg = (err && err.message) ? String(err.message) : '';
+        if (msg.includes('PHONE_ALREADY_REGISTERED')) {
+          switchAuthTab('father');
+          showToast(isEn
+            ? "🔒 This phone number is already registered. Please sign in using your Family Code, last 4 phone digits & PIN."
+            : "🔒 Nombor telefon ini sudah berdaftar. Sila log masuk di tab 'Masuk Kod Keluarga' menggunakan Kod Keluarga & PIN anda.");
+        } else if (msg.includes('REGISTER_LOCKED')) {
+          showToast(isEn
+            ? "⏳ Too many attempts with this number. Please try again in 5 minutes."
+            : "⏳ Terlalu banyak cubaan pada nombor ini. Sila cuba lagi selepas 5 minit.");
+        } else if (msg.includes('INVALID_PIN')) {
+          showToast(isEn
+            ? "⚠️ Please create a valid 6-digit PIN."
+            : "⚠️ Sila masukkan PIN keselamatan tepat 6 digit angka.");
+        } else {
+          console.error("Ralat pendaftaran:", err);
+          showToast(isEn ? "Error creating profile. Please try again." : "Ralat mendaftar profil. Sila cuba lagi.");
+        }
       } finally {
-        submitBtn.innerHTML = `<span>Buka / Cipta Profil Keluarga Tetap</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+        const createText = (typeof I18N !== 'undefined' && I18N[currentLang]?.btn_create_profile)
+          ? I18N[currentLang].btn_create_profile
+          : 'Cipta Profil Keluarga Baharu';
+        submitBtn.innerHTML = `<span data-i18n="btn_create_profile">${createText}</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
         lucide.createIcons();
       }
     }
@@ -4151,11 +4207,20 @@
       const enteredCode = document.getElementById('join-invite-code').value.trim().toUpperCase();
       const verifyPhone4Raw = document.getElementById('join-verify-phone4') ? document.getElementById('join-verify-phone4').value.trim() : '';
       const verifyPhone4 = verifyPhone4Raw.replace(/[^0-9]/g, '');
+      const joinPinRaw = document.getElementById('join-family-pin') ? document.getElementById('join-family-pin').value.trim() : '';
+      const joinPin = joinPinRaw.replace(/[^0-9]/g, '');
 
       if (!/^\d{4}$/.test(verifyPhone4)) {
         showToast(currentLang === 'en'
           ? "⚠️ Please enter the last 4 digits of the registered wife's phone number."
           : "⚠️ Sila masukkan 4 digit terakhir no. telefon berdaftar isteri.");
+        return;
+      }
+
+      if (!/^\d{6}$/.test(joinPin)) {
+        showToast(currentLang === 'en'
+          ? "⚠️ Please enter the 6-digit Family PIN."
+          : "⚠️ Sila masukkan PIN Keluarga tepat 6 digit angka.");
         return;
       }
 
@@ -4177,8 +4242,8 @@
         } else {
           localStorage.setItem('bukupink_join_fails', String(fails));
           showToast(currentLang === 'en'
-            ? "❌ Family code or last 4 phone digits do not match."
-            : "❌ Kod keluarga atau 4 digit terakhir no. telefon tidak sepadan.");
+            ? "❌ Family code, last 4 phone digits, or PIN do not match."
+            : "❌ Kod keluarga, 4 digit telefon, atau PIN tidak sepadan.");
         }
       };
 
@@ -4196,7 +4261,8 @@
         // Gunakan Supabase RPC selamat terlebih dahulu (RLS aktif — tiada SELECT terbuka)
         const { data: rpcRows, error: rpcErr } = await db.rpc('verify_family_access', {
           p_invite_code: enteredCode,
-          p_phone4: verifyPhone4
+          p_phone4: verifyPhone4,
+          p_pin: joinPin
         });
 
         const isMissingVerifyRpc = isMissingRpcError(rpcErr);
@@ -4315,7 +4381,7 @@
     // KONGSI KOD WHATSAPP KEPADA SUAMI
     function shareWhatsAppInvite() {
       const code = currentFamilyCode || 'PINK-8821';
-      const msg = encodeURIComponent(`Sayang, jom pantau perkembangan kita di BukuPinkKu sama-sama! Klik pautan ini untuk sambung akaun kita terus (masukkan 4 digit terakhir no. telefon saya untuk pengesahan): https://bukupinkku.my?code=${code}`);
+      const msg = encodeURIComponent(`Sayang, jom pantau perkembangan kita di BukuPinkKu sama-sama! Klik pautan ini untuk sambung akaun kita terus (masukkan 4 digit terakhir no. telefon saya & PIN Keluarga 6 digit untuk pengesahan): https://bukupinkku.my?code=${code}`);
       window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
     }
 
