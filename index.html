@@ -1112,6 +1112,11 @@
               <i data-lucide="shield-alert" class="w-4 h-4 text-amber-500"></i>
               <span data-i18n="subtab_preg_allergy">Pantang & Alahan</span>
             </button>
+
+            <button onclick="navigateFromSidebar('pregnancy', 'beg')" id="nav-preg-beg" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="luggage" class="w-4 h-4 text-emerald-500"></i>
+              <span data-i18n="subtab_preg_beg">Beg Bersalin</span>
+            </button>
           </nav>
         </div>
 
@@ -1235,6 +1240,10 @@
                 <span id="cloud-badge" class="inline-flex items-center text-[9px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded-full border border-emerald-200">
                   <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1 animate-pulse"></span> Cloud Live
                 </span>
+                <button type="button" id="btn-manual-sync" onclick="event.stopPropagation(); syncFamilyDataNow({ showSuccessToast: true });" title="Sync Data Keluarga" class="inline-flex items-center text-[9px] bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 font-bold px-1.5 py-0.5 rounded-full border border-slate-200 transition">
+                  <i data-lucide="refresh-cw" id="icon-manual-sync" class="w-2.5 h-2.5 mr-0.5"></i>
+                  <span data-i18n="btn_sync_now">Sync</span>
+                </button>
               </div>
               <p class="text-[11px] text-slate-500"><span data-i18n="hdr_family_code">Kod:</span> <span id="display-invite-code" class="font-mono font-bold bg-pastel-50 text-pastel-700 px-1.5 py-0.5 rounded border border-pastel-200">PINK-8821</span></p>
             </div>
@@ -1592,6 +1601,21 @@
               <div id="quick-bp-actions" class="hidden mt-2 pt-1.5 border-t border-slate-100 flex justify-center space-x-1.5"></div>
             </div>
           </div>
+
+          <!-- Quick Checklist Beg Bersalin -->
+          <div onclick="switchPregSubtab('beg')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-pastel-400 transition flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 min-w-0">
+              <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0 text-lg">🧳</div>
+              <div class="min-w-0">
+                <p data-i18n="hdr_preg_bag_title" class="text-xs font-bold text-slate-800 truncate">Checklist Beg Bersalin Hospital</p>
+                <p id="overview-bag-sub" class="text-[11px] text-slate-500">0/18 barang siap dikemas</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2 shrink-0">
+              <span id="overview-bag-badge" class="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full">0%</span>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+            </div>
+          </div>
         </div>
 
         <!-- VIEW 2: APPOINTMENT -->
@@ -1636,6 +1660,34 @@
           </div>
         </div>
 
+        <!-- VIEW 5: CHECKLIST BEG BERSALIN HOSPITAL -->
+        <div id="view-preg-beg" class="hidden space-y-3">
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2.5">
+            <div class="flex justify-between items-start gap-2">
+              <div>
+                <h3 data-i18n="hdr_preg_bag_title" class="text-xs font-bold text-slate-800 uppercase">Checklist Beg Bersalin Hospital</h3>
+                <p data-i18n="bag_sub_sync" class="text-[11px] text-slate-500">Tandakan kelengkapan — status terus disinkronkan antara Suami &amp; Isteri.</p>
+              </div>
+              <span id="bag-progress-badge" class="text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full whitespace-nowrap">0/18 Siap</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+              <div id="bag-progress-bar" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <form onsubmit="addCustomHospitalBagItem(event)" class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap sm:flex-nowrap gap-2 items-center">
+            <select id="inp-bag-custom-cat" class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 outline-none text-slate-700">
+              <option value="mom" data-i18n="opt_bag_mom">👩 Beg Ibu</option>
+              <option value="baby" data-i18n="opt_bag_baby">👶 Beg Bayi</option>
+              <option value="docs" data-i18n="opt_bag_docs">📄 Dokumen &amp; Suami</option>
+            </select>
+            <input type="text" id="inp-bag-custom-item" required maxlength="80" data-i18n-placeholder="ph_bag_item" placeholder="Tambah barang sendiri (cth: Stokin tebal)" class="flex-1 min-w-[140px] px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-pastel-400 outline-none">
+            <button type="submit" class="bg-pastel-500 hover:bg-pastel-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs whitespace-nowrap transition" data-i18n="btn_add_bag_item">+ Tambah</button>
+          </form>
+
+          <div id="hospital-bag-container" class="space-y-3"></div>
+        </div>
+
       </div>
 
       <!-- [B] FASA ANAK (0 - 3 TAHUN) -->
@@ -1647,30 +1699,34 @@
           <div class="flex justify-between items-start mb-3 relative z-10">
             <div>
               <span id="hero-child-age-tag" class="inline-block bg-white/90 border border-sky-200 text-[11px] font-bold px-2.5 py-1 rounded-full mb-1.5 text-sky-900 shadow-sm">
-                👶 Umur: 8 Bulan 12 Hari
+                👶 Umur: --
               </span>
-              <h2 id="hero-child-name" class="text-xl font-extrabold text-slate-800">Nur Aisyah Humaira</h2>
-              <p class="text-xs text-slate-600 font-medium mt-0.5" id="hero-child-sub">Lahir: 15 Mac 2026 | Darah: O+</p>
+              <h2 id="hero-child-name" class="text-xl font-extrabold text-slate-800">Anak Comel</h2>
+              <p class="text-xs text-slate-600 font-medium mt-0.5" id="hero-child-sub">Darah: --</p>
             </div>
             <div class="text-right bg-white/80 border border-sky-100 px-3 py-1.5 rounded-2xl shadow-sm">
-              <span class="text-2xl font-black text-sky-800" id="hero-child-weight">7.8</span>
+              <span class="text-2xl font-black text-sky-800" id="hero-child-weight">--</span>
               <span class="text-xs font-bold text-sky-800">kg</span>
-              <p class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold" id="hero-child-height">Tinggi: 68.5 cm</p>
+              <p class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold" id="hero-child-height">Tinggi: --</p>
             </div>
           </div>
 
           <div class="grid grid-cols-3 gap-2 pt-3 border-t border-sky-200/50 text-center relative z-10 text-xs">
             <div class="bg-white/80 border border-sky-100/80 p-2 rounded-xl shadow-sm">
               <p data-i18n="lbl_percentile" class="text-[10px] font-semibold text-slate-500">Persentil KKM</p>
-              <p class="font-bold text-emerald-700" id="hero-child-percentile">Normal (Hijau)</p>
+              <p class="font-bold text-slate-500" id="hero-child-percentile">Belum Direkod</p>
             </div>
             <div class="bg-white/80 border border-sky-100/80 p-2 rounded-xl shadow-sm">
               <p data-i18n="lbl_teeth" class="text-[10px] font-semibold text-slate-500">Gigi Tumbuh</p>
-              <p class="font-bold text-slate-800">2 Batang</p>
+              <div class="flex items-center justify-center space-x-1.5 mt-0.5">
+                <button type="button" onclick="adjustBabyTeeth(-1)" class="w-5 h-5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs leading-none flex items-center justify-center transition">−</button>
+                <span class="font-bold text-slate-800 text-xs" id="hero-child-teeth-val">0 Batang</span>
+                <button type="button" onclick="adjustBabyTeeth(1)" class="w-5 h-5 rounded-md bg-sky-100 hover:bg-sky-200 text-sky-800 font-extrabold text-xs leading-none flex items-center justify-center transition">+</button>
+              </div>
             </div>
             <div class="bg-white/80 border border-sky-100/80 p-2 rounded-xl shadow-sm">
               <p data-i18n="lbl_feeding_stage" class="text-[10px] font-semibold text-slate-500">Fasa Makan</p>
-              <p class="font-bold text-pastel-700">Solid Food</p>
+              <p class="font-bold text-pastel-700" id="hero-child-feeding">Susu Sahaja</p>
             </div>
           </div>
 
@@ -3207,7 +3263,9 @@
       'Ujian OPK',
       'Tetapan TTC',
       'Ubat Harian',
-      'Status Fasa'
+      'Status Fasa',
+      'Beg Bersalin',
+      'Gigi Anak'
     ];
     const NON_GALLERY_CATEGORIES = ['Warkah Buat Bakal Anak', ...NON_PHOTOBOOK_CATEGORIES];
     let hasAppliedCloudPhaseForFamily = null;
@@ -3719,7 +3777,16 @@
         mdl_change_pin_desc: "Masukkan PIN 6 digit baharu. PIN ini digunakan bersama Kod Keluarga &amp; 4 digit telefon apabila suami atau isteri log masuk di telefon baharu.",
         lbl_new_pin: "PIN Baharu (6 Digit)",
         lbl_confirm_pin: "Sahkan PIN Baharu",
-        btn_save_new_pin: "Simpan PIN Baharu"
+        btn_save_new_pin: "Simpan PIN Baharu",
+        subtab_preg_beg: "Beg Bersalin",
+        btn_sync_now: "Sync",
+        hdr_preg_bag_title: "Checklist Beg Bersalin Hospital",
+        bag_sub_sync: "Tandakan kelengkapan — status terus disinkronkan antara Suami &amp; Isteri.",
+        opt_bag_mom: "👩 Beg Ibu",
+        opt_bag_baby: "👶 Beg Bayi",
+        opt_bag_docs: "📄 Dokumen &amp; Suami",
+        ph_bag_item: "Tambah barang sendiri (cth: Stokin tebal)",
+        btn_add_bag_item: "+ Tambah"
       },
       en: {
         btn_back_home: "Home",
@@ -4176,7 +4243,16 @@
         mdl_change_pin_desc: "Enter a new 6-digit PIN. This PIN is used along with your Family Code &amp; 4 phone digits whenever Mom or Dad signs in on a new phone.",
         lbl_new_pin: "New PIN (6 Digits)",
         lbl_confirm_pin: "Confirm New PIN",
-        btn_save_new_pin: "Save New PIN"
+        btn_save_new_pin: "Save New PIN",
+        subtab_preg_beg: "Hospital Bag",
+        btn_sync_now: "Sync",
+        hdr_preg_bag_title: "Hospital Maternity Bag Checklist",
+        bag_sub_sync: "Tick items as you pack — synced live between Mom &amp; Dad.",
+        opt_bag_mom: "👩 Mom's Bag",
+        opt_bag_baby: "👶 Baby's Bag",
+        opt_bag_docs: "📄 Documents &amp; Dad",
+        ph_bag_item: "Add custom item (e.g. Thick socks)",
+        btn_add_bag_item: "+ Add"
       }
     };
 
@@ -4259,6 +4335,8 @@
       renderVaccines();
       renderFoodTests();
       renderMilestones();
+      renderHospitalBagChecklist();
+      renderBabyTeeth();
       lucide.createIcons();
     }
 
@@ -5038,6 +5116,9 @@
     }
 
     // LOAD ALL SUPABASE DATA UNTUK KELUARGA SEMASA
+    let lastCloudSyncAt = 0;
+    let isCloudSyncing = false;
+
     async function loadAllSupabaseData() {
       if (!db || !currentFamilyId) return;
       try {
@@ -5055,8 +5136,11 @@
           loadVaccines(),
           loadFoodTests(),
           loadMilestones(),
-          loadGrowthLogs()
+          loadGrowthLogs(),
+          loadHospitalBagChecklist(),
+          loadBabyTeeth()
         ]);
+        lastCloudSyncAt = Date.now();
       } catch (err) {
         console.warn("Ralat memuatkan data:", err);
       }
@@ -5281,6 +5365,19 @@
         document.getElementById('hero-child-age-tag').innerText = isEn
           ? `👶 Age: ${months} Months ${days} Days`
           : `👶 Umur: ${months} Bulan ${days} Hari`;
+
+        const feedEl = document.getElementById('hero-child-feeding');
+        if (feedEl) {
+          if (months < 6) {
+            feedEl.innerText = isEn ? 'Milk Only (0–6m)' : 'Susu Sahaja (0–6 Bln)';
+          } else if (months < 9) {
+            feedEl.innerText = isEn ? 'Puree & Porridge' : 'Puri & Bubur Halus';
+          } else if (months < 12) {
+            feedEl.innerText = isEn ? 'Soft Mash & Finger Food' : 'Bubur & Finger Food';
+          } else {
+            feedEl.innerText = isEn ? 'Family Solid Food' : 'Makanan Keluarga';
+          }
+        }
       } else {
         document.getElementById('hero-child-sub').innerText = isEn
           ? `Blood Type: ${data.blood_type || 'O+'}`
@@ -5290,7 +5387,13 @@
         document.getElementById('hero-child-age-tag').innerText = isEn
           ? `👶 In Womb / Newborn`
           : `👶 Dalam Kandungan / Baru Lahir`;
+
+        const feedEl = document.getElementById('hero-child-feeding');
+        if (feedEl) {
+          feedEl.innerText = isEn ? 'Milk Only (0–6m)' : 'Susu Sahaja (0–6 Bln)';
+        }
       }
+      renderBabyTeeth();
 
       // Update hero hamil secara dinamik ikut EDD
       document.getElementById('hero-baby-name').innerText = isEn
@@ -6698,7 +6801,7 @@
 
       const allNavIds = [
         'nav-ttc-fertility', 'nav-ttc-opk', 'nav-ttc-supplements', 'nav-ttc-doa', 'nav-ttc-letters',
-        'nav-preg-overview', 'nav-preg-appt', 'nav-preg-vitals', 'nav-preg-pantang',
+        'nav-preg-overview', 'nav-preg-appt', 'nav-preg-vitals', 'nav-preg-pantang', 'nav-preg-beg',
         'nav-child-memories', 'nav-child-growth', 'nav-child-vaccine', 'nav-child-food', 'nav-child-milestone'
       ];
 
@@ -6782,7 +6885,7 @@
     }
 
     function switchPregSubtab(tab) {
-      const tabs = ['overview', 'appt', 'vitals', 'pantang'];
+      const tabs = ['overview', 'appt', 'vitals', 'pantang', 'beg'];
       tabs.forEach(t => {
         const viewEl = document.getElementById('view-preg-' + t);
         if (viewEl) viewEl.classList.add('hidden');
@@ -8027,6 +8130,12 @@
         if (sumWeightDiffEl) sumWeightDiffEl.innerText = "-";
         if (sumHeightEl) sumHeightEl.innerText = "-";
         if (sumHeadEl) sumHeadEl.innerText = "-";
+        if (heroWeight) heroWeight.innerText = "--";
+        if (heroHeight) heroHeight.innerText = isEn ? "Height: --" : "Tinggi: --";
+        if (heroPercentile) {
+          heroPercentile.innerText = isEn ? "Not Recorded" : "Belum Direkod";
+          heroPercentile.className = "font-bold text-slate-500";
+        }
         if (container) {
           container.innerHTML = `
             <div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200 space-y-1.5">
@@ -9100,6 +9209,296 @@
         lucide.createIcons();
       }
     }
+
+    // =========================================================
+    // MASALAH #2A: CHECKLIST BEG BERSALIN HOSPITAL (SYNC CLOUD)
+    // =========================================================
+    const HOSPITAL_BAG_ITEMS = [
+      // Beg Ibu
+      { id: 'mom_baju', cat: 'mom', ms: 'Baju butang depan / Kain batik (3-4 pasang)', en: 'Front-button tops / Sarong (3-4 sets)' },
+      { id: 'mom_pad', cat: 'mom', ms: 'Tuala wanita bersalin (Maternity Pad)', en: 'Maternity sanitary pads' },
+      { id: 'mom_seluar', cat: 'mom', ms: 'Seluar dalam pakai buang / selesa', en: 'Disposable / comfortable underwear' },
+      { id: 'mom_tudung', cat: 'mom', ms: 'Tudung sarung mudah & stokin tebal', en: 'Slip-on hijab & thick warm socks' },
+      { id: 'mom_toiletries', cat: 'mom', ms: 'Tuala mandi & kelengkapan mandian', en: 'Bath towel & toiletries' },
+      { id: 'mom_nipple', cat: 'mom', ms: 'Bengkung, nursing bra & breast pad', en: 'Postnatal binder, nursing bra & breast pads' },
+      { id: 'mom_snacks', cat: 'mom', ms: 'Air mineral, kurma & biskut tenaga', en: 'Drinking water, dates & energy snacks' },
+      // Beg Bayi
+      { id: 'baby_baju', cat: 'baby', ms: 'Baju & seluar bayi lengan panjang (4-5 pasang)', en: 'Long-sleeve baby outfits (4-5 sets)' },
+      { id: 'baby_diaper', cat: 'baby', ms: 'Lampin pakai buang saiz Newborn (NB)', en: 'Newborn (NB) diapers' },
+      { id: 'baby_bedung', cat: 'baby', ms: 'Kain bedung & selimut bayi (3 helai)', en: 'Swaddle cloths & baby blanket (3 pcs)' },
+      { id: 'baby_mitten', cat: 'baby', ms: 'Sarung tangan, sarung kaki & topi bayi', en: 'Baby mittens, booties & cap' },
+      { id: 'baby_wipes', cat: 'baby', ms: 'Tisu basah bayi & tuala kecil lembut', en: 'Baby wet wipes & soft small towels' },
+      { id: 'baby_oil', cat: 'baby', ms: 'Minyak telon / losyen bayi & mandian', en: 'Baby telon oil / lotion & wash' },
+      // Dokumen & Suami
+      { id: 'docs_ic', cat: 'docs', ms: 'Kad Pengenalan (IC) Isteri & Suami', en: 'Wife & Husband MyKad / ID' },
+      { id: 'docs_pink', cat: 'docs', ms: 'Buku Pink KKM / Rekod Scan Doktor', en: 'KKM Pink Book / Clinic Scan Records' },
+      { id: 'docs_nikah', cat: 'docs', ms: 'Sijil Nikah asal & surat GL (jika ada)', en: 'Original Marriage Cert & GL letter (if any)' },
+      { id: 'docs_cash', cat: 'docs', ms: 'Kad bank / Tunai secukupnya & caj deposit', en: 'Bank card / Cash & hospital deposit' },
+      { id: 'docs_dad', cat: 'docs', ms: 'Powerbank, pengecas telefon & baju ganti Suami', en: 'Powerbank, phone charger & Dad spare clothes' }
+    ];
+
+    let hospitalBagState = { checked: {}, custom: [] };
+
+    function getBagCategoryLabel(cat, isEn) {
+      if (cat === 'mom') return isEn ? "👩 Mom's Bag" : "👩 Beg Ibu";
+      if (cat === 'baby') return isEn ? "👶 Baby's Bag" : "👶 Beg Bayi";
+      return isEn ? "📄 Documents & Dad" : "📄 Dokumen & Suami";
+    }
+
+    async function loadHospitalBagChecklist() {
+      hospitalBagState = { checked: {}, custom: [] };
+      const storageKey = getFamilyScopedKey('bukupink_hospital_bag');
+      const cachedLocal = parseJsonSafe(localStorage.getItem(storageKey), null);
+      if (cachedLocal && typeof cachedLocal === 'object') {
+        hospitalBagState = {
+          checked: cachedLocal.checked || {},
+          custom: Array.isArray(cachedLocal.custom) ? cachedLocal.custom : []
+        };
+      }
+
+      if (db && currentFamilyId) {
+        const { data, error } = await secureGetRecords('baby_memories', { category: 'Beg Bersalin' });
+        if (!error && data && data.length > 0) {
+          const rec = data.find(r => r.title === 'CHECKLIST_BEG_BERSALIN') || data[0];
+          const parsed = parseJsonSafe(rec.notes, null);
+          if (parsed && typeof parsed === 'object') {
+            hospitalBagState = {
+              checked: parsed.checked || {},
+              custom: Array.isArray(parsed.custom) ? parsed.custom : []
+            };
+            localStorage.setItem(storageKey, JSON.stringify(hospitalBagState));
+          }
+        }
+      }
+      renderHospitalBagChecklist();
+    }
+
+    async function saveHospitalBagState() {
+      const isEn = currentLang === 'en';
+      const storageKey = getFamilyScopedKey('bukupink_hospital_bag');
+      localStorage.setItem(storageKey, JSON.stringify(hospitalBagState));
+
+      if (db && currentFamilyId && currentFamilyId !== DEMO_FAMILY_ID) {
+        const { error } = await upsertFamilySyncRecord('Beg Bersalin', 'CHECKLIST_BEG_BERSALIN', hospitalBagState);
+        if (error) {
+          showToast(isEn ? "⚠️ Saved locally (cloud sync failed)." : "⚠️ Disimpan setempat (sync awan gagal).");
+        }
+      }
+    }
+
+    async function toggleHospitalBagItem(itemId) {
+      hospitalBagState.checked[itemId] = !hospitalBagState.checked[itemId];
+      renderHospitalBagChecklist();
+      await saveHospitalBagState();
+    }
+
+    async function addCustomHospitalBagItem(e) {
+      e.preventDefault();
+      const isEn = currentLang === 'en';
+      const input = document.getElementById('inp-bag-custom-item');
+      const catEl = document.getElementById('inp-bag-custom-cat');
+      if (!input) return;
+
+      const text = input.value.trim();
+      if (!text) return;
+      const cat = catEl ? catEl.value : 'mom';
+
+      hospitalBagState.custom.push({
+        id: 'custom_' + Date.now(),
+        cat,
+        label: text
+      });
+      input.value = '';
+      renderHospitalBagChecklist();
+      await saveHospitalBagState();
+      showToast(isEn ? "✅ Item added to Hospital Bag!" : "✅ Barang ditambah ke Beg Bersalin!");
+    }
+
+    async function deleteCustomHospitalBagItem(itemId) {
+      hospitalBagState.custom = (hospitalBagState.custom || []).filter(c => c.id !== itemId);
+      delete hospitalBagState.checked[itemId];
+      renderHospitalBagChecklist();
+      await saveHospitalBagState();
+    }
+
+    function renderHospitalBagChecklist() {
+      const isEn = currentLang === 'en';
+      const allItems = [
+        ...HOSPITAL_BAG_ITEMS.map(item => ({
+          id: item.id,
+          cat: item.cat,
+          label: isEn ? item.en : item.ms,
+          isCustom: false
+        })),
+        ...(hospitalBagState.custom || []).map(c => ({
+          id: c.id,
+          cat: c.cat || 'mom',
+          label: c.label,
+          isCustom: true
+        }))
+      ];
+
+      const total = allItems.length;
+      const done = allItems.filter(i => !!hospitalBagState.checked[i.id]).length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      const badge = document.getElementById('bag-progress-badge');
+      const bar = document.getElementById('bag-progress-bar');
+      const ovSub = document.getElementById('overview-bag-sub');
+      const ovBadge = document.getElementById('overview-bag-badge');
+
+      if (badge) badge.innerText = isEn ? `${done}/${total} Packed` : `${done}/${total} Siap`;
+      if (bar) bar.style.width = `${pct}%`;
+      if (ovSub) ovSub.innerText = isEn ? `${done}/${total} items packed` : `${done}/${total} barang siap dikemas`;
+      if (ovBadge) ovBadge.innerText = `${pct}%`;
+
+      const container = document.getElementById('hospital-bag-container');
+      if (!container) return;
+
+      const groups = ['mom', 'baby', 'docs'];
+      container.innerHTML = groups.map(cat => {
+        const groupItems = allItems.filter(i => i.cat === cat);
+        if (groupItems.length === 0) return '';
+        const groupDone = groupItems.filter(i => !!hospitalBagState.checked[i.id]).length;
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-4 py-2.5 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+              <h4 class="text-xs font-bold text-slate-700">${getBagCategoryLabel(cat, isEn)}</h4>
+              <span class="text-[10px] font-bold text-slate-500">${groupDone}/${groupItems.length}</span>
+            </div>
+            <div class="divide-y divide-slate-100">
+              ${groupItems.map(item => {
+                const isChecked = !!hospitalBagState.checked[item.id];
+                return `
+                  <div class="px-4 py-2.5 flex items-center justify-between gap-2 hover:bg-slate-50/70 transition">
+                    <button type="button" onclick="toggleHospitalBagItem('${escapeHtml(item.id)}')" class="flex-1 flex items-center space-x-3 text-left">
+                      <span class="w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition ${isChecked ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white border-slate-300 text-transparent'}">
+                        <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                      </span>
+                      <span class="text-xs ${isChecked ? 'line-through text-slate-400' : 'text-slate-700 font-medium'}">${escapeHtml(item.label)}</span>
+                    </button>
+                    ${item.isCustom ? `
+                      <button type="button" onclick="deleteCustomHospitalBagItem('${escapeHtml(item.id)}')" title="${isEn ? 'Delete item' : 'Padam'}" class="text-slate-300 hover:text-rose-500 p-1 transition">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                      </button>
+                    ` : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // =========================================================
+    // MASALAH #2B: KAUNTER GIGI TUMBUH ANAK (INTERAKTIF & SYNC)
+    // =========================================================
+    let babyTeethMap = {};
+
+    function getBabyTeethChildKey() {
+      const child = getActiveChildRecord();
+      return child && child.id ? String(child.id) : 'default';
+    }
+
+    async function loadBabyTeeth() {
+      babyTeethMap = {};
+      const storageKey = getFamilyScopedKey('bukupink_baby_teeth');
+      const localMap = parseJsonSafe(localStorage.getItem(storageKey), {});
+      if (localMap && typeof localMap === 'object') {
+        babyTeethMap = localMap;
+      }
+
+      if (db && currentFamilyId) {
+        const { data, error } = await secureGetRecords('baby_memories', { category: 'Gigi Anak' });
+        if (!error && data && data.length > 0) {
+          const rec = data.find(r => r.title === 'REKOD_GIGI_ANAK') || data[0];
+          const parsed = parseJsonSafe(rec.notes, null);
+          if (parsed && typeof parsed === 'object') {
+            babyTeethMap = parsed;
+            localStorage.setItem(storageKey, JSON.stringify(babyTeethMap));
+          }
+        }
+      }
+      renderBabyTeeth();
+    }
+
+    function renderBabyTeeth() {
+      const isEn = currentLang === 'en';
+      const el = document.getElementById('hero-child-teeth-val');
+      if (!el) return;
+      const key = getBabyTeethChildKey();
+      const count = Math.max(0, Math.min(20, parseInt(babyTeethMap[key] || 0, 10) || 0));
+      el.innerText = isEn ? `${count} ${count === 1 ? 'Tooth' : 'Teeth'}` : `${count} Batang`;
+    }
+
+    async function adjustBabyTeeth(delta) {
+      const isEn = currentLang === 'en';
+      const key = getBabyTeethChildKey();
+      const current = parseInt(babyTeethMap[key] || 0, 10) || 0;
+      const next = Math.max(0, Math.min(20, current + delta));
+      if (next === current) return;
+
+      babyTeethMap[key] = next;
+      renderBabyTeeth();
+
+      const storageKey = getFamilyScopedKey('bukupink_baby_teeth');
+      localStorage.setItem(storageKey, JSON.stringify(babyTeethMap));
+
+      if (db && currentFamilyId && currentFamilyId !== DEMO_FAMILY_ID) {
+        const { error } = await upsertFamilySyncRecord('Gigi Anak', 'REKOD_GIGI_ANAK', babyTeethMap);
+        if (error) {
+          showToast(isEn ? "⚠️ Teeth count saved locally." : "⚠️ Bilangan gigi disimpan setempat.");
+          return;
+        }
+      }
+      showToast(isEn ? `🦷 Baby teeth updated: ${next}` : `🦷 Rekod gigi dikemaskini: ${next} batang`);
+    }
+
+    // =========================================================
+    // MASALAH #3: AUTO-SYNC & BUTANG SYNC MANUAL KELUARGA
+    // =========================================================
+    async function syncFamilyDataNow(options = {}) {
+      const { silent = false, showSuccessToast = false } = options;
+      const isEn = currentLang === 'en';
+      if (!currentFamilyId || !db) return;
+      if (isCloudSyncing) return;
+
+      const dash = document.getElementById('dashboard-screen');
+      if (dash && dash.classList.contains('hidden')) return;
+
+      const now = Date.now();
+      if (silent && now - lastCloudSyncAt < 20000) return;
+
+      isCloudSyncing = true;
+      const icon = document.getElementById('icon-manual-sync');
+      const btn = document.getElementById('btn-manual-sync');
+      if (icon) icon.classList.add('animate-spin');
+      if (btn) btn.disabled = true;
+
+      try {
+        await loadAllSupabaseData();
+        if (showSuccessToast) {
+          showToast(isEn ? "🔄 Family data synced with cloud!" : "🔄 Data keluarga berjaya disinkronkan!");
+        }
+      } finally {
+        isCloudSyncing = false;
+        if (icon) icon.classList.remove('animate-spin');
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        syncFamilyDataNow({ silent: true });
+      }
+    });
+
+    window.addEventListener('online', () => {
+      syncFamilyDataNow({ silent: true });
+    });
   </script>
 </body>
 </html>
