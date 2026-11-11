@@ -1103,14 +1103,14 @@
               <span data-i18n="subtab_preg_appt">Janji Temu KK</span>
             </button>
 
-            <button onclick="navigateFromSidebar('pregnancy', 'vitals')" id="nav-preg-vitals" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
-              <i data-lucide="activity" class="w-4 h-4 text-rose-500"></i>
-              <span data-i18n="subtab_preg_vitals">Bacaan Vital (HB/BP)</span>
-            </button>
-
             <button onclick="navigateFromSidebar('pregnancy', 'kicks')" id="nav-preg-kicks" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
               <span class="text-base leading-none">👣</span>
               <span data-i18n="subtab_preg_kicks">Kiraan Tendangan Bayi</span>
+            </button>
+
+            <button onclick="navigateFromSidebar('pregnancy', 'vitals')" id="nav-preg-vitals" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <i data-lucide="activity" class="w-4 h-4 text-rose-500"></i>
+              <span data-i18n="subtab_preg_vitals">Bacaan Vital (HB/BP)</span>
             </button>
 
             <button onclick="navigateFromSidebar('pregnancy', 'pantang')" id="nav-preg-pantang" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
@@ -1569,6 +1569,22 @@
             <div id="quick-appt-actions" class="hidden pt-2 border-t border-slate-100 flex justify-end space-x-2"></div>
           </div>
 
+          <!-- Quick Kaunter Tendangan Bayi (KKM 9pg - 9mlm) -->
+          <div onclick="switchPregSubtab('kicks')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-pastel-400 transition flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 min-w-0">
+              <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center shrink-0 text-lg">👣</div>
+              <div class="min-w-0">
+                <p data-i18n="hdr_preg_kicks_title" class="text-xs font-bold text-slate-800 truncate">Kiraan Tendangan Bayi (KKM)</p>
+                <p id="overview-kicks-sub" class="text-[11px] text-slate-500">Hari ini: 0/10 gerakan (9pg–9mlm)</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2 shrink-0">
+              <button type="button" id="btn-quick-kick-add" onclick="event.stopPropagation(); recordBabyKick();" class="text-[11px] font-extrabold bg-rose-500 hover:bg-rose-600 text-white px-2.5 py-1 rounded-full shadow-2xs active:scale-95 transition" data-i18n="btn_quick_kick">+1 Tendang</button>
+              <span id="overview-kicks-badge" class="text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-full">0/10</span>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+            </div>
+          </div>
+
           <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2.5">
             <div class="flex justify-between items-center">
               <span class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
@@ -1604,22 +1620,6 @@
               <p class="text-lg font-black text-slate-400 my-0.5" id="val-bp-display">Belum Direkod</p>
               <span id="badge-bp-status" class="inline-block text-[10px] bg-pastel-50 text-pastel-700 font-bold px-2.5 py-0.5 rounded-full border border-pastel-200">+ Rekod Tekanan BP</span>
               <div id="quick-bp-actions" class="hidden mt-2 pt-1.5 border-t border-slate-100 flex justify-center space-x-1.5"></div>
-            </div>
-          </div>
-
-          <!-- Quick Kaunter Tendangan Bayi (KKM 9pg - 9mlm) -->
-          <div onclick="switchPregSubtab('kicks')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-pastel-400 transition flex items-center justify-between gap-3">
-            <div class="flex items-center space-x-3 min-w-0">
-              <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center shrink-0 text-lg">👣</div>
-              <div class="min-w-0">
-                <p data-i18n="hdr_preg_kicks_title" class="text-xs font-bold text-slate-800 truncate">Kiraan Tendangan Bayi (KKM)</p>
-                <p id="overview-kicks-sub" class="text-[11px] text-slate-500">Hari ini: 0/10 gerakan (9pg–9mlm)</p>
-              </div>
-            </div>
-            <div class="flex items-center space-x-2 shrink-0">
-              <button type="button" id="btn-quick-kick-add" onclick="event.stopPropagation(); recordBabyKick();" class="text-[11px] font-extrabold bg-rose-500 hover:bg-rose-600 text-white px-2.5 py-1 rounded-full shadow-2xs active:scale-95 transition" data-i18n="btn_quick_kick">+1 Tendang</button>
-              <span id="overview-kicks-badge" class="text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-full">0/10</span>
-              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
             </div>
           </div>
 
