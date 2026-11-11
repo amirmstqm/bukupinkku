@@ -3,37 +3,31 @@
   <!-- ============================================================== -->
   <div id="screen-landing" class="min-h-screen flex flex-col bg-slate-50 text-slate-800">
 
-    <!-- 1. STICKY TOP NAVBAR (RESPONSIF & BEBAS BERTINDIH) -->
+    <!-- 1. STICKY TOP NAVBAR (BERSIH, KEMAS & TIADA BERTINDIH) -->
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 transition-all">
       <div class="max-w-5xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2">
         
-        <!-- Logo & Nama App (Kiri) -->
+        <!-- Logo, Nama App & Badge Digital (Kiri) -->
         <div class="flex items-center space-x-2 cursor-pointer shrink-0" onclick="showLandingScreen()">
           <img src="./apple-touch-icon.png" alt="BukuPinkKu" class="w-8 h-8 rounded-xl shadow-xs border border-pastel-200 object-cover">
           <div class="flex items-center space-x-1.5">
             <span class="font-black text-slate-900 text-sm sm:text-base tracking-tight">BukuPinkKu</span>
-            <span class="hidden md:inline-block text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-pastel-100 text-pastel-700 border border-pastel-200" data-i18n="land_nav_digital_badge">Digital</span>
+            <span class="inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-pastel-100 text-pastel-700 border border-pastel-200" data-i18n="land_nav_digital_badge">Digital</span>
           </div>
         </div>
 
         <!-- Butang Navigasi (Kanan) -->
-        <div class="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
-          <!-- Pilihan Bahasa Compact (Single-line guaranteed) -->
+        <div class="flex items-center space-x-2 shrink-0">
+          <!-- Pilihan Bahasa Compact -->
           <div class="inline-flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-[10px] font-bold shrink-0">
-            <button type="button" onclick="switchLanguage('ms')" id="btn-lang-land-ms" class="px-2 py-0.5 rounded-md bg-white text-pastel-600 shadow-xs whitespace-nowrap transition">BM</button>
-            <button type="button" onclick="switchLanguage('en')" id="btn-lang-land-en" class="px-2 py-0.5 rounded-md text-slate-500 whitespace-nowrap transition">EN</button>
+            <button type="button" onclick="switchLanguage('ms')" id="btn-lang-land-ms" class="px-2 py-1 rounded-md bg-white text-pastel-600 shadow-xs whitespace-nowrap transition">BM</button>
+            <button type="button" onclick="switchLanguage('en')" id="btn-lang-land-en" class="px-2 py-1 rounded-md text-slate-500 whitespace-nowrap transition">EN</button>
           </div>
 
-          <!-- Butang Masuk Kod Pasangan (Header) -->
-          <button onclick="showOnboardingScreen('father')" class="px-2 sm:px-2.5 py-1 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 shrink-0 transition flex items-center space-x-1" title="Masuk Kod Pasangan">
-            <span class="text-xs">🔑</span>
-            <span data-i18n="landing_nav_enter_code" class="hidden sm:inline">Masuk Kod</span>
-          </button>
-
-          <!-- Butang Mula Guna (Header) -->
-          <button onclick="showOnboardingScreen('mother')" class="px-2.5 sm:px-3.5 py-1 text-xs font-bold text-white bg-pastel-500 hover:bg-pastel-600 rounded-lg shadow-xs shrink-0 whitespace-nowrap transition flex items-center space-x-1">
-            <span data-i18n="landing_nav_get_started">Mula Percuma</span>
-            <span>&rarr;</span>
+          <!-- Butang Mula Percuma (Atas Bawah) -->
+          <button onclick="showOnboardingScreen('mother')" class="px-3 py-1.5 text-white bg-pastel-500 hover:bg-pastel-600 rounded-xl shadow-xs shrink-0 transition flex items-center space-x-1.5">
+            <span data-i18n="landing_nav_get_started" class="block text-[10px] font-bold text-left leading-[1.15]">Mula<br>Percuma</span>
+            <span class="text-xs font-bold">&rarr;</span>
           </button>
         </div>
       </div>
@@ -48,9 +42,9 @@
           <!-- Kiri: Penerangan & Call-To-Action (7 Cols) -->
           <div class="lg:col-span-7 space-y-4 sm:space-y-5 text-center lg:text-left">
             
-            <div class="inline-flex items-center space-x-2 bg-pastel-100/80 border border-pastel-200/90 px-3 py-1 rounded-full text-xs font-bold text-pastel-800 shadow-sm">
+            <div class="inline-flex items-center space-x-2 bg-pastel-100/80 border border-pastel-200/90 px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold text-pastel-800 shadow-sm">
               <span class="animate-pulse">🌸</span>
-              <span data-i18n="landing_hero_badge">Peneman Digital Kehamilan & Anak #1 Malaysia</span>
+              <span data-i18n="landing_hero_badge">Peneman Digital Kehamilan (Buku Pink) & Anak 0–3 Tahun #1 Malaysia</span>
             </div>
 
             <h1 data-i18n="landing_hero_h1" class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.2]">
@@ -75,11 +69,15 @@
               </button>
             </div>
 
-            <!-- Trust micro-copy -->
-            <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-xs text-slate-600 font-medium">
+            <!-- Trust micro-copy (Dengan Data Peribadi Dilindungi) -->
+            <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-xs text-slate-600 font-medium">
               <span class="flex items-center space-x-1 text-emerald-700">
                 <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                 <span data-i18n="land_trust_free">100% Percuma</span>
+              </span>
+              <span class="flex items-center space-x-1 text-emerald-700">
+                <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                <span data-i18n="land_trust_privacy">Data Peribadi Dilindungi</span>
               </span>
               <span class="flex items-center space-x-1 text-emerald-700">
                 <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
@@ -87,7 +85,7 @@
               </span>
               <span class="flex items-center space-x-1 text-emerald-700">
                 <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                <span data-i18n="land_trust_nodownload">Tanpa Muat Turun Berat (Jimat Memori)</span>
+                <span data-i18n="land_trust_nodownload">Tanpa Muat Turun Berat</span>
               </span>
             </div>
 
@@ -119,7 +117,7 @@
                   <div class="flex items-center space-x-1">
                     <span class="text-sm">🌸</span>
                     <span class="font-bold text-slate-800 text-[11px]">BukuPinkKu</span>
-                    <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-700" data-i18n="land_mock_sync">Segerak Awan</span>
+                    <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-700" data-i18n="land_mock_sync">Cloud Live</span>
                   </div>
                   <span class="text-[10px] font-bold text-slate-400">9:41 AM</span>
                 </div>
@@ -235,7 +233,7 @@
             Direka Khas Untuk Menyelesaikan Masalah Harian Pasangan
           </h2>
           <p class="text-xs sm:text-sm text-slate-600" data-i18n="land_why_desc">
-            Tiada lagi salah faham, tiada lagi suami duduk buntu, dan tiada lagi rekod klinik tercicir.
+            Tiada lagi salah faham, tiada lagi suami terlupa, dan tiada lagi rekod klinik tercicir.
           </p>
         </div>
 
@@ -279,74 +277,8 @@
       </div>
     </section>
 
-    <!-- 4. ============================================================== -->
-    <!-- BAHAGIAN MENYENTUH HATI: KENAPA BUKUPINKKU INI PERCUMA?        -->
-    <!-- ============================================================== -->
-    <section class="py-12 sm:py-16 bg-gradient-to-b from-rose-50/50 via-white to-pastel-50/40 border-b border-rose-100">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6">
-        
-        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-rose-200/80 space-y-6 relative overflow-hidden">
-          
-          <!-- Hiasan latar lembut -->
-          <div class="absolute -top-10 -right-10 w-40 h-40 bg-pastel-100/60 rounded-full blur-2xl pointer-events-none"></div>
-          <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-rose-100/50 rounded-full blur-2xl pointer-events-none"></div>
-
-          <div class="relative space-y-4 text-center sm:text-left">
-            
-            <div class="inline-flex items-center space-x-2 bg-rose-100/80 text-rose-800 px-3 py-1 rounded-full text-xs font-bold border border-rose-200">
-              <span>💌</span>
-              <span data-i18n="land_free_badge">Inisiatif Ikhlas Dari Hati</span>
-            </div>
-
-            <h2 data-i18n="land_free_title" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-snug">
-              Kenapa BukuPinkKu Disediakan <span class="text-transparent bg-clip-text bg-gradient-to-r from-pastel-600 to-rose-600">100% Percuma?</span>
-            </h2>
-
-            <div data-i18n="land_free_body" class="space-y-3.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
-              <p>
-                Menjadi ibu dan ayah adalah perjalanan yang sarat dengan air mata kesyukuran, debaran yang tak terungkap, dan doa yang tak pernah putus di setiap sujud.
-              </p>
-              <p>
-                Kami faham betapa beratnya rasa cemas seorang isteri apabila melihat paras hemoglobin (HB) menurun atau terpaksa berulang-alik ke klinik. Dan kami juga sangat faham perasaan seorang suami — yang ingin menjadi pelindung terbaik, namun kadangkala buntu dan tidak tahu bagaimana untuk membantu apabila melihat isteri menanggung kepenatan sendirian.
-              </p>
-              <p class="font-medium text-slate-800 bg-rose-50/70 p-3.5 rounded-2xl border border-rose-100">
-                🌸 <strong>BukuPinkKu dicipta bukan sebagai perniagaan untuk mengaut keuntungan</strong>, tetapi sebagai hadiah amal jariah dan peneman setia buat setiap pasangan suami isteri di Malaysia. Kami mahu setiap ibu rasa dihargai, dan setiap suami rasa yakin untuk memimpin dan menjaga keluarga kecil mereka.
-              </p>
-              <p>
-                Oleh itu, aplikasi ini kekal <strong>100% percuma selamanya</strong>, tanpa bayaran tersembunyi dan tanpa sebarang iklan yang mengganggu saat-saat berharga anda.
-              </p>
-            </div>
-
-            <!-- Kad Pautan Infaq & DuitNow QR -->
-            <div class="pt-2">
-              <div class="bg-gradient-to-r from-rose-50 via-pink-50 to-pastel-50 p-4 sm:p-5 rounded-2xl border border-rose-200 space-y-3">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-                  <div class="space-y-1">
-                    <p class="text-xs font-bold text-rose-900 flex items-center justify-center sm:justify-start space-x-1.5">
-                      <span>💖</span>
-                      <span data-i18n="land_free_support_title">Sokong Agar Sistem Ini Kekal Percuma Selamanya</span>
-                    </p>
-                    <p data-i18n="land_free_support_desc" class="text-[11px] text-slate-600 leading-relaxed max-w-lg">
-                      Setiap sen sumbangan seikhlas hati anda disalurkan terus bagi menampung kos pelayan pangkalan data (cloud server) agar sistem ini terus beroperasi untuk ibu-ibu lain.
-                    </p>
-                  </div>
-                  <button onclick="openModal('modal-coffee')" class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs rounded-xl shadow-md transition transform active:scale-95 shrink-0 flex items-center space-x-2">
-                    <span data-i18n="land_free_btn_qr">Imbas DuitNow QR</span>
-                    <span>&rarr;</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- 5. LENGKAP UNTUK 3 FASA KELUARGA -->
-    <section class="py-12 sm:py-16 bg-slate-50">
+    <!-- 4. LENGKAP UNTUK 3 FASA KELUARGA (DIATAS SEBELUM INISIATIF PERCUMA) -->
+    <section class="py-12 sm:py-16 bg-slate-50 border-b border-slate-200/80">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 space-y-10">
         
         <div class="text-center space-y-2 max-w-2xl mx-auto">
@@ -456,8 +388,70 @@
       </div>
     </section>
 
+    <!-- 5. ============================================================== -->
+    <!-- BAHAGIAN INISIATIF & PENYELESAIAN MASALAH (SELEPAS 3 FASA)       -->
+    <!-- ============================================================== -->
+    <section class="py-12 sm:py-16 bg-gradient-to-b from-rose-50/50 via-white to-pastel-50/40 border-b border-rose-100">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6">
+        
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-rose-200/80 space-y-6 relative overflow-hidden">
+          
+          <!-- Hiasan latar lembut -->
+          <div class="absolute -top-10 -right-10 w-40 h-40 bg-pastel-100/60 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-rose-100/50 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div class="relative space-y-4 text-center sm:text-left">
+            
+            <div class="inline-flex items-center space-x-2 bg-rose-100/80 text-rose-800 px-3 py-1 rounded-full text-xs font-bold border border-rose-200">
+              <span>💌</span>
+              <span data-i18n="land_free_badge">Inisiatif Ikhlas Dari Hati</span>
+            </div>
+
+            <h2 data-i18n="land_free_title" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-snug">
+              Kenapa BukuPinkKu Disediakan <span class="text-transparent bg-clip-text bg-gradient-to-r from-pastel-600 to-rose-600">100% Percuma?</span>
+            </h2>
+
+            <div data-i18n="land_free_body" class="space-y-3.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+              <p>
+                Kami membina BukuPinkKu kerana memahami cabaran sebenar yang dihadapi pasangan di Malaysia: isteri sering terbeban mengingati pelbagai tarikh temujanji, jadual ubat harian dan bacaan HB seorang diri, manakala suami pula buntu dan tidak pasti bagaimana mahu membantu secara praktikal di klinik.
+              </p>
+              <p>
+                Masalah komunikasi dan keciciran rekod ini tidak sepatutnya menambah tekanan semasa fasa kehamilan. BukuPinkKu hadir sebagai penyelesaian mudah supaya suami dan isteri sentiasa berkongsi maklumat yang sama, saling mengingati, dan bersedia setiap kali melangkah masuk ke bilik rawatan.
+              </p>
+              <p class="font-medium text-slate-800 bg-rose-50/70 p-3.5 rounded-2xl border border-rose-100">
+                🌸 <strong>BukuPinkKu dicipta sebagai inisiatif komuniti dan bukan untuk mengaut keuntungan.</strong> Kami percaya setiap keluarga berhak mendapat sistem pemantauan kesihatan yang tersusun, tenang, dan mudah tanpa halangan bayaran langganan atau iklan yang menjengkelkan.
+              </p>
+            </div>
+
+            <!-- Kad Sokongan Lembut & Pilihan -->
+            <div class="pt-2">
+              <div class="bg-gradient-to-r from-rose-50 via-pink-50 to-pastel-50 p-4 sm:p-5 rounded-2xl border border-rose-200 space-y-3">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                  <div class="space-y-1">
+                    <p class="text-xs font-bold text-rose-900 flex items-center justify-center sm:justify-start space-x-1.5">
+                      <span>💖</span>
+                      <span data-i18n="land_free_support_title">Infaq Pelayan Awan (Pilihan)</span>
+                    </p>
+                    <p data-i18n="land_free_support_desc" class="text-[11px] text-slate-600 leading-relaxed max-w-lg">
+                      Jika aplikasi ini membantu memudahkan urusan keluarga anda, sebarang sumbangan kecil amat dihargai bagi menampung kos pelayan agar ia kekal percuma untuk ibu bapa lain.
+                    </p>
+                  </div>
+                  <button onclick="openModal('modal-coffee')" class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md transition transform active:scale-95 shrink-0 flex items-center space-x-1.5">
+                    <span data-i18n="land_free_btn_qr">💝 Kongsi Rezeki (Jika Sudi)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
     <!-- 6. SOALAN LAZIM (FAQ ACCORDION) -->
-    <section class="py-12 sm:py-16 bg-white border-t border-slate-200/80">
+    <section class="py-12 sm:py-16 bg-white">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 space-y-8">
         
         <div class="text-center space-y-2">
@@ -546,7 +540,7 @@
             <span class="text-[10px] text-slate-500" data-i18n="land_foot_version">Aplikasi Web Rasmi</span>
           </div>
           <div class="flex flex-wrap justify-center gap-4 text-[11px]">
-            <a href="javascript:void(0)" onclick="openModal('modal-coffee')" class="text-pastel-300 hover:text-white transition" data-i18n="land_foot_support">💝 Sokong Pembangunan (DuitNow)</a>
+            <a href="javascript:void(0)" onclick="openModal('modal-coffee')" class="text-pastel-300 hover:text-white transition" data-i18n="land_foot_support">💝 Tabung Pelayan (Pilihan)</a>
             <a href="javascript:void(0)" onclick="showOnboardingScreen('father')" class="hover:text-white transition" data-i18n="land_foot_enter_code">Masuk Kod Pasangan</a>
             <a href="javascript:void(0)" onclick="showOnboardingScreen('mother')" class="hover:text-white transition" data-i18n="land_foot_register">Daftar Ibu Hamil</a>
           </div>
