@@ -2674,13 +2674,123 @@
     const db = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
     // ACTIVE SESSION STATE (Disimpan dalam localStorage supaya refresh tak hilang)
+    const DEMO_FAMILY_ID = 'a0000000-0000-0000-0000-000000000001';
     let currentFamilyId = localStorage.getItem('bukupink_family_id');
+    let currentFamilyToken = localStorage.getItem('bukupink_family_token') || '';
     let currentRole = localStorage.getItem('bukupink_role') || 'mother'; // 'mother' / 'father'
     let currentUserName = localStorage.getItem('bukupink_user_name') || '';
     let currentFamilyCode = localStorage.getItem('bukupink_invite_code') || '';
     let currentLang = localStorage.getItem('bukupink_lang') || 'ms';
     let currentPhase = 'pregnancy';
     let med1Taken = true;
+
+    // PENAPIS KESELAMATAN XSS & URL GAMBAR
+    function escapeHtml(val) {
+      return String(val ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function safeImageUrl(url) {
+      const s = String(url || '').trim();
+      if (!s) return '';
+      if (s.startsWith('https://') || s.startsWith('http://') || s.startsWith('data:image/')) {
+        return s;
+      }
+      return '';
+    }
+
+    function isMissingRpcError(err) {
+      return Boolean(err && (
+        err.code === 'PGRST202' ||
+        err.code === '42883' ||
+        (err.message || '').includes('Could not find the function')
+      ));
+    }
+
+    // PEMBUNGKUS RPC SELAMAT UNTUK JADUAL KESIHATAN (DILINDUNGI RLS + TOKEN SESI)
+    async function secureGetRecords(table, { category = null, excludeCategory = null } = {}) {
+      if (!db || !currentFamilyId) return { data: null, error: new Error('No active session') };
+      const { data, error } = await db.rpc('family_get_records', {
+        p_family_id: currentFamilyId,
+        p_access_token: currentFamilyToken || '',
+        p_table: table,
+        p_category: category,
+        p_exclude_category: excludeCategory
+      });
+      if (!error) {
+        return { data: Array.isArray(data) ? data : [], error: null };
+      }
+      if (isMissingRpcError(error)) {
+        let q = db.from(table).select('*').eq('family_id', currentFamilyId);
+        if (category) q = q.eq('category', category);
+        if (excludeCategory) q = q.neq('category', excludeCategory);
+        if (table === 'appointments') q = q.order('appointment_date', { ascending: true });
+        else if (table === 'health_vitals') q = q.order('logged_date', { ascending: false });
+        else if (table === 'baby_memories') q = q.order('memory_date', { ascending: false });
+        else q = q.order('created_at', { ascending: false });
+        return await q;
+      }
+      return { data: null, error };
+    }
+
+    async function secureInsertRecord(table, payload) {
+      if (!db || !currentFamilyId) return { data: null, error: new Error('No active session') };
+      const { data, error } = await db.rpc('family_insert_record', {
+        p_family_id: currentFamilyId,
+        p_access_token: currentFamilyToken || '',
+        p_table: table,
+        p_payload: payload
+      });
+      if (!error) {
+        return { data: data || null, error: null };
+      }
+      if (isMissingRpcError(error)) {
+        return await db.from(table).insert({ ...payload, family_id: currentFamilyId }).select().single();
+      }
+      return { data: null, error };
+    }
+
+    async function secureUpdateRecord(table, rowId, payload) {
+      if (!db || !currentFamilyId) return { data: null, error: new Error('No active session') };
+      const { data, error } = await db.rpc('family_update_record', {
+        p_family_id: currentFamilyId,
+        p_access_token: currentFamilyToken || '',
+        p_table: table,
+        p_row_id: String(rowId),
+        p_payload: payload
+      });
+      if (!error) {
+        return { data: data || null, error: null };
+      }
+      if (isMissingRpcError(error)) {
+        return await db.from(table).update(payload).eq('id', rowId);
+      }
+      return { data: null, error };
+    }
+
+    async function secureDeleteRecord(table, { rowId = null, category = null, titleSubstr = null } = {}) {
+      if (!db || !currentFamilyId) return { error: new Error('No active session') };
+      const { error } = await db.rpc('family_delete_record', {
+        p_family_id: currentFamilyId,
+        p_access_token: currentFamilyToken || '',
+        p_table: table,
+        p_row_id: rowId ? String(rowId) : null,
+        p_category: category,
+        p_title_substr: titleSubstr
+      });
+      if (!error) return { error: null };
+      if (isMissingRpcError(error)) {
+        if (rowId) return await db.from(table).delete().eq('id', rowId);
+        if (table === 'baby_memories' && category && titleSubstr) {
+          return await db.from('baby_memories').delete().eq('family_id', currentFamilyId).eq('category', category).like('title', `%${titleSubstr}%`);
+        }
+      }
+      return { error };
+    }
 
     // KAMUS DWIBAHASA (BAHASA MELAYU & ENGLISH)
     const I18N = {
@@ -3595,6 +3705,24 @@
       const urlParams = new URLSearchParams(window.location.search);
       const inviteCodeParam = urlParams.get('code');
 
+      // Jika sesi lama belum ada token keselamatan baharu, minta pengguna log masuk sekali lagi
+      if (currentFamilyId && currentFamilyId !== DEMO_FAMILY_ID && !currentFamilyToken) {
+        localStorage.removeItem('bukupink_family_id');
+        localStorage.removeItem('bukupink_role');
+        localStorage.removeItem('bukupink_user_name');
+        localStorage.removeItem('bukupink_invite_code');
+        currentFamilyId = null;
+        showOnboardingScreen(inviteCodeParam ? 'father' : 'mother');
+        if (inviteCodeParam) {
+          const joinInput = document.getElementById('join-invite-code');
+          if (joinInput) joinInput.value = inviteCodeParam.trim().toUpperCase();
+        }
+        showToast(currentLang === 'en'
+          ? "🔒 Security upgrade applied. Please sign in once more."
+          : "🔒 Naik taraf keselamatan baharu: sila log masuk sekali lagi.");
+        return;
+      }
+
       if (currentFamilyId && !inviteCodeParam) {
         showDashboardScreen();
       } else if (inviteCodeParam) {
@@ -3822,6 +3950,7 @@
 
       let finalCode = generateSecureFamilyCode();
       let newFamilyId = 'local-' + Date.now();
+      let newFamilyToken = '';
       let isExistingFamily = false;
 
       try {
@@ -3832,28 +3961,26 @@
             p_phone: cleanPhone
           });
 
-          const isMissingRpc = regErr && (
-            regErr.code === 'PGRST202' ||
-            (regErr.message || '').includes('Could not find the function')
-          );
+          const isMissingRpc = isMissingRpcError(regErr);
 
           if (!regErr && regRows && regRows.length > 0) {
             const regRes = regRows[0];
             newFamilyId = regRes.ret_family_id;
             finalCode = regRes.ret_invite_code;
+            newFamilyToken = regRes.ret_access_token || '';
             isExistingFamily = !!regRes.ret_is_existing;
 
+            currentFamilyId = newFamilyId;
+            currentFamilyToken = newFamilyToken;
+
             if (!isExistingFamily) {
-              await db
-                .from('children')
-                .insert({
-                  family_id: newFamilyId,
-                  nickname: status === 'born' ? childName : babyNickname,
-                  status: status,
-                  edd_date: eddDate,
-                  birth_date: birthDate,
-                  blood_type: 'O+'
-                });
+              await secureInsertRecord('children', {
+                nickname: status === 'born' ? childName : babyNickname,
+                status: status,
+                edd_date: eddDate,
+                birth_date: birthDate,
+                blood_type: 'O+'
+              });
             }
           } else if (isMissingRpc) {
             // Fallback sementara jika skrip RPC Supabase belum dijalankan
@@ -3924,11 +4051,17 @@
 
         // 4. Simpan sesi aktif ke localStorage
         localStorage.setItem('bukupink_family_id', newFamilyId);
+        if (newFamilyToken) {
+          localStorage.setItem('bukupink_family_token', newFamilyToken);
+        } else {
+          localStorage.removeItem('bukupink_family_token');
+        }
         localStorage.setItem('bukupink_role', 'mother');
         localStorage.setItem('bukupink_user_name', `${momName} (Ibu)`);
         localStorage.setItem('bukupink_invite_code', finalCode);
 
         currentFamilyId = newFamilyId;
+        currentFamilyToken = newFamilyToken;
         currentRole = 'mother';
         currentUserName = `${momName} (Ibu)`;
         currentFamilyCode = finalCode;
@@ -4026,6 +4159,7 @@
 
         let verifiedFamilyId = null;
         let verifiedInviteCode = null;
+        let verifiedAccessToken = '';
         let cleanFamTitle = 'Keluarga';
 
         // Gunakan Supabase RPC selamat terlebih dahulu (RLS aktif — tiada SELECT terbuka)
@@ -4034,10 +4168,7 @@
           p_phone4: verifyPhone4
         });
 
-        const isMissingVerifyRpc = rpcErr && (
-          rpcErr.code === 'PGRST202' ||
-          (rpcErr.message || '').includes('Could not find the function')
-        );
+        const isMissingVerifyRpc = isMissingRpcError(rpcErr);
 
         if (!rpcErr) {
           const res = (rpcRows && rpcRows.length > 0) ? rpcRows[0] : { ret_status: 'INVALID' };
@@ -4054,6 +4185,7 @@
           }
           verifiedFamilyId = res.ret_family_id;
           verifiedInviteCode = res.ret_invite_code;
+          verifiedAccessToken = res.ret_access_token || '';
           cleanFamTitle = res.ret_family_name || 'Keluarga';
         } else if (isMissingVerifyRpc) {
           // Fallback sementara jika skrip RPC Supabase belum dijalankan
@@ -4085,11 +4217,17 @@
         localStorage.removeItem('bukupink_join_lock_until');
 
         localStorage.setItem('bukupink_family_id', verifiedFamilyId);
+        if (verifiedAccessToken) {
+          localStorage.setItem('bukupink_family_token', verifiedAccessToken);
+        } else {
+          localStorage.removeItem('bukupink_family_token');
+        }
         localStorage.setItem('bukupink_role', selectedRole);
         localStorage.setItem('bukupink_user_name', `${userName} (${roleLabel})`);
         localStorage.setItem('bukupink_invite_code', verifiedInviteCode);
 
         currentFamilyId = verifiedFamilyId;
+        currentFamilyToken = verifiedAccessToken;
         currentRole = selectedRole;
         currentUserName = `${userName} (${roleLabel})`;
         currentFamilyCode = verifiedInviteCode;
@@ -4113,11 +4251,13 @@
     function loadDemoMode() {
       const demoFamilyId = 'a0000000-0000-0000-0000-000000000001';
       localStorage.setItem('bukupink_family_id', demoFamilyId);
+      localStorage.removeItem('bukupink_family_token');
       localStorage.setItem('bukupink_role', 'mother');
       localStorage.setItem('bukupink_user_name', 'Sarah (Ibu)');
       localStorage.setItem('bukupink_invite_code', 'PINK-8821');
 
       currentFamilyId = demoFamilyId;
+      currentFamilyToken = '';
       currentRole = 'mother';
       currentUserName = 'Sarah (Ibu)';
       currentFamilyCode = 'PINK-8821';
@@ -4130,10 +4270,12 @@
     function logoutProfile() {
       if (confirm("Adakah anda ingin log keluar daripada profil ini?")) {
         localStorage.removeItem('bukupink_family_id');
+        localStorage.removeItem('bukupink_family_token');
         localStorage.removeItem('bukupink_role');
         localStorage.removeItem('bukupink_user_name');
         localStorage.removeItem('bukupink_invite_code');
         currentFamilyId = null;
+        currentFamilyToken = '';
         showOnboardingScreen();
         showToast("Anda telah log keluar.");
       }
@@ -4169,13 +4311,8 @@
 
     // LOAD CHILD / PREGNANCY INFO
     async function loadChildInfo() {
-      const { data, error } = await db
-        .from('children')
-        .select('*')
-        .eq('family_id', currentFamilyId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+      const { data: childRows, error } = await secureGetRecords('children');
+      const data = (childRows && childRows.length > 0) ? childRows[0] : null;
 
       if (error || !data) return;
       const isEn = currentLang === 'en';
@@ -4424,13 +4561,22 @@
       showToast(isEn ? "🍏 Apple Calendar (.ics) file ready! Tap to save to Calendar." : "🍏 Fail Kalendar Apple (.ics) sedia! Buka untuk simpan ke Kalendar iPhone.");
     }
 
+    function openAppointmentCalendarById(id) {
+      const item = cachedAppointments.find(x => String(x.id) === String(id));
+      if (!item) return;
+      openCalendarChoiceModal(
+        item.title || '',
+        item.appointment_date || '',
+        item.appointment_time || '',
+        item.clinic_name || '',
+        item.notes || '',
+        item.category || 'KKIA'
+      );
+    }
+
     // LOAD APPOINTMENTS
     async function loadAppointments() {
-      const { data, error } = await db
-        .from('appointments')
-        .select('*')
-        .eq('family_id', currentFamilyId)
-        .order('appointment_date', { ascending: true });
+      const { data, error } = await secureGetRecords('appointments');
 
       const isEn = currentLang === 'en';
       const container = document.getElementById('appointment-list');
@@ -4450,29 +4596,27 @@
       data.forEach(item => {
         const card = document.createElement('div');
         card.className = "bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-xs";
-        const escapedTitle = (item.title || '').replace(/'/g, "\\'");
-        const escapedClinic = (item.clinic_name || '').replace(/'/g, "\\'");
-        const escapedNotes = (item.notes || '').replace(/'/g, "\\'");
+        const safeId = escapeHtml(item.id);
         card.innerHTML = `
           <div class="flex justify-between items-start">
             <div>
-              <span class="bg-pastel-50 text-pastel-700 text-[10px] font-bold px-2 py-0.5 rounded border border-pastel-200">${item.category || 'KKIA'}</span>
-              <p class="font-bold text-slate-800 mt-1">${item.title}</p>
-              <p class="text-[11px] text-slate-500">${item.clinic_name || ''}</p>
+              <span class="bg-pastel-50 text-pastel-700 text-[10px] font-bold px-2 py-0.5 rounded border border-pastel-200">${escapeHtml(item.category || 'KKIA')}</span>
+              <p class="font-bold text-slate-800 mt-1">${escapeHtml(item.title)}</p>
+              <p class="text-[11px] text-slate-500">${escapeHtml(item.clinic_name || '')}</p>
             </div>
-            <span class="font-bold text-pastel-600">${item.appointment_date} ${item.appointment_time || ''}</span>
+            <span class="font-bold text-pastel-600">${escapeHtml(item.appointment_date)} ${escapeHtml(item.appointment_time || '')}</span>
           </div>
           <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-500 gap-2">
-            <span class="truncate max-w-[150px]">${item.notes || (isEn ? 'Attend together' : 'Hadir bersama')}</span>
+            <span class="truncate max-w-[150px]">${escapeHtml(item.notes || (isEn ? 'Attend together' : 'Hadir bersama'))}</span>
             <div class="flex items-center space-x-1.5 shrink-0">
-              <button onclick="openCalendarChoiceModal('${escapedTitle}', '${item.appointment_date}', '${item.appointment_time || ''}', '${escapedClinic}', '${escapedNotes}', '${item.category || 'KKIA'}')" class="px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold border border-sky-200 transition flex items-center space-x-1" title="${isEn ? 'Add to Google / Apple Calendar' : 'Simpan ke Google / Apple Calendar'}">
+              <button onclick="openAppointmentCalendarById('${safeId}')" class="px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold border border-sky-200 transition flex items-center space-x-1" title="${isEn ? 'Add to Google / Apple Calendar' : 'Simpan ke Google / Apple Calendar'}">
                 <span>📅</span>
                 <span>${isEn ? 'Calendar' : 'Kalendar'}</span>
               </button>
-              <button onclick="editAppointment('${item.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 hover:text-pastel-700 font-semibold border border-slate-200 transition">
+              <button onclick="editAppointment('${safeId}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 hover:text-pastel-700 font-semibold border border-slate-200 transition">
                 ✏️ ${isEn ? 'Edit' : 'Edit'}
               </button>
-              <button onclick="deleteAppointment('${item.id}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
+              <button onclick="deleteAppointment('${safeId}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
                 🗑️ ${isEn ? 'Delete' : 'Padam'}
               </button>
             </div>
@@ -4482,29 +4626,27 @@
       });
 
       if (data[0]) {
+        const topSafeId = escapeHtml(data[0].id);
         document.getElementById('quick-appt-text').innerText = isEn
           ? `Next Visit: ${data[0].appointment_date} (${data[0].appointment_time || 'Morning'})`
           : `Temujanji KK: ${data[0].appointment_date} (${data[0].appointment_time || 'Pagi'})`;
         document.getElementById('quick-appt-desc').innerHTML = isEn
-          ? `Checkup: <strong>${data[0].title}</strong> at ${data[0].clinic_name || 'Health Clinic'}`
-          : `Pemeriksaan: <strong>${data[0].title}</strong> di ${data[0].clinic_name || 'Klinik Kesihatan'}`;
+          ? `Checkup: <strong>${escapeHtml(data[0].title)}</strong> at ${escapeHtml(data[0].clinic_name || 'Health Clinic')}`
+          : `Pemeriksaan: <strong>${escapeHtml(data[0].title)}</strong> di ${escapeHtml(data[0].clinic_name || 'Klinik Kesihatan')}`;
         if (quickActions) {
           quickActions.classList.remove('hidden');
-          const topTitle = (data[0].title || '').replace(/'/g, "\\'");
-          const topClinic = (data[0].clinic_name || '').replace(/'/g, "\\'");
-          const topNotes = (data[0].notes || '').replace(/'/g, "\\'");
           quickActions.innerHTML = `
-            <button onclick="event.stopPropagation(); openCalendarChoiceModal('${topTitle}', '${data[0].appointment_date}', '${data[0].appointment_time || ''}', '${topClinic}', '${topNotes}', '${data[0].category || 'KKIA'}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold border border-sky-200 transition flex items-center space-x-1" title="${isEn ? 'Save to Google / Apple Calendar' : 'Simpan ke Google / Apple Calendar'}">
+            <button onclick="event.stopPropagation(); openAppointmentCalendarById('${topSafeId}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold border border-sky-200 transition flex items-center space-x-1" title="${isEn ? 'Save to Google / Apple Calendar' : 'Simpan ke Google / Apple Calendar'}">
               <span>📅</span>
               <span>${isEn ? 'Add to Calendar' : 'Simpan Kalendar'}</span>
             </button>
             <button onclick="event.stopPropagation(); sendNudge('appt')" class="text-[11px] px-2.5 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-700 font-semibold border border-teal-200 transition">
               🔔 ${isEn ? 'Remind Partner' : 'Ingatkan Pasangan'}
             </button>
-            <button onclick="event.stopPropagation(); editAppointment('${data[0].id}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 font-semibold border border-slate-200 transition">
+            <button onclick="event.stopPropagation(); editAppointment('${topSafeId}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 font-semibold border border-slate-200 transition">
               ✏️ ${isEn ? 'Edit Visit' : 'Edit Temujanji'}
             </button>
-            <button onclick="event.stopPropagation(); deleteAppointment('${data[0].id}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
+            <button onclick="event.stopPropagation(); deleteAppointment('${topSafeId}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
               🗑️ ${isEn ? 'Delete' : 'Padam'}
             </button>
           `;
@@ -4514,11 +4656,7 @@
 
     // LOAD HEALTH VITALS
     async function loadHealthVitals() {
-      const { data, error } = await db
-        .from('health_vitals')
-        .select('*')
-        .eq('family_id', currentFamilyId)
-        .order('logged_date', { ascending: false });
+      const { data, error } = await secureGetRecords('health_vitals');
 
       const isEn = currentLang === 'en';
       const container = document.getElementById('vital-logs');
@@ -4558,17 +4696,18 @@
 
         const row = document.createElement('div');
         row.className = "p-3 flex justify-between items-center text-xs gap-2";
+        const safeVitalId = escapeHtml(item.id);
         row.innerHTML = `
           <div>
-            <p class="font-bold text-slate-800">${item.logged_date} (${item.gestation_week || (isEn ? 'Routine Checkup' : 'Pemeriksaan')})</p>
-            <p class="text-[11px] text-slate-500">BP: ${item.blood_pressure || '-'} mmHg | ${isEn ? 'Weight' : 'Berat'}: ${item.weight || '-'} kg</p>
+            <p class="font-bold text-slate-800">${escapeHtml(item.logged_date)} (${escapeHtml(item.gestation_week || (isEn ? 'Routine Checkup' : 'Pemeriksaan'))})</p>
+            <p class="text-[11px] text-slate-500">BP: ${escapeHtml(item.blood_pressure || '-')} mmHg | ${isEn ? 'Weight' : 'Berat'}: ${escapeHtml(item.weight || '-')} kg</p>
           </div>
           <div class="flex items-center space-x-1.5">
-            <span class="text-xs font-black ${statusColor} px-2 py-0.5 rounded-full border">HB ${item.hb_reading}</span>
-            <button onclick="editVital('${item.id}')" title="${isEn ? 'Edit' : 'Edit'}" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 font-semibold border border-slate-200 transition">
+            <span class="text-xs font-black ${statusColor} px-2 py-0.5 rounded-full border">HB ${escapeHtml(item.hb_reading)}</span>
+            <button onclick="editVital('${safeVitalId}')" title="${isEn ? 'Edit' : 'Edit'}" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 font-semibold border border-slate-200 transition">
               ✏️
             </button>
-            <button onclick="deleteVital('${item.id}')" title="${isEn ? 'Delete' : 'Padam'}" class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
+            <button onclick="deleteVital('${safeVitalId}')" title="${isEn ? 'Delete' : 'Padam'}" class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
               🗑️
             </button>
           </div>
@@ -4607,11 +4746,12 @@
           bpBadge.className = "inline-block text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-full";
         }
 
+        const topVitalId = escapeHtml(data[0].id);
         const actionBtnsHtml = `
-          <button onclick="event.stopPropagation(); editVital('${data[0].id}')" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-pastel-50 text-slate-700 font-semibold border border-slate-200 transition">
+          <button onclick="event.stopPropagation(); editVital('${topVitalId}')" class="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-pastel-50 text-slate-700 font-semibold border border-slate-200 transition">
             ✏️ ${isEn ? 'Edit' : 'Edit'}
           </button>
-          <button onclick="event.stopPropagation(); deleteVital('${data[0].id}')" class="text-[10px] px-2 py-0.5 rounded-md bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
+          <button onclick="event.stopPropagation(); deleteVital('${topVitalId}')" class="text-[10px] px-2 py-0.5 rounded-md bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
             🗑️ ${isEn ? 'Delete' : 'Padam'}
           </button>
         `;
@@ -4628,11 +4768,7 @@
 
     // LOAD ALLERGIES
     async function loadAllergies() {
-      const { data, error } = await db
-        .from('allergies')
-        .select('*')
-        .eq('family_id', currentFamilyId)
-        .order('created_at', { ascending: false });
+      const { data, error } = await secureGetRecords('allergies');
 
       const isEn = currentLang === 'en';
       const container = document.getElementById('allergy-list');
@@ -4647,19 +4783,20 @@
       data.forEach(item => {
         const card = document.createElement('div');
         card.className = "bg-white p-3 rounded-2xl border border-slate-200 shadow-sm text-xs space-y-1.5";
+        const safeAllergyId = escapeHtml(item.id);
         card.innerHTML = `
           <div class="flex justify-between items-start">
-            <span class="font-bold text-slate-800">${item.item_name}</span>
-            <span class="text-[10px] bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded">${item.category}</span>
+            <span class="font-bold text-slate-800">${escapeHtml(item.item_name)}</span>
+            <span class="text-[10px] bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded">${escapeHtml(item.category)}</span>
           </div>
-          <p class="text-slate-600 text-[11px]">${isEn ? 'Symptoms' : 'Kesan'}: ${item.symptoms || (isEn ? 'Sensitivity' : 'Sensitiviti')}</p>
+          <p class="text-slate-600 text-[11px]">${isEn ? 'Symptoms' : 'Kesan'}: ${escapeHtml(item.symptoms || (isEn ? 'Sensitivity' : 'Sensitiviti'))}</p>
           <div class="pt-1.5 border-t border-slate-100 flex justify-between items-center">
-            <span class="text-[10px] text-slate-400">${isEn ? 'Logged by' : 'Dicatat oleh'}: ${item.recorded_by || (isEn ? 'Partner' : 'Pasangan')}</span>
+            <span class="text-[10px] text-slate-400">${isEn ? 'Logged by' : 'Dicatat oleh'}: ${escapeHtml(item.recorded_by || (isEn ? 'Partner' : 'Pasangan'))}</span>
             <div class="flex items-center space-x-1.5">
-              <button onclick="editAllergy('${item.id}')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 text-[11px] font-semibold border border-slate-200 transition">
+              <button onclick="editAllergy('${safeAllergyId}')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 text-[11px] font-semibold border border-slate-200 transition">
                 ✏️ ${isEn ? 'Edit' : 'Edit'}
               </button>
-              <button onclick="deleteAllergy('${item.id}')" class="px-2 py-0.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-semibold border border-rose-200 transition">
+              <button onclick="deleteAllergy('${safeAllergyId}')" class="px-2 py-0.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-semibold border border-rose-200 transition">
                 🗑️ ${isEn ? 'Delete' : 'Padam'}
               </button>
             </div>
@@ -4671,12 +4808,7 @@
 
     // LOAD BABY MEMORIES
     async function loadBabyMemories() {
-      const { data, error } = await db
-        .from('baby_memories')
-        .select('*')
-        .eq('family_id', currentFamilyId)
-        .neq('category', 'Warkah Buat Bakal Anak')
-        .order('memory_date', { ascending: false });
+      const { data, error } = await secureGetRecords('baby_memories', { excludeCategory: 'Warkah Buat Bakal Anak' });
 
       const isEn = currentLang === 'en';
       const container = document.getElementById('memory-timeline-container');
@@ -4785,16 +4917,15 @@
       // 1. Simpan ke Supabase baby_memories
       if (db && currentFamilyId) {
         try {
-          const { data, error } = await db.from('baby_memories').insert({
-            family_id: currentFamilyId,
+          const { data, error } = await secureInsertRecord('baby_memories', {
             title: title,
             category: 'Warkah Buat Bakal Anak',
             memory_date: date,
             notes: body,
             uploaded_by: author
-          }).select();
-          if (!error && data && data[0]) {
-            newLetter.id = data[0].id;
+          });
+          if (!error && data && data.id) {
+            newLetter.id = data.id;
           }
         } catch (e) {
           console.warn("Supabase insert letter fallback:", e);
@@ -4828,12 +4959,7 @@
       // Dapatkan daripada Supabase
       if (db && currentFamilyId) {
         try {
-          const { data, error } = await db
-            .from('baby_memories')
-            .select('*')
-            .eq('family_id', currentFamilyId)
-            .eq('category', 'Warkah Buat Bakal Anak')
-            .order('created_at', { ascending: false });
+          const { data, error } = await secureGetRecords('baby_memories', { category: 'Warkah Buat Bakal Anak' });
           if (!error && data && data.length > 0) {
             letters = data;
           }
@@ -4891,20 +5017,20 @@
                 </span>
                 <span class="text-[10px] text-slate-400 flex items-center space-x-1">
                   <i data-lucide="calendar" class="w-3 h-3"></i>
-                  <span>${item.memory_date}</span>
+                  <span>${escapeHtml(item.memory_date)}</span>
                 </span>
               </div>
-              <button onclick="deleteTtcLetter('${item.id}')" title="${isEn ? 'Delete Letter' : 'Padam Warkah'}" class="text-slate-300 hover:text-rose-500 transition p-1 rounded-lg hover:bg-rose-50">
+              <button onclick="deleteTtcLetter('${escapeHtml(item.id)}')" title="${isEn ? 'Delete Letter' : 'Padam Warkah'}" class="text-slate-300 hover:text-rose-500 transition p-1 rounded-lg hover:bg-rose-50">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </div>
             <div class="space-y-1.5">
               <h4 class="font-bold text-slate-800 text-xs sm:text-sm flex items-center space-x-1.5">
                 <span>✨</span>
-                <span>${item.title}</span>
+                <span>${escapeHtml(item.title)}</span>
               </h4>
               <div class="bg-gradient-to-r from-rose-50/40 via-amber-50/20 to-purple-50/30 p-3.5 rounded-xl border border-rose-100/70 text-xs text-slate-700 italic font-serif leading-relaxed whitespace-pre-line">
-                "${item.notes}"
+                "${escapeHtml(item.notes)}"
               </div>
             </div>
           </div>
@@ -4920,7 +5046,7 @@
 
       if (db && currentFamilyId && !String(id).startsWith('letter-')) {
         try {
-          await db.from('baby_memories').delete().eq('id', id);
+          await secureDeleteRecord('baby_memories', { rowId: id });
         } catch (e) {
           console.warn("Error deleting letter from Supabase:", e);
         }
@@ -4940,7 +5066,7 @@
 
     // ================= EDIT & DELETE FUNCTIONS =================
     function editAppointment(id) {
-      const item = cachedAppointments.find(x => x.id === id);
+      const item = cachedAppointments.find(x => String(x.id) === String(id));
       if (!item) return;
       const isEn = currentLang === 'en';
       editingApptId = id;
@@ -4959,14 +5085,14 @@
       const isEn = currentLang === 'en';
       if (!confirm(isEn ? "Delete this clinic appointment?" : "Adakah anda pasti mahu memadam rekod janji temu ini?")) return;
       if (db && currentFamilyId) {
-        await db.from('appointments').delete().eq('id', id);
+        await secureDeleteRecord('appointments', { rowId: id });
       }
       showToast(isEn ? "🗑️ Clinic appointment deleted." : "🗑️ Rekod janji temu telah dipadam.");
       loadAppointments();
     }
 
     function editVital(id) {
-      const item = cachedVitals.find(x => x.id === id);
+      const item = cachedVitals.find(x => String(x.id) === String(id));
       if (!item) return;
       const isEn = currentLang === 'en';
       editingVitalId = id;
@@ -4984,14 +5110,14 @@
       const isEn = currentLang === 'en';
       if (!confirm(isEn ? "Delete this vital reading (HB / BP)?" : "Adakah anda pasti mahu memadam rekod bacaan HB / BP ini?")) return;
       if (db && currentFamilyId) {
-        await db.from('health_vitals').delete().eq('id', id);
+        await secureDeleteRecord('health_vitals', { rowId: id });
       }
       showToast(isEn ? "🗑️ Vital reading deleted." : "🗑️ Rekod bacaan HB / BP telah dipadam.");
       loadHealthVitals();
     }
 
     function editAllergy(id) {
-      const item = cachedAllergies.find(x => x.id === id);
+      const item = cachedAllergies.find(x => String(x.id) === String(id));
       if (!item) return;
       const isEn = currentLang === 'en';
       editingAllergyId = id;
@@ -5007,7 +5133,7 @@
       const isEn = currentLang === 'en';
       if (!confirm(isEn ? "Delete this allergy / diet note?" : "Adakah anda pasti mahu memadam nota alahan ini?")) return;
       if (db && currentFamilyId) {
-        await db.from('allergies').delete().eq('id', id);
+        await secureDeleteRecord('allergies', { rowId: id });
       }
       showToast(isEn ? "🗑️ Allergy note deleted." : "🗑️ Nota alahan telah dipadam.");
       loadAllergies();
@@ -5111,7 +5237,7 @@
     }
 
     function editMemory(id) {
-      const item = cachedMemories.find(x => x.id === id);
+      const item = cachedMemories.find(x => String(x.id) === String(id));
       if (!item) return;
       const isEn = currentLang === 'en';
       editingMemoryId = id;
@@ -5146,7 +5272,7 @@
       const isEn = currentLang === 'en';
       if (!confirm(isEn ? "Delete this photo memory?" : "Adakah anda pasti mahu memadam kenangan ini?")) return;
       if (db && currentFamilyId) {
-        await db.from('baby_memories').delete().eq('id', id);
+        await secureDeleteRecord('baby_memories', { rowId: id });
       }
       showToast(isEn ? "🗑️ Memory deleted." : "🗑️ Kenangan telah dipadam.");
       loadBabyMemories();
@@ -5222,10 +5348,9 @@
           if (finalImageUrl !== null) {
             updatePayload.image_url = finalImageUrl || null;
           }
-          await db.from('baby_memories').update(updatePayload).eq('id', editingMemoryId);
+          await secureUpdateRecord('baby_memories', editingMemoryId, updatePayload);
         } else {
-          await db.from('baby_memories').insert({
-            family_id: currentFamilyId,
+          await secureInsertRecord('baby_memories', {
             title: title,
             category: cat,
             memory_date: date,
@@ -5265,16 +5390,15 @@
 
       if (db && currentFamilyId) {
         if (editingApptId) {
-          await db.from('appointments').update({
+          await secureUpdateRecord('appointments', editingApptId, {
             title: title,
             clinic_name: clinic,
             appointment_date: date,
             appointment_time: time,
             notes: notes
-          }).eq('id', editingApptId);
+          });
         } else {
-          await db.from('appointments').insert({
-            family_id: currentFamilyId,
+          await secureInsertRecord('appointments', {
             title: title,
             clinic_name: clinic,
             appointment_date: date,
@@ -5311,15 +5435,14 @@
 
       if (db && currentFamilyId) {
         if (editingVitalId) {
-          await db.from('health_vitals').update({
+          await secureUpdateRecord('health_vitals', editingVitalId, {
             hb_reading: hb,
             blood_pressure: bp,
             weight: parseFloat(weight),
             logged_date: loggedDate
-          }).eq('id', editingVitalId);
+          });
         } else {
-          await db.from('health_vitals').insert({
-            family_id: currentFamilyId,
+          await secureInsertRecord('health_vitals', {
             hb_reading: hb,
             blood_pressure: bp,
             weight: parseFloat(weight),
@@ -5349,14 +5472,13 @@
 
       if (db && currentFamilyId) {
         if (editingAllergyId) {
-          await db.from('allergies').update({
+          await secureUpdateRecord('allergies', editingAllergyId, {
             item_name: name,
             category: cat,
             symptoms: symp
-          }).eq('id', editingAllergyId);
+          });
         } else {
-          await db.from('allergies').insert({
-            family_id: currentFamilyId,
+          await secureInsertRecord('allergies', {
             item_name: name,
             category: cat,
             symptoms: symp,
@@ -5374,13 +5496,30 @@
       loadAllergies();
     }
 
+    function openPhotoLightboxFromEl(el) {
+      if (!el) return;
+      openPhotoLightbox(
+        el.dataset.src || '',
+        el.dataset.title || '',
+        el.dataset.date || '',
+        el.dataset.notes || ''
+      );
+    }
+
     function createMemoryCard(cardEl, title, cat, date, notes, imgSrc, uploader = 'Keluarga', id = null) {
       const isEn = currentLang === 'en';
+      const safeSrc = safeImageUrl(imgSrc);
+      const safeTitle = escapeHtml(title);
+      const safeCat = escapeHtml(cat);
+      const safeDate = escapeHtml(date);
+      const safeNotes = escapeHtml(notes);
+      const safeUploader = escapeHtml(uploader);
+      const safeId = escapeHtml(id);
       let mediaHtml = '';
-      if (imgSrc) {
+      if (safeSrc) {
         mediaHtml = `
-          <div class="relative rounded-xl overflow-hidden max-h-64 border border-pastel-100 flex items-center justify-center bg-black/5 cursor-pointer group" onclick="openPhotoLightbox('${imgSrc}', '${encodeURIComponent(title || '')}', '${encodeURIComponent(date || '')}', '${encodeURIComponent(notes || '')}')" title="${isEn ? 'Click to zoom photo' : 'Klik untuk lihat foto penuh'}">
-            <img src="${imgSrc}" class="w-full h-auto object-cover rounded-xl transition duration-300 group-hover:scale-102" alt="${title}" loading="lazy">
+          <div class="relative rounded-xl overflow-hidden max-h-64 border border-pastel-100 flex items-center justify-center bg-black/5 cursor-pointer group" data-src="${escapeHtml(safeSrc)}" data-title="${encodeURIComponent(title || '')}" data-date="${encodeURIComponent(date || '')}" data-notes="${encodeURIComponent(notes || '')}" onclick="openPhotoLightboxFromEl(this)" title="${isEn ? 'Click to zoom photo' : 'Klik untuk lihat foto penuh'}">
+            <img src="${escapeHtml(safeSrc)}" class="w-full h-auto object-cover rounded-xl transition duration-300 group-hover:scale-102" alt="${safeTitle}" loading="lazy">
             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition flex items-center justify-center opacity-0 group-hover:opacity-100">
               <span class="bg-black/70 backdrop-blur-xs text-white text-[11px] font-semibold px-3 py-1.5 rounded-full flex items-center space-x-1.5 shadow-md transform translate-y-1 group-hover:translate-y-0 transition">
                 <i data-lucide="zoom-in" class="w-3.5 h-3.5 text-white"></i>
@@ -5394,7 +5533,7 @@
           <div class="relative rounded-xl overflow-hidden bg-gradient-to-tr from-pastel-50 to-purple-50 border border-pastel-100 flex items-center justify-center h-36">
             <div class="text-center p-3">
               <span class="text-4xl block mb-1">📸✨</span>
-              <p class="text-xs font-semibold text-slate-700">${notes}</p>
+              <p class="text-xs font-semibold text-slate-700">${safeNotes}</p>
             </div>
           </div>
         `;
@@ -5405,21 +5544,21 @@
           <div class="flex items-center space-x-2">
             <div class="w-7 h-7 rounded-full bg-pastel-100 text-pastel-700 flex items-center justify-center font-bold text-[9px]">${isEn ? 'MEM' : 'MEMORI'}</div>
             <div>
-              <h4 class="text-xs font-bold text-slate-800">${title}</h4>
-              <p class="text-[10px] text-slate-500">${date}</p>
+              <h4 class="text-xs font-bold text-slate-800">${safeTitle}</h4>
+              <p class="text-[10px] text-slate-500">${safeDate}</p>
             </div>
           </div>
-          <span class="text-[10px] bg-pastel-50 text-pastel-700 font-semibold px-2 py-0.5 rounded-full border border-pastel-200">${cat}</span>
+          <span class="text-[10px] bg-pastel-50 text-pastel-700 font-semibold px-2 py-0.5 rounded-full border border-pastel-200">${safeCat}</span>
         </div>
         ${mediaHtml}
         <div class="flex justify-between items-center text-[11px] text-slate-500 pt-1 border-t border-slate-100">
-          <span>${isEn ? 'Uploaded by' : 'Dimuat naik oleh'}: <strong>${uploader}</strong></span>
+          <span>${isEn ? 'Uploaded by' : 'Dimuat naik oleh'}: <strong>${safeUploader}</strong></span>
           ${id ? `
             <div class="flex items-center space-x-1.5">
-              <button onclick="editMemory('${id}')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 font-semibold border border-slate-200 transition">
+              <button onclick="editMemory('${safeId}')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-pastel-50 text-slate-700 font-semibold border border-slate-200 transition">
                 ✏️ ${isEn ? 'Edit' : 'Edit'}
               </button>
-              <button onclick="deleteMemory('${id}')" class="px-2 py-0.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
+              <button onclick="deleteMemory('${safeId}')" class="px-2 py-0.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
                 🗑️ ${isEn ? 'Delete' : 'Padam'}
               </button>
             </div>
@@ -5433,6 +5572,7 @@
     // ==========================================
     function openPhotoLightbox(src, encTitle, encDate, encNotes) {
       const isEn = currentLang === 'en';
+      const cleanSrc = safeImageUrl(src);
       const title = decodeURIComponent(encTitle || '');
       const date = decodeURIComponent(encDate || '');
       const notes = decodeURIComponent(encNotes || '');
@@ -5443,14 +5583,14 @@
       const notesEl = document.getElementById('lightbox-notes');
       const dlLink = document.getElementById('lightbox-download');
 
-      if (img) img.src = src;
+      if (img) img.src = cleanSrc;
       if (titleEl) titleEl.innerText = title || (isEn ? 'Baby Memory' : 'Kenangan Bayi');
       if (dateEl) dateEl.innerText = date || '';
       if (notesEl) {
         notesEl.innerText = notes || (isEn ? 'Precious moment saved in BukuPinkKu.' : 'Momen indah tersimpan di BukuPinkKu.');
       }
       if (dlLink) {
-        dlLink.href = src;
+        dlLink.href = cleanSrc || '#';
         const cleanName = (title || 'kenangan_bukupinkku').toLowerCase().replace(/[^a-z0-9]/g, '_');
         dlLink.download = `${cleanName}.jpg`;
       }
@@ -5713,11 +5853,7 @@
       const state = getSavedVaccines();
       if (db && currentFamilyId) {
         try {
-          const { data, error } = await db
-            .from('baby_memories')
-            .select('*')
-            .eq('family_id', currentFamilyId)
-            .eq('category', 'Vaksin KKM');
+          const { data, error } = await secureGetRecords('baby_memories', { category: 'Vaksin KKM' });
           if (!error && data && data.length > 0) {
             data.forEach(item => {
               if (item.notes) {
@@ -5763,9 +5899,9 @@
         if (db && currentFamilyId) {
           try {
             if (cloudId) {
-              await db.from('baby_memories').delete().eq('id', cloudId);
+              await secureDeleteRecord('baby_memories', { rowId: cloudId });
             } else {
-              await db.from('baby_memories').delete().eq('family_id', currentFamilyId).eq('category', 'Vaksin KKM').like('title', `%${vac.nameMs}%`);
+              await secureDeleteRecord('baby_memories', { category: 'Vaksin KKM', titleSubstr: vac.nameMs });
             }
           } catch (e) {
             console.warn("Error removing vaccine from Supabase:", e);
@@ -5780,16 +5916,15 @@
 
         if (db && currentFamilyId) {
           try {
-            const { data, error } = await db.from('baby_memories').insert({
-              family_id: currentFamilyId,
+            const { data, error } = await secureInsertRecord('baby_memories', {
               title: `Vaksin KKM: ${vac.nameMs}`,
               category: 'Vaksin KKM',
               memory_date: today,
               notes: JSON.stringify({ vacId: vac.id, name: vac.nameMs, date: today }),
               uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
-            }).select('id').single();
+            });
 
-            if (!error && data) {
+            if (!error && data && data.id) {
               state[vacId].cloudId = data.id;
               saveVaccinesState(state);
             }
@@ -5998,8 +6133,7 @@
 
         if (db && currentFamilyId) {
           try {
-            await db.from('baby_memories').insert({
-              family_id: currentFamilyId,
+            await secureInsertRecord('baby_memories', {
               title: `Ujian Makanan Selamat: ${test.foodName}`,
               category: 'Ujian Makanan',
               memory_date: new Date().toISOString().split('T')[0],
@@ -6033,8 +6167,7 @@
       // SIMPAN TERUS KE SUPABASE ALLERGIES TABLE
       if (db && currentFamilyId) {
         try {
-          await db.from('allergies').insert({
-            family_id: currentFamilyId,
+          await secureInsertRecord('allergies', {
             item_name: foodName,
             category: isEn ? 'Baby Food (3-Day Rule)' : 'Makanan Bayi (Ujian 3 Hari)',
             symptoms: isEn ? 'Skin rash / allergic reaction detected during 3-Day Rule' : 'Reaksi ruam kemerahan / alahan dikesan semasa Ujian 3 Hari KKM',
@@ -6105,8 +6238,8 @@
           <div class="flex justify-between items-start">
             <div>
               ${statusBadge}
-              <h4 class="text-sm font-bold text-slate-800 mt-1.5">${test.foodName}</h4>
-              ${test.notes ? `<p class="text-[11px] text-slate-500 mt-0.5">${test.notes}</p>` : ''}
+              <h4 class="text-sm font-bold text-slate-800 mt-1.5">${escapeHtml(test.foodName)}</h4>
+              ${test.notes ? `<p class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(test.notes)}</p>` : ''}
             </div>
             <button onclick="openNewFoodTestModal()" class="text-[11px] text-slate-400 hover:text-slate-600">
               <i data-lucide="edit" class="w-4 h-4"></i>
@@ -6145,7 +6278,7 @@
         } else {
           safeContainer.innerHTML = safeList.map(item => `
             <span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 font-semibold rounded-lg border border-emerald-200 shadow-2xs">
-              ✓ ${item}
+              ✓ ${escapeHtml(item)}
             </span>
           `).join('');
         }
@@ -6233,11 +6366,7 @@
       const state = getSavedMilestones();
       if (db && currentFamilyId) {
         try {
-          const { data, error } = await db
-            .from('baby_memories')
-            .select('*')
-            .eq('family_id', currentFamilyId)
-            .eq('category', 'Milestone');
+          const { data, error } = await secureGetRecords('baby_memories', { category: 'Milestone' });
           if (!error && data && data.length > 0) {
             data.forEach(item => {
               if (item.notes) {
@@ -6289,8 +6418,7 @@
       if (nextState) {
         if (db && currentFamilyId && matchedItem) {
           try {
-            await db.from('baby_memories').insert({
-              family_id: currentFamilyId,
+            await secureInsertRecord('baby_memories', {
               title: `Milestone: ${matchedItem.textMs}`,
               category: 'Milestone',
               memory_date: new Date().toISOString().split('T')[0],
@@ -6305,10 +6433,7 @@
       } else {
         if (db && currentFamilyId && matchedItem) {
           try {
-            await db.from('baby_memories').delete()
-              .eq('family_id', currentFamilyId)
-              .eq('category', 'Milestone')
-              .like('title', `%${matchedItem.textMs}%`);
+            await secureDeleteRecord('baby_memories', { category: 'Milestone', titleSubstr: matchedItem.textMs });
           } catch (e) {
             console.warn("Milestone delete error:", e);
           }
@@ -6406,12 +6531,7 @@
       let logs = getSavedGrowthLogs();
       if (db && currentFamilyId) {
         try {
-          const { data, error } = await db
-            .from('baby_memories')
-            .select('*')
-            .eq('family_id', currentFamilyId)
-            .eq('category', 'Tumbesaran')
-            .order('memory_date', { ascending: false });
+          const { data, error } = await secureGetRecords('baby_memories', { category: 'Tumbesaran' });
 
           if (!error && data && data.length > 0) {
             const cloudLogs = [];
@@ -6587,8 +6707,7 @@
 
       if (db && currentFamilyId) {
         try {
-          const { data, error } = await db.from('baby_memories').insert({
-            family_id: currentFamilyId,
+          const { data, error } = await secureInsertRecord('baby_memories', {
             title: `Tumbesaran ${ageMonths} Bulan: ${weight} kg`,
             category: 'Tumbesaran',
             memory_date: date,
@@ -6601,9 +6720,9 @@
               notes
             }),
             uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
-          }).select().single();
+          });
 
-          if (!error && data) {
+          if (!error && data && data.id) {
             newRecord.cloudId = data.id;
             saveGrowthLogsState(logs);
           }
@@ -6625,7 +6744,7 @@
 
       if (target && target.cloudId && db && currentFamilyId) {
         try {
-          await db.from('baby_memories').delete().eq('id', target.cloudId);
+          await secureDeleteRecord('baby_memories', { rowId: target.cloudId });
         } catch (e) {
           console.warn("Supabase growth delete error:", e);
         }
@@ -6724,27 +6843,28 @@
           const p = calculatePercentileStatus(item.ageMonths, item.weight);
           const ageLabel = item.ageMonths === 0 ? (isEn ? 'At Birth' : 'Masa Lahir') : `${item.ageMonths} ${isEn ? 'Months' : 'Bulan'}`;
 
+          const safeGrowthId = escapeHtml(item.id);
           card.innerHTML = `
             <div class="flex justify-between items-start">
               <div>
                 <div class="flex items-center space-x-1.5">
                   <span class="bg-sky-50 text-sky-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md border border-sky-200">
-                    👶 ${ageLabel}
+                    👶 ${escapeHtml(ageLabel)}
                   </span>
                   <span class="${p.badgeColor} text-[10px] font-bold px-2 py-0.5 rounded-md border">
                     ${p.icon} ${p.heroStatus}
                   </span>
                 </div>
-                <p class="font-black text-slate-800 text-sm mt-1.5">${item.weight} kg <span class="text-xs font-normal text-slate-500">| ${item.height ? item.height + ' cm' : '- cm'} | Lilit: ${item.headCirc ? item.headCirc + ' cm' : '-'}</span></p>
+                <p class="font-black text-slate-800 text-sm mt-1.5">${escapeHtml(item.weight)} kg <span class="text-xs font-normal text-slate-500">| ${item.height ? escapeHtml(item.height) + ' cm' : '- cm'} | Lilit: ${item.headCirc ? escapeHtml(item.headCirc) + ' cm' : '-'}</span></p>
               </div>
-              <span class="text-[11px] font-semibold text-slate-400">${item.date}</span>
+              <span class="text-[11px] font-semibold text-slate-400">${escapeHtml(item.date)}</span>
             </div>
 
-            ${item.notes ? `<p class="text-[11px] text-slate-600 bg-slate-50 p-2 rounded-xl border border-slate-100 italic">"${item.notes}"</p>` : ''}
+            ${item.notes ? `<p class="text-[11px] text-slate-600 bg-slate-50 p-2 rounded-xl border border-slate-100 italic">"${escapeHtml(item.notes)}"</p>` : ''}
 
             <div class="pt-1.5 border-t border-slate-100 flex justify-between items-center text-[10px] text-slate-400">
               <span>${isEn ? 'Verified MOH record' : 'Rekod Buku Pink / Kesihatan Kanak-Kanak'}</span>
-              <button onclick="deleteGrowthLog('${item.id}')" class="px-2 py-0.5 rounded-md bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
+              <button onclick="deleteGrowthLog('${safeGrowthId}')" class="px-2 py-0.5 rounded-md bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
                 🗑️ ${isEn ? 'Delete' : 'Padam'}
               </button>
             </div>
@@ -6961,8 +7081,7 @@
       // Sync ke Supabase baby_memories jika ada
       if (db && currentFamilyId) {
         try {
-          await db.from('baby_memories').insert({
-            family_id: currentFamilyId,
+          await secureInsertRecord('baby_memories', {
             title: `Log OPK: ${result}`,
             category: 'Ujian OPK',
             memory_date: date,
@@ -7029,22 +7148,24 @@
 
       container.innerHTML = logs.map(item => {
         const badge = formatOpkBadge(item.result);
+        const safeDate = escapeHtml(item.date);
+        const safeOpkId = escapeHtml(item.id);
         return `
           <div class="p-3 flex justify-between items-center text-xs hover:bg-slate-50/70 transition">
             <div class="space-y-0.5">
               <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
-                <span class="font-bold text-slate-800">${item.date}</span>
+                <span class="font-bold text-slate-800">${safeDate}</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badge.cls}">${badge.label}</span>
                 ${badge.isPeak ? `
-                  <button onclick="sharePeakOpkWhatsApp('${item.date}')" class="px-2 py-0.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[10px] rounded-md border border-rose-200 flex items-center space-x-1 transition shadow-2xs">
+                  <button onclick="sharePeakOpkWhatsApp('${safeDate}')" class="px-2 py-0.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[10px] rounded-md border border-rose-200 flex items-center space-x-1 transition shadow-2xs">
                     <span>📲</span>
                     <span>${isEn ? 'Nudge Partner' : 'Khabarkan ke Pasangan'}</span>
                   </button>
                 ` : ''}
               </div>
-              <p class="text-[11px] text-slate-500">${isEn ? 'BBT' : 'Suhu BBT'}: ${item.temp}°C | ${item.notes}</p>
+              <p class="text-[11px] text-slate-500">${isEn ? 'BBT' : 'Suhu BBT'}: ${escapeHtml(item.temp)}°C | ${escapeHtml(item.notes)}</p>
             </div>
-            <button onclick="deleteOpkLog('${item.id}')" title="${isEn ? 'Delete' : 'Padam'}" class="text-rose-500 hover:text-rose-700 p-1">
+            <button onclick="deleteOpkLog('${safeOpkId}')" title="${isEn ? 'Delete' : 'Padam'}" class="text-rose-500 hover:text-rose-700 p-1">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
             </button>
           </div>
@@ -7304,13 +7425,9 @@
       let memories = [];
       if (db && currentFamilyId) {
         try {
-          const { data, error } = await db
-            .from('baby_memories')
-            .select('*')
-            .eq('family_id', currentFamilyId)
-            .order('memory_date', { ascending: true });
+          const { data, error } = await secureGetRecords('baby_memories');
           if (!error && data && data.length > 0) {
-            memories = data;
+            memories = data.slice().sort((a, b) => String(a.memory_date || '').localeCompare(String(b.memory_date || '')));
           }
         } catch (e) {
           console.error("Gagal load photobook memories:", e);
@@ -7353,37 +7470,43 @@
 
       container.innerHTML = memories.map((m, idx) => {
         const isLetter = m.category === 'Warkah Buat Bakal Anak';
+        const safeTitle = escapeHtml(m.title);
+        const safeCat = escapeHtml(m.category || (isEn ? 'Memory' : 'Memori'));
+        const safeUploader = escapeHtml(m.uploaded_by);
+        const safeNotes = escapeHtml(m.notes || '');
+        const safeDate = escapeHtml(m.memory_date);
+        const safeImg = safeImageUrl(m.image_url);
         return `
         <div class="p-3.5 rounded-2xl border ${isLetter ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200 bg-white'} shadow-sm space-y-2">
           <div class="flex items-center justify-between text-xs">
             <div class="flex items-center space-x-2">
               <span class="w-6 h-6 rounded-full ${isLetter ? 'bg-rose-100 text-rose-700' : 'bg-pastel-100 text-pastel-700'} font-bold flex items-center justify-center text-[10px]">#${idx + 1}</span>
-              <strong class="text-slate-800 font-bold text-xs">${m.title}</strong>
+              <strong class="text-slate-800 font-bold text-xs">${safeTitle}</strong>
             </div>
             <span class="text-[10px] px-2 py-0.5 rounded-full ${isLetter ? 'bg-rose-100 text-rose-700 border border-rose-200 font-bold' : 'bg-pastel-50 text-pastel-600 font-medium border border-pastel-200'}">
-              ${isLetter ? (isEn ? '💌 Letter to Future Baby' : '💌 Warkah Bakal Anak') : (m.category || (isEn ? 'Memory' : 'Memori'))}
+              ${isLetter ? (isEn ? '💌 Letter to Future Baby' : '💌 Warkah Bakal Anak') : safeCat}
             </span>
           </div>
-          ${m.image_url ? `
+          ${safeImg ? `
             <div class="w-full max-h-56 rounded-xl overflow-hidden border border-pastel-100 flex items-center justify-center bg-black/5">
-              <img src="${m.image_url}" class="w-full h-auto object-cover rounded-xl" alt="${m.title}">
+              <img src="${escapeHtml(safeImg)}" class="w-full h-auto object-cover rounded-xl" alt="${safeTitle}">
             </div>
           ` : isLetter ? `
             <div class="p-3.5 rounded-xl bg-gradient-to-r from-rose-50 via-amber-50/30 to-pink-50 border border-rose-200/80 text-left">
               <div class="flex items-center space-x-1.5 text-[11px] font-bold text-rose-800 mb-1">
                 <span>✍️</span>
-                <span>${m.uploaded_by ? (isEn ? 'Written with love by ' + m.uploaded_by : 'Ditulis dengan penuh kasih oleh ' + m.uploaded_by) : (isEn ? 'From Mom & Dad' : 'Daripada Ibu & Ayah')}</span>
+                <span>${m.uploaded_by ? (isEn ? 'Written with love by ' + safeUploader : 'Ditulis dengan penuh kasih oleh ' + safeUploader) : (isEn ? 'From Mom & Dad' : 'Daripada Ibu & Ayah')}</span>
               </div>
-              <p class="text-xs text-slate-700 italic font-serif leading-relaxed whitespace-pre-line">"${m.notes || ''}"</p>
+              <p class="text-xs text-slate-700 italic font-serif leading-relaxed whitespace-pre-line">"${safeNotes}"</p>
             </div>
           ` : `
             <div class="p-3 rounded-xl bg-gradient-to-r from-pastel-50 to-purple-50 border border-pastel-100 text-center">
               <span class="text-3xl block mb-1">👶✨</span>
-              <p class="text-xs text-slate-700 italic">"${m.notes || ''}"</p>
+              <p class="text-xs text-slate-700 italic">"${safeNotes}"</p>
             </div>
           `}
           <div class="text-[10px] text-slate-400 flex justify-between items-center pt-1 border-t border-slate-100">
-            <span>📅 ${m.memory_date}</span>
+            <span>📅 ${safeDate}</span>
             <span>${isEn ? 'BukuPinkKu Digital Vault' : 'Simpanan Digital BukuPinkKu'}</span>
           </div>
         </div>
