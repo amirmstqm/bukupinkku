@@ -1108,6 +1108,11 @@
               <span data-i18n="subtab_preg_vitals">Bacaan Vital (HB/BP)</span>
             </button>
 
+            <button onclick="navigateFromSidebar('pregnancy', 'kicks')" id="nav-preg-kicks" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+              <span class="text-base leading-none">👣</span>
+              <span data-i18n="subtab_preg_kicks">Kiraan Tendangan Bayi</span>
+            </button>
+
             <button onclick="navigateFromSidebar('pregnancy', 'pantang')" id="nav-preg-pantang" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
               <i data-lucide="shield-alert" class="w-4 h-4 text-amber-500"></i>
               <span data-i18n="subtab_preg_allergy">Pantang & Alahan</span>
@@ -1602,6 +1607,22 @@
             </div>
           </div>
 
+          <!-- Quick Kaunter Tendangan Bayi (KKM 9pg - 9mlm) -->
+          <div onclick="switchPregSubtab('kicks')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-pastel-400 transition flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 min-w-0">
+              <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center shrink-0 text-lg">👣</div>
+              <div class="min-w-0">
+                <p data-i18n="hdr_preg_kicks_title" class="text-xs font-bold text-slate-800 truncate">Kiraan Tendangan Bayi (KKM)</p>
+                <p id="overview-kicks-sub" class="text-[11px] text-slate-500">Hari ini: 0/10 gerakan (9pg–9mlm)</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2 shrink-0">
+              <button type="button" id="btn-quick-kick-add" onclick="event.stopPropagation(); recordBabyKick();" class="text-[11px] font-extrabold bg-rose-500 hover:bg-rose-600 text-white px-2.5 py-1 rounded-full shadow-2xs active:scale-95 transition" data-i18n="btn_quick_kick">+1 Tendang</button>
+              <span id="overview-kicks-badge" class="text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-full">0/10</span>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+            </div>
+          </div>
+
           <!-- Quick Checklist Beg Bersalin -->
           <div onclick="switchPregSubtab('beg')" class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-pastel-400 transition flex items-center justify-between gap-3">
             <div class="flex items-center space-x-3 min-w-0">
@@ -1686,6 +1707,70 @@
           </form>
 
           <div id="hospital-bag-container" class="space-y-3"></div>
+        </div>
+
+        <!-- VIEW 6: KAUNTER TENDANGAN BAYI (CARTA PERGERAKAN JANIN KKM) -->
+        <div id="view-preg-kicks" class="hidden space-y-3">
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2.5">
+            <div class="flex justify-between items-start gap-2">
+              <div>
+                <h3 data-i18n="kicks_chart_title" class="text-xs font-bold text-slate-800 uppercase">Carta Pergerakan Janin (9pg – 9mlm)</h3>
+                <p data-i18n="kicks_chart_sub" class="text-[11px] text-slate-500 mt-0.5">Kira 10 pergerakan bayi yang jelas setiap hari bermula Minggu 28 kehamilan.</p>
+              </div>
+              <span id="kick-today-badge" class="text-[11px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-full whitespace-nowrap">0/10</span>
+            </div>
+
+            <div class="flex justify-between items-center text-[11px] font-semibold text-slate-600 pt-1">
+              <span id="kick-today-date">--</span>
+              <span id="kick-today-status-txt" class="text-rose-700 font-bold">0 / 10</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+              <div id="kick-progress-bar" class="bg-gradient-to-r from-rose-400 to-pastel-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 pt-1 text-center text-xs">
+              <div class="bg-slate-50 border border-slate-200/70 p-2 rounded-xl">
+                <p data-i18n="kicks_first_lbl" class="text-[10px] font-semibold text-slate-500">Tendangan #1</p>
+                <p id="kick-first-time" class="font-bold text-slate-800 mt-0.5">--</p>
+              </div>
+              <div class="bg-slate-50 border border-slate-200/70 p-2 rounded-xl">
+                <p data-i18n="kicks_tenth_lbl" class="text-[10px] font-semibold text-slate-500">Tendangan #10</p>
+                <p id="kick-tenth-time" class="font-bold text-slate-800 mt-0.5">--</p>
+              </div>
+              <div class="bg-slate-50 border border-slate-200/70 p-2 rounded-xl">
+                <p data-i18n="kicks_dur_lbl" class="text-[10px] font-semibold text-slate-500">Tempoh Masa</p>
+                <p id="kick-duration" class="font-bold text-pastel-700 mt-0.5">--</p>
+              </div>
+            </div>
+
+            <button type="button" id="btn-record-kick" onclick="recordBabyKick()" class="w-full py-3.5 px-4 bg-gradient-to-r from-rose-500 to-pastel-500 hover:from-rose-600 hover:to-pastel-600 text-white font-extrabold text-sm rounded-2xl shadow-md active:scale-[0.98] transition flex items-center justify-center space-x-2">
+              <span>👣</span>
+              <span id="btn-record-kick-label" data-i18n="kicks_tap_btn">Catat 1 Tendangan Sekarang</span>
+            </button>
+
+            <div class="flex items-center justify-between gap-2 pt-0.5">
+              <button type="button" id="btn-undo-kick" onclick="undoBabyKick()" class="flex-1 py-2 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-bold transition disabled:opacity-40" data-i18n="kicks_undo_btn">↩️ Kurangkan 1</button>
+              <button type="button" id="btn-reset-kick" onclick="resetTodayBabyKicks()" class="flex-1 py-2 px-3 rounded-xl border border-rose-200 bg-rose-50/70 hover:bg-rose-100 text-rose-700 text-[11px] font-bold transition disabled:opacity-40" data-i18n="kicks_reset_btn">🔄 Reset Hari Ini</button>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 space-y-1.5">
+              <p data-i18n="kicks_timeline_lbl" class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cap Masa Gerakan Hari Ini</p>
+              <div id="kick-today-timeline" class="flex flex-wrap gap-1.5 text-[11px] text-slate-400">--</div>
+            </div>
+
+            <div id="kicks-safety-alert" class="hidden bg-amber-50 border border-amber-300 text-amber-900 p-3 rounded-xl text-[11px] leading-relaxed font-medium">
+              <span data-i18n="kicks_safety_late">⚠️ Sudah melepasi 9:00 malam dan pergerakan belum cukup 10 kali. Jika gerakan bayi terasa berkurang dengan ketara, segera hubungi atau ke klinik/hospital berhampiran.</span>
+            </div>
+
+            <p data-i18n="kicks_guide_note" class="text-[10px] text-slate-500 leading-relaxed bg-slate-50 p-2.5 rounded-xl border border-slate-200/70">
+              💡 Panduan KKM: Rekod setiap tendangan, pusingan atau gerakan bayi yang jelas antara 9:00 pagi hingga 9:00 malam. Jika kurang daripada 10 gerakan sebelum 9:00 malam atau pergerakan berkurang ketara, terus dapatkan pemeriksaan klinik/hospital.
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <h4 data-i18n="kicks_history_title" class="text-xs font-bold text-slate-700 uppercase">Sejarah Kiraan Harian</h4>
+            <div id="kick-history-list" class="space-y-2"></div>
+          </div>
         </div>
 
       </div>
@@ -3914,7 +3999,22 @@
         pb_vac_0m: "Dos 1",
         pb_vac_2m: "2 Bulan (Heksavalen)",
         pb_vac_3m: "3 Bulan (Heksavalen)",
-        pb_vac_5m: "5 Bulan (Heksavalen)"
+        pb_vac_5m: "5 Bulan (Heksavalen)",
+        subtab_preg_kicks: "Kiraan Tendangan Bayi",
+        hdr_preg_kicks_title: "Kiraan Tendangan Bayi (KKM)",
+        btn_quick_kick: "+1 Tendang",
+        kicks_chart_title: "Carta Pergerakan Janin (9pg – 9mlm)",
+        kicks_chart_sub: "Kira 10 pergerakan bayi yang jelas setiap hari bermula Minggu 28 kehamilan.",
+        kicks_first_lbl: "Tendangan #1",
+        kicks_tenth_lbl: "Tendangan #10",
+        kicks_dur_lbl: "Tempoh Masa",
+        kicks_tap_btn: "Catat 1 Tendangan Sekarang",
+        kicks_undo_btn: "↩️ Kurangkan 1",
+        kicks_reset_btn: "🔄 Reset Hari Ini",
+        kicks_timeline_lbl: "Cap Masa Gerakan Hari Ini",
+        kicks_safety_late: "⚠️ Sudah melepasi 9:00 malam dan pergerakan belum cukup 10 kali. Jika gerakan bayi terasa berkurang dengan ketara, segera hubungi atau ke klinik/hospital berhampiran.",
+        kicks_guide_note: "💡 Panduan KKM: Rekod setiap tendangan, pusingan atau gerakan bayi yang jelas antara 9:00 pagi hingga 9:00 malam. Jika kurang daripada 10 gerakan sebelum 9:00 malam atau pergerakan berkurang ketara, terus dapatkan pemeriksaan klinik/hospital.",
+        kicks_history_title: "Sejarah Kiraan Harian"
       },
       en: {
         btn_back_home: "Home",
@@ -4464,7 +4564,22 @@
         pb_vac_0m: "Dose 1",
         pb_vac_2m: "2 Months (Hexavalent)",
         pb_vac_3m: "3 Months (Hexavalent)",
-        pb_vac_5m: "5 Months (Hexavalent)"
+        pb_vac_5m: "5 Months (Hexavalent)",
+        subtab_preg_kicks: "Baby Kick Counter",
+        hdr_preg_kicks_title: "Baby Kick Counter (MOH)",
+        btn_quick_kick: "+1 Kick",
+        kicks_chart_title: "Fetal Movement Chart (9am – 9pm)",
+        kicks_chart_sub: "Count 10 distinct baby movements daily starting from Week 28 of pregnancy.",
+        kicks_first_lbl: "Kick #1",
+        kicks_tenth_lbl: "Kick #10",
+        kicks_dur_lbl: "Duration",
+        kicks_tap_btn: "Log 1 Kick Now",
+        kicks_undo_btn: "↩️ Undo 1",
+        kicks_reset_btn: "🔄 Reset Today",
+        kicks_timeline_lbl: "Today's Movement Timestamps",
+        kicks_safety_late: "⚠️ It is past 9:00 PM and movements are below 10. If your baby's movements feel noticeably reduced, please contact or visit your clinic/hospital promptly.",
+        kicks_guide_note: "💡 MOH Guide: Log every clear kick, roll, or movement between 9:00 AM and 9:00 PM. If fewer than 10 movements occur by 9:00 PM or movement slows significantly, seek medical assessment promptly.",
+        kicks_history_title: "Daily Kick History"
       }
     };
 
@@ -4577,6 +4692,7 @@
       renderMilestones();
       renderHospitalBagChecklist();
       renderBabyTeeth();
+      renderBabyKicks();
       lucide.createIcons();
     }
 
@@ -5370,7 +5486,8 @@
           loadVaccines(),
           loadFoodTests(),
           loadMilestones(),
-          loadGrowthLogs()
+          loadGrowthLogs(),
+          loadBabyKicks()
         ]);
         renderBabyTeeth();
       } catch (err) {
@@ -5397,7 +5514,8 @@
           loadMilestones(),
           loadGrowthLogs(),
           loadHospitalBagChecklist(),
-          loadBabyTeeth()
+          loadBabyTeeth(),
+          loadBabyKicks()
         ]);
         lastCloudSyncAt = Date.now();
       } catch (err) {
@@ -7080,7 +7198,7 @@
 
       const allNavIds = [
         'nav-ttc-fertility', 'nav-ttc-opk', 'nav-ttc-supplements', 'nav-ttc-doa', 'nav-ttc-letters',
-        'nav-preg-overview', 'nav-preg-appt', 'nav-preg-vitals', 'nav-preg-pantang', 'nav-preg-beg',
+        'nav-preg-overview', 'nav-preg-appt', 'nav-preg-vitals', 'nav-preg-kicks', 'nav-preg-pantang', 'nav-preg-beg',
         'nav-child-memories', 'nav-child-growth', 'nav-child-vaccine', 'nav-child-food', 'nav-child-milestone'
       ];
 
@@ -7164,7 +7282,7 @@
     }
 
     function switchPregSubtab(tab) {
-      const tabs = ['overview', 'appt', 'vitals', 'pantang', 'beg'];
+      const tabs = ['overview', 'appt', 'vitals', 'kicks', 'pantang', 'beg'];
       tabs.forEach(t => {
         const viewEl = document.getElementById('view-preg-' + t);
         if (viewEl) viewEl.classList.add('hidden');
@@ -7175,6 +7293,7 @@
       if (activeView) activeView.classList.remove('hidden');
       const activeSubtab = document.getElementById('subtab-preg-' + tab);
       if (activeSubtab) activeSubtab.className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
+      if (tab === 'kicks') renderBabyKicks();
       updateSidebarActiveMenu('pregnancy', tab);
       lucide.createIcons();
     }
@@ -9911,6 +10030,353 @@
         if (icon) icon.classList.remove('animate-spin');
         if (btn) btn.disabled = false;
       }
+    }
+
+    // =========================================================
+    // KAUNTER TENDANGAN BAYI (CARTA PERGERAKAN JANIN KKM 9PG-9MLM)
+    // =========================================================
+    let babyKicksMap = {};
+
+    function getBabyKicksScopedTitle() {
+      const cid = getActiveChildId();
+      return cid ? `REKOD_TENDANGAN_BAYI_${cid}` : 'REKOD_TENDANGAN_BAYI';
+    }
+
+    function sanitizeBabyKicksPayload(raw) {
+      const clean = {};
+      if (!raw || typeof raw !== 'object') return clean;
+      const dates = Object.keys(raw)
+        .filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k) && Array.isArray(raw[k]))
+        .sort()
+        .reverse()
+        .slice(0, 90);
+      dates.forEach(d => {
+        const arr = raw[d]
+          .map(t => String(t || '').trim())
+          .filter(t => /^\d{2}:\d{2}(:\d{2})?$/.test(t))
+          .slice(0, 10);
+        if (arr.length > 0) clean[d] = arr;
+      });
+      return clean;
+    }
+
+    function getCurrentLocalHms() {
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    }
+
+    function formatKickTimeLabel(hmsStr, isEn = false) {
+      const m = String(hmsStr || '').match(/^(\d{2}):(\d{2})/);
+      if (!m) return '--';
+      const hh = parseInt(m[1], 10);
+      const mm = m[2];
+      const hour12 = hh % 12 || 12;
+      if (isEn) {
+        const suffix = hh >= 12 ? 'PM' : 'AM';
+        return `${hour12}:${mm} ${suffix}`;
+      }
+      let suffix = 'PG';
+      if (hh >= 19) suffix = 'MLM';
+      else if (hh >= 12) suffix = 'PTG';
+      return `${hour12}:${mm} ${suffix}`;
+    }
+
+    function calcKickDurationLabel(times, isEn = false) {
+      if (!Array.isArray(times) || times.length < 2) return '--';
+      const toSecs = str => {
+        const parts = String(str).split(':').map(n => parseInt(n, 10) || 0);
+        return (parts[0] || 0) * 3600 + (parts[1] || 0) * 60 + (parts[2] || 0);
+      };
+      const startSec = toSecs(times[0]);
+      const endSec = toSecs(times[times.length - 1]);
+      const diffMins = Math.max(1, Math.round(Math.max(0, endSec - startSec) / 60));
+      const hrs = Math.floor(diffMins / 60);
+      const mins = diffMins % 60;
+      if (hrs > 0) {
+        return isEn ? `${hrs}h ${mins}m` : `${hrs}j ${mins}m`;
+      }
+      return isEn ? `${mins} mins` : `${mins} minit`;
+    }
+
+    async function loadBabyKicks() {
+      babyKicksMap = {};
+      const storageKey = getFamilyScopedKey('bukupink_baby_kicks');
+      const localMap = parseJsonSafe(localStorage.getItem(storageKey), {});
+      babyKicksMap = sanitizeBabyKicksPayload(localMap);
+
+      if (db && currentFamilyId) {
+        try {
+          const { data, error } = await secureGetRecords('baby_memories', { category: 'Tendangan Bayi' });
+          if (!error && Array.isArray(data) && data.length > 0) {
+            const scopedTitle = getBabyKicksScopedTitle();
+            const matched = data.filter(r => recordMatchesActiveChild(r));
+            const rec = matched.find(r => r.title === scopedTitle)
+              || matched.find(r => r.title === 'REKOD_TENDANGAN_BAYI')
+              || matched[0];
+            if (rec && rec.notes) {
+              const parsed = parseJsonSafe(rec.notes, null);
+              if (parsed && typeof parsed === 'object') {
+                babyKicksMap = sanitizeBabyKicksPayload(parsed);
+                localStorage.setItem(storageKey, JSON.stringify(babyKicksMap));
+              }
+            }
+          }
+        } catch (err) {
+          console.warn("Kick counter sync warning:", err);
+        }
+      }
+      renderBabyKicks();
+    }
+
+    async function saveBabyKicksState() {
+      const isEn = currentLang === 'en';
+      babyKicksMap = sanitizeBabyKicksPayload(babyKicksMap);
+      const storageKey = getFamilyScopedKey('bukupink_baby_kicks');
+      localStorage.setItem(storageKey, JSON.stringify(babyKicksMap));
+
+      if (db && currentFamilyId && currentFamilyId !== DEMO_FAMILY_ID) {
+        const cid = getActiveChildId();
+        const { error } = await upsertFamilySyncRecord(
+          'Tendangan Bayi',
+          getBabyKicksScopedTitle(),
+          babyKicksMap,
+          getLocalTodayIso(),
+          cid
+        );
+        if (error) {
+          showToast(isEn ? "⚠️ Kick count saved locally (cloud sync failed)." : "⚠️ Kiraan tendangan disimpan setempat (sync awan gagal).");
+        }
+      }
+    }
+
+    async function recordBabyKick() {
+      const isEn = currentLang === 'en';
+      const today = getLocalTodayIso();
+      const current = Array.isArray(babyKicksMap[today]) ? [...babyKicksMap[today]] : [];
+      if (current.length >= 10) {
+        showToast(isEn ? "🎉 Today's 10/10 kicks are already complete!" : "🎉 Kiraan 10/10 tendangan hari ini sudah lengkap!");
+        return;
+      }
+
+      current.push(getCurrentLocalHms());
+      babyKicksMap[today] = current;
+      renderBabyKicks();
+      await saveBabyKicksState();
+
+      if (current.length === 10) {
+        showToast(isEn ? "🎉 Alhamdulillah! 10/10 baby kicks completed for today." : "🎉 Alhamdulillah! Lengkap 10/10 tendangan bayi hari ini.");
+      } else {
+        showToast(isEn ? `👣 Kick logged: ${current.length}/10` : `👣 Tendangan direkod: ${current.length}/10`);
+      }
+    }
+
+    async function undoBabyKick() {
+      const isEn = currentLang === 'en';
+      const today = getLocalTodayIso();
+      const current = Array.isArray(babyKicksMap[today]) ? [...babyKicksMap[today]] : [];
+      if (current.length === 0) return;
+
+      current.pop();
+      if (current.length === 0) {
+        delete babyKicksMap[today];
+      } else {
+        babyKicksMap[today] = current;
+      }
+      renderBabyKicks();
+      await saveBabyKicksState();
+      showToast(isEn ? `↩️ Updated today's count: ${current.length}/10` : `↩️ Kiraan hari ini dikemaskini: ${current.length}/10`);
+    }
+
+    async function resetTodayBabyKicks() {
+      const isEn = currentLang === 'en';
+      const today = getLocalTodayIso();
+      if (!babyKicksMap[today] || babyKicksMap[today].length === 0) return;
+      const ok = window.confirm(isEn
+        ? "Reset all kicks logged for today?"
+        : "Set semula semua tendangan yang direkod hari ini?");
+      if (!ok) return;
+
+      delete babyKicksMap[today];
+      renderBabyKicks();
+      await saveBabyKicksState();
+      showToast(isEn ? "🔄 Today's kick count cleared." : "🔄 Kiraan tendangan hari ini telah diset semula.");
+    }
+
+    async function deleteBabyKickDay(dateStr) {
+      const isEn = currentLang === 'en';
+      if (!dateStr || !babyKicksMap[dateStr]) return;
+      const ok = window.confirm(isEn
+        ? `Delete kick log for ${dateStr}?`
+        : `Padam rekod tendangan bagi tarikh ${dateStr}?`);
+      if (!ok) return;
+
+      delete babyKicksMap[dateStr];
+      renderBabyKicks();
+      await saveBabyKicksState();
+      showToast(isEn ? "🗑️ Daily kick log deleted." : "🗑️ Rekod tendangan harian dipadam.");
+    }
+
+    function renderBabyKicks() {
+      const isEn = currentLang === 'en';
+      const today = getLocalTodayIso();
+      const todayList = Array.isArray(babyKicksMap[today]) ? babyKicksMap[today] : [];
+      const count = todayList.length;
+      const pct = Math.min(100, Math.round((count / 10) * 100));
+      const isDone = count >= 10;
+      const nowHour = new Date().getHours();
+      const isLateAndIncomplete = nowHour >= 21 && count < 10;
+
+      // 1. Overview quick card
+      const ovSub = document.getElementById('overview-kicks-sub');
+      const ovBadge = document.getElementById('overview-kicks-badge');
+      const ovQuickBtn = document.getElementById('btn-quick-kick-add');
+      if (ovSub) {
+        if (isDone) {
+          const doneTime = formatKickTimeLabel(todayList[9], isEn);
+          ovSub.innerText = isEn
+            ? `✅ 10/10 complete at ${doneTime}`
+            : `✅ 10/10 lengkap jam ${doneTime}`;
+        } else if (isLateAndIncomplete) {
+          ovSub.innerText = isEn
+            ? `⚠️ ${count}/10 after 9:00 PM — monitor closely`
+            : `⚠️ ${count}/10 selepas 9:00 mlm — pantau segera`;
+        } else {
+          ovSub.innerText = isEn
+            ? `Today: ${count}/10 movements (9am–9pm)`
+            : `Hari ini: ${count}/10 gerakan (9pg–9mlm)`;
+        }
+      }
+      if (ovBadge) {
+        ovBadge.innerText = `${count}/10`;
+        ovBadge.className = isDone
+          ? "text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full"
+          : (isLateAndIncomplete
+            ? "text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-300 px-2.5 py-1 rounded-full"
+            : "text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-full");
+      }
+      if (ovQuickBtn) {
+        ovQuickBtn.disabled = isDone;
+        ovQuickBtn.className = isDone
+          ? "text-[11px] font-extrabold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full cursor-default"
+          : "text-[11px] font-extrabold bg-rose-500 hover:bg-rose-600 text-white px-2.5 py-1 rounded-full shadow-2xs active:scale-95 transition";
+        ovQuickBtn.innerText = isDone ? (isEn ? "✓ Done" : "✓ Lengkap") : (isEn ? "+1 Kick" : "+1 Tendang");
+      }
+
+      // 2. Dedicated kick chart view
+      const dateEl = document.getElementById('kick-today-date');
+      if (dateEl) {
+        const dObj = parseLocalDate(today) || new Date();
+        const formatted = dObj.toLocaleDateString(isEn ? 'en-MY' : 'ms-MY', {
+          weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+        });
+        dateEl.innerText = isEn ? `Today (${formatted})` : `Hari Ini (${formatted})`;
+      }
+
+      const badgeEl = document.getElementById('kick-today-badge');
+      const statusTxt = document.getElementById('kick-today-status-txt');
+      const barEl = document.getElementById('kick-progress-bar');
+      if (badgeEl) {
+        badgeEl.innerText = isDone ? (isEn ? "✅ 10/10 Complete" : "✅ 10/10 Lengkap") : `${count}/10`;
+        badgeEl.className = isDone
+          ? "text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full whitespace-nowrap"
+          : "text-[11px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-full whitespace-nowrap";
+      }
+      if (statusTxt) {
+        statusTxt.innerText = `${count} / 10 (${pct}%)`;
+        statusTxt.className = isDone ? "text-emerald-700 font-bold" : "text-rose-700 font-bold";
+      }
+      if (barEl) {
+        barEl.style.width = `${pct}%`;
+        barEl.className = isDone
+          ? "bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-300"
+          : "bg-gradient-to-r from-rose-400 to-pastel-500 h-full rounded-full transition-all duration-300";
+      }
+
+      const firstEl = document.getElementById('kick-first-time');
+      const tenthEl = document.getElementById('kick-tenth-time');
+      const durEl = document.getElementById('kick-duration');
+      if (firstEl) firstEl.innerText = count >= 1 ? formatKickTimeLabel(todayList[0], isEn) : '--';
+      if (tenthEl) tenthEl.innerText = count >= 10 ? formatKickTimeLabel(todayList[9], isEn) : '--';
+      if (durEl) durEl.innerText = calcKickDurationLabel(todayList, isEn);
+
+      const mainBtn = document.getElementById('btn-record-kick');
+      const mainBtnLbl = document.getElementById('btn-record-kick-label');
+      if (mainBtn && mainBtnLbl) {
+        mainBtn.disabled = isDone;
+        if (isDone) {
+          mainBtn.className = "w-full py-3.5 px-4 bg-emerald-500 text-white font-extrabold text-sm rounded-2xl shadow-sm flex items-center justify-center space-x-2 opacity-90 cursor-default";
+          mainBtnLbl.innerText = isEn ? "10/10 Kicks Complete Today!" : "10/10 Tendangan Lengkap Hari Ini!";
+        } else {
+          mainBtn.className = "w-full py-3.5 px-4 bg-gradient-to-r from-rose-500 to-pastel-500 hover:from-rose-600 hover:to-pastel-600 text-white font-extrabold text-sm rounded-2xl shadow-md active:scale-[0.98] transition flex items-center justify-center space-x-2";
+          mainBtnLbl.innerText = isEn ? `Log Kick #${count + 1} Now` : `Catat Tendangan Ke-${count + 1} Sekarang`;
+        }
+      }
+
+      const undoBtn = document.getElementById('btn-undo-kick');
+      const resetBtn = document.getElementById('btn-reset-kick');
+      if (undoBtn) undoBtn.disabled = count === 0;
+      if (resetBtn) resetBtn.disabled = count === 0;
+
+      const timelineEl = document.getElementById('kick-today-timeline');
+      if (timelineEl) {
+        if (count === 0) {
+          timelineEl.innerHTML = `<span class="text-slate-400 text-[11px]">${isEn ? 'No movements logged today yet.' : 'Belum ada gerakan direkod hari ini.'}</span>`;
+        } else {
+          timelineEl.innerHTML = todayList.map((t, idx) => (
+            `<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-rose-50 text-rose-800 border border-rose-200 font-semibold text-[11px]">#${idx + 1} ${escapeHtml(formatKickTimeLabel(t, isEn))}</span>`
+          )).join('');
+        }
+      }
+
+      const alertBox = document.getElementById('kicks-safety-alert');
+      if (alertBox) {
+        if (isLateAndIncomplete) alertBox.classList.remove('hidden');
+        else alertBox.classList.add('hidden');
+      }
+
+      // 3. History list
+      const histEl = document.getElementById('kick-history-list');
+      if (histEl) {
+        const sortedDates = Object.keys(babyKicksMap).sort().reverse();
+        if (sortedDates.length === 0) {
+          histEl.innerHTML = `<div class="bg-white p-4 rounded-2xl border border-slate-200 text-center text-xs text-slate-400">${isEn ? 'No daily kick logs recorded yet. Tap the button above to start tracking.' : 'Belum ada sejarah tendangan harian. Tekan butang di atas untuk mula mencatat.'}</div>`;
+          return;
+        }
+        histEl.innerHTML = sortedDates.slice(0, 30).map(dateStr => {
+          const list = babyKicksMap[dateStr] || [];
+          const cnt = list.length;
+          const complete = cnt >= 10;
+          const startLbl = cnt >= 1 ? formatKickTimeLabel(list[0], isEn) : '--';
+          const endLbl = cnt >= 10 ? formatKickTimeLabel(list[9], isEn) : (cnt >= 2 ? formatKickTimeLabel(list[cnt - 1], isEn) : '--');
+          const durLbl = calcKickDurationLabel(list, isEn);
+          const dObj = parseLocalDate(dateStr);
+          const datePretty = dObj
+            ? dObj.toLocaleDateString(isEn ? 'en-MY' : 'ms-MY', { day: 'numeric', month: 'short', year: 'numeric' })
+            : dateStr;
+          const badgeHtml = complete
+            ? `<span class="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full">✅ 10/10</span>`
+            : `<span class="text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full">${cnt}/10</span>`;
+          const todayTag = dateStr === today
+            ? `<span class="text-[10px] font-bold text-pastel-600 ml-1">(${isEn ? 'Today' : 'Hari Ini'})</span>`
+            : '';
+
+          return `
+            <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between gap-2 text-xs">
+              <div class="min-w-0">
+                <p class="font-bold text-slate-800">${escapeHtml(datePretty)}${todayTag}</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(startLbl)} → ${escapeHtml(endLbl)} • ${escapeHtml(durLbl)}</p>
+              </div>
+              <div class="flex items-center space-x-2 shrink-0">
+                ${badgeHtml}
+                <button type="button" onclick="deleteBabyKickDay('${escapeHtml(dateStr)}')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition" title="${isEn ? 'Delete log' : 'Padam rekod'}">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>`;
+        }).join('');
+      }
+      lucide.createIcons();
     }
 
     document.addEventListener('visibilitychange', () => {
