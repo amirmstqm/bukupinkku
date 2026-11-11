@@ -2930,6 +2930,70 @@
       return { error };
     }
 
+    const NON_PHOTOBOOK_CATEGORIES = [
+      'Vaksin KKM',
+      'Milestone',
+      'Ujian Makanan',
+      'Ujian Makanan Aktif',
+      'Tumbesaran',
+      'Ujian OPK',
+      'Tetapan TTC',
+      'Ubat Harian',
+      'Status Fasa'
+    ];
+    const NON_GALLERY_CATEGORIES = ['Warkah Buat Bakal Anak', ...NON_PHOTOBOOK_CATEGORIES];
+    let hasAppliedCloudPhaseForFamily = null;
+
+    function getLocalTodayIso() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function parseJsonSafe(raw, fallback = null) {
+      if (!raw || typeof raw !== 'string') return fallback;
+      try { return JSON.parse(raw); } catch (e) { return fallback; }
+    }
+
+    function getFamilyScopedKey(prefix) {
+      return `${prefix}_${currentFamilyId || 'default'}`;
+    }
+
+    /**
+     * Upsert singleton or keyed sync state into baby_memories without schema changes.
+     */
+    async function upsertFamilySyncRecord(category, title, payloadObj, memoryDate = null) {
+      if (!db || !currentFamilyId) return { error: new Error('No active session') };
+      if (currentFamilyId === DEMO_FAMILY_ID) return { error: new Error('DEMO_READ_ONLY') };
+
+      const targetDate = memoryDate || getLocalTodayIso();
+      const serialized = JSON.stringify(payloadObj);
+      const { data: existingRows, error: fetchErr } = await secureGetRecords('baby_memories', { category });
+      if (fetchErr) return { error: fetchErr };
+
+      const existing = (existingRows || []).find(r => r.title === title);
+      if (existing && existing.id) {
+        const { error } = await secureUpdateRecord('baby_memories', existing.id, {
+          title,
+          category,
+          memory_date: targetDate,
+          notes: serialized
+        });
+        return { error };
+      }
+
+      const { error } = await secureInsertRecord('baby_memories', {
+        title,
+        category,
+        memory_date: targetDate,
+        notes: serialized,
+        uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
+      });
+      return { error };
+    }
+
     // KAMUS DWIBAHASA (BAHASA MELAYU & ENGLISH)
     const I18N = {
       ms: {
@@ -4250,24 +4314,23 @@
         currentUserName = `${momName} (Ibu)`;
         currentFamilyCode = finalCode;
 
+        hasAppliedCloudPhaseForFamily = newFamilyId;
+        const initialPhase = status === 'ttc' ? 'ttc' : (status === 'born' ? 'child' : 'pregnancy');
+        await saveFamilyPhaseState(initialPhase);
+
+        if (status === 'ttc') {
+          const lmpDate = document.getElementById('reg-lmp-date') ? document.getElementById('reg-lmp-date').value : '';
+          const cycleLen = parseInt(document.getElementById('reg-cycle-length') ? document.getElementById('reg-cycle-length').value : '28', 10) || 28;
+          await saveTtcSettings(lmpDate, cycleLen);
+        }
+
         if (isExistingFamily) {
           showToast(`🌸 Selamat kembali ${momName}! Kod Keluarga Tetap: ${finalCode}`);
         } else {
           showToast(`🎉 Profil Keluarga dicipta! Kod Tetap Pasangan: ${finalCode}`);
         }
         showDashboardScreen();
-
-        if (status === 'ttc') {
-          const lmpDate = document.getElementById('reg-lmp-date') ? document.getElementById('reg-lmp-date').value : null;
-          const cycleLen = document.getElementById('reg-cycle-length') ? document.getElementById('reg-cycle-length').value : 28;
-          if (lmpDate) localStorage.setItem('bukupink_ttc_lmp', lmpDate);
-          localStorage.setItem('bukupink_ttc_cycle', cycleLen);
-          switchPhase('ttc');
-        } else if (status === 'born') {
-          switchPhase('child');
-        } else {
-          switchPhase('pregnancy');
-        }
+        switchPhase(initialPhase);
 
       } catch (err) {
         const msg = (err && err.message) ? String(err.message) : '';
@@ -4489,6 +4552,10 @@
         localStorage.removeItem('bukupink_invite_code');
         currentFamilyId = null;
         currentFamilyToken = '';
+        hasAppliedCloudPhaseForFamily = null;
+        med1Taken = true;
+        ttcMedWifeTaken = false;
+        ttcMedHusbandTaken = false;
         showOnboardingScreen();
         showToast("Anda telah log keluar.");
       }
@@ -4632,11 +4699,15 @@
       try {
         await Promise.all([
           loadChildInfo(),
+          loadFamilyPhaseState(),
+          loadTtcSettings(),
+          loadDailyMedsState(),
           loadAppointments(),
           loadHealthVitals(),
           loadAllergies(),
           loadBabyMemories(),
           loadTtcLetters(),
+          loadOpkLogs(),
           loadVaccines(),
           loadFoodTests(),
           loadMilestones(),
@@ -5150,8 +5221,8 @@
 
       const isEn = currentLang === 'en';
       const container = document.getElementById('memory-timeline-container');
-      const filtered = (data || []).filter(item => 
-        !['Warkah Buat Bakal Anak', 'Vaksin KKM', 'Milestone', 'Ujian Makanan', 'Tumbesaran'].includes(item.category)
+      const filtered = (data || []).filter(item =>
+        !NON_GALLERY_CATEGORIES.includes(item.category)
       );
       if (error || filtered.length === 0) {
         cachedMemories = [];
@@ -6188,17 +6259,100 @@
       lucide.createIcons();
     }
 
-    function toggleMed(medId) {
+    function renderDailyMedsUI() {
+      const isEn = currentLang === 'en';
+      const medBtn = document.getElementById('med-1-status');
+      if (medBtn) {
+        if (med1Taken) {
+          medBtn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800";
+          medBtn.innerText = isEn ? "✓ Taken" : "✓ Dah Makan";
+        } else {
+          medBtn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700";
+          medBtn.innerText = isEn ? "Not Taken" : "Belum Makan";
+        }
+      }
+
+      const wifeBtn = document.getElementById('btn-ttc-med-wife');
+      if (wifeBtn) {
+        if (ttcMedWifeTaken) {
+          wifeBtn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800";
+          wifeBtn.innerText = isEn ? "✓ Taken" : "✓ Dah Ambil";
+        } else {
+          wifeBtn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700";
+          wifeBtn.innerText = isEn ? "Not Taken" : "Belum Ambil";
+        }
+      }
+
+      const husbBtn = document.getElementById('btn-ttc-med-husband');
+      if (husbBtn) {
+        if (ttcMedHusbandTaken) {
+          husbBtn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800";
+          husbBtn.innerText = isEn ? "✓ Taken" : "✓ Dah Ambil";
+        } else {
+          husbBtn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700";
+          husbBtn.innerText = isEn ? "Not Taken" : "Belum Ambil";
+        }
+      }
+    }
+
+    async function persistDailyMedsState() {
+      const payload = {
+        date: getLocalTodayIso(),
+        med1Taken: Boolean(med1Taken),
+        ttcMedWifeTaken: Boolean(ttcMedWifeTaken),
+        ttcMedHusbandTaken: Boolean(ttcMedHusbandTaken)
+      };
+      localStorage.setItem(getFamilyScopedKey('bukupink_daily_meds'), JSON.stringify(payload));
+      return await upsertFamilySyncRecord('Ubat Harian', 'STATUS_UBAT_HARIAN', payload, payload.date);
+    }
+
+    async function loadDailyMedsState() {
+      const todayIso = getLocalTodayIso();
+      const cached = parseJsonSafe(localStorage.getItem(getFamilyScopedKey('bukupink_daily_meds')));
+      if (cached && cached.date === todayIso) {
+        med1Taken = cached.med1Taken !== undefined ? Boolean(cached.med1Taken) : true;
+        ttcMedWifeTaken = Boolean(cached.ttcMedWifeTaken);
+        ttcMedHusbandTaken = Boolean(cached.ttcMedHusbandTaken);
+      } else {
+        med1Taken = true;
+        ttcMedWifeTaken = false;
+        ttcMedHusbandTaken = false;
+      }
+      renderDailyMedsUI();
+
+      if (!db || !currentFamilyId) return;
+      try {
+        const { data, error } = await secureGetRecords('baby_memories', { category: 'Ubat Harian' });
+        if (error || !data) return;
+        const row = data.find(r => r.title === 'STATUS_UBAT_HARIAN');
+        const parsed = row ? parseJsonSafe(row.notes) : null;
+        if (parsed && parsed.date === todayIso) {
+          med1Taken = parsed.med1Taken !== undefined ? Boolean(parsed.med1Taken) : true;
+          ttcMedWifeTaken = Boolean(parsed.ttcMedWifeTaken);
+          ttcMedHusbandTaken = Boolean(parsed.ttcMedHusbandTaken);
+          localStorage.setItem(getFamilyScopedKey('bukupink_daily_meds'), JSON.stringify({
+            date: todayIso,
+            med1Taken,
+            ttcMedWifeTaken,
+            ttcMedHusbandTaken
+          }));
+          renderDailyMedsUI();
+        }
+      } catch (err) {
+        console.warn("Gagal muat status ubat harian:", err);
+      }
+    }
+
+    async function toggleMed(medId) {
       med1Taken = !med1Taken;
       const isEn = currentLang === 'en';
-      const btn = document.getElementById('med-1-status');
-      if (med1Taken) {
-        btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800";
-        btn.innerText = isEn ? "✓ Taken" : "✓ Dah Makan";
+      renderDailyMedsUI();
+      const { error } = await persistDailyMedsState();
+      if (error) {
+        showCloudSyncNotice(error, true);
+      } else if (med1Taken) {
         showToast(isEn ? "Medication marked as taken." : "Telah ditanda Ubat Diambil.");
       } else {
-        btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700";
-        btn.innerText = isEn ? "Not Taken" : "Belum Makan";
         showToast(isEn ? "Medication status changed to Not Taken." : "Status ubat ditukar ke Belum Makan.");
       }
     }
@@ -6496,8 +6650,42 @@
       localStorage.setItem(getFoodSafeStorageKey(), JSON.stringify(list));
     }
 
+    async function persistActiveFoodTestToCloud(testState) {
+      return await upsertFamilySyncRecord('Ujian Makanan Aktif', 'STATUS_UJIAN_MAKANAN_AKTIF', testState);
+    }
+
     async function loadFoodTests() {
       renderFoodTests();
+      if (!db || !currentFamilyId) return;
+
+      try {
+        const [activeRes, safeRes] = await Promise.all([
+          secureGetRecords('baby_memories', { category: 'Ujian Makanan Aktif' }),
+          secureGetRecords('baby_memories', { category: 'Ujian Makanan' })
+        ]);
+
+        if (!activeRes.error && activeRes.data) {
+          const activeRow = activeRes.data.find(r => r.title === 'STATUS_UJIAN_MAKANAN_AKTIF');
+          const parsedActive = activeRow ? parseJsonSafe(activeRow.notes) : null;
+          if (parsedActive && parsedActive.foodName) {
+            saveFoodTestState(parsedActive);
+          }
+        }
+
+        if (!safeRes.error && safeRes.data && safeRes.data.length > 0) {
+          const cloudSafeFoods = safeRes.data
+            .map(r => String(r.title || '').replace(/^Ujian Makanan Selamat:\s*/i, '').trim())
+            .filter(Boolean);
+          if (cloudSafeFoods.length > 0) {
+            const mergedSafeFoods = [...new Set([...getSavedSafeFoods(), ...cloudSafeFoods])];
+            saveSafeFoodsState(mergedSafeFoods);
+          }
+        }
+
+        renderFoodTests();
+      } catch (err) {
+        console.warn("Gagal muat ujian makanan dari Supabase:", err);
+      }
     }
 
     function openNewFoodTestModal() {
@@ -6510,7 +6698,7 @@
       document.getElementById('inp-food-test-name').value = name;
     }
 
-    function handleStartNewFoodTest(e) {
+    async function handleStartNewFoodTest(e) {
       e.preventDefault();
       const isEn = currentLang === 'en';
       const foodName = document.getElementById('inp-food-test-name').value.trim();
@@ -6530,7 +6718,13 @@
       saveFoodTestState(newTest);
       closeModal('modal-add-food-test');
       renderFoodTests();
-      showToast(isEn ? `🥣 Started 3-Day Rule test for "${foodName}"!` : `🥣 Ujian 3 Hari dimulakan untuk "${foodName}"!`);
+
+      const { error } = await persistActiveFoodTestToCloud(newTest);
+      if (error) {
+        showCloudSyncNotice(error, true);
+      } else {
+        showToast(isEn ? `🥣 Started 3-Day Rule test for "${foodName}"!` : `🥣 Ujian 3 Hari dimulakan untuk "${foodName}"!`);
+      }
     }
 
     async function passFoodTestToday() {
@@ -6543,13 +6737,23 @@
         test.currentDay = 2;
         saveFoodTestState(test);
         renderFoodTests();
-        showToast(isEn ? "✅ Day 1 passed with no rash! Ready for Day 2." : "✅ Hari Pertama lulus tanpa ruam! Sambung Hari ke-2 esok.");
+        const { error } = await persistActiveFoodTestToCloud(test);
+        if (error) {
+          showCloudSyncNotice(error, true);
+        } else {
+          showToast(isEn ? "✅ Day 1 passed with no rash! Ready for Day 2." : "✅ Hari Pertama lulus tanpa ruam! Sambung Hari ke-2 esok.");
+        }
       } else if (test.currentDay === 2) {
         test.day2 = 'pass';
         test.currentDay = 3;
         saveFoodTestState(test);
         renderFoodTests();
-        showToast(isEn ? "✅ Day 2 passed with no rash! Ready for Day 3." : "✅ Hari ke-2 lulus tanpa ruam! Sambung Hari ke-3 esok.");
+        const { error } = await persistActiveFoodTestToCloud(test);
+        if (error) {
+          showCloudSyncNotice(error, true);
+        } else {
+          showToast(isEn ? "✅ Day 2 passed with no rash! Ready for Day 3." : "✅ Hari ke-2 lulus tanpa ruam! Sambung Hari ke-3 esok.");
+        }
       } else if (test.currentDay === 3) {
         test.day3 = 'pass';
         test.status = 'passed';
@@ -6566,14 +6770,17 @@
         let cloudSyncErr = null;
         if (db && currentFamilyId) {
           try {
+            const activeSync = await persistActiveFoodTestToCloud(test);
+            if (activeSync && activeSync.error) cloudSyncErr = activeSync.error;
+
             const { error } = await secureInsertRecord('baby_memories', {
               title: `Ujian Makanan Selamat: ${test.foodName}`,
               category: 'Ujian Makanan',
-              memory_date: new Date().toISOString().split('T')[0],
+              memory_date: getLocalTodayIso(),
               notes: `Melepasi Ujian 3 Hari KKM tanpa reaksi alergi. Catatan: ${test.notes || '-'}`,
               uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
             });
-            if (error) cloudSyncErr = error;
+            if (error && !cloudSyncErr) cloudSyncErr = error;
           } catch (e) {
             cloudSyncErr = e;
             console.warn("Food test save to Supabase:", e);
@@ -6607,6 +6814,9 @@
       let cloudSyncErr = null;
       if (db && currentFamilyId) {
         try {
+          const activeSync = await persistActiveFoodTestToCloud(test);
+          if (activeSync && activeSync.error) cloudSyncErr = activeSync.error;
+
           const { error } = await secureInsertRecord('allergies', {
             item_name: foodName,
             category: isEn ? 'Baby Food (3-Day Rule)' : 'Makanan Bayi (Ujian 3 Hari)',
@@ -7434,14 +7644,68 @@
     let ttcMedWifeTaken = true;
     let ttcMedHusbandTaken = false;
 
-    function calculateTtcDates() {
+    function getTtcLocalValues() {
+      const lmpScoped = localStorage.getItem(getFamilyScopedKey('bukupink_ttc_lmp'));
+      const cycleScoped = localStorage.getItem(getFamilyScopedKey('bukupink_ttc_cycle'));
+      const lmp = lmpScoped !== null ? lmpScoped : (currentFamilyId !== DEMO_FAMILY_ID ? localStorage.getItem('bukupink_ttc_lmp') : '');
+      const cycleRaw = cycleScoped !== null ? cycleScoped : (currentFamilyId !== DEMO_FAMILY_ID ? localStorage.getItem('bukupink_ttc_cycle') : '28');
+      const cycle = parseInt(cycleRaw || '28', 10);
+      return {
+        lmp: lmp || '',
+        cycle: isNaN(cycle) ? 28 : cycle
+      };
+    }
+
+    function setTtcLocalValues(lmp, cycle) {
+      if (lmp) {
+        localStorage.setItem(getFamilyScopedKey('bukupink_ttc_lmp'), lmp);
+        localStorage.setItem('bukupink_ttc_lmp', lmp);
+      }
+      if (cycle) {
+        localStorage.setItem(getFamilyScopedKey('bukupink_ttc_cycle'), String(cycle));
+        localStorage.setItem('bukupink_ttc_cycle', String(cycle));
+      }
+      const lmpEl = document.getElementById('inp-ttc-lmp');
+      if (lmpEl && lmp) lmpEl.value = lmp;
+      const cycleEl = document.getElementById('inp-ttc-cycle');
+      if (cycleEl && cycle) cycleEl.value = String(cycle);
+    }
+
+    async function saveTtcSettings(lmp, cycle) {
+      const cleanCycle = parseInt(cycle || '28', 10) || 28;
+      setTtcLocalValues(lmp || '', cleanCycle);
+      return await upsertFamilySyncRecord('Tetapan TTC', 'TETAPAN_KITARAN_TTC', {
+        lmp: lmp || '',
+        cycle: cleanCycle
+      }, lmp || null);
+    }
+
+    async function loadTtcSettings() {
+      if (!db || !currentFamilyId) {
+        calculateTtcDates({ syncOpk: false });
+        return;
+      }
+      try {
+        const { data, error } = await secureGetRecords('baby_memories', { category: 'Tetapan TTC' });
+        if (!error && data) {
+          const row = data.find(r => r.title === 'TETAPAN_KITARAN_TTC');
+          const parsed = row ? parseJsonSafe(row.notes) : null;
+          if (parsed) {
+            setTtcLocalValues(parsed.lmp || row.memory_date || '', parsed.cycle || 28);
+          }
+        }
+      } catch (err) {
+        console.warn("Gagal muat tetapan TTC:", err);
+      }
+      calculateTtcDates({ syncOpk: false });
+    }
+
+    function calculateTtcDates({ syncOpk = false } = {}) {
       const isEn = currentLang === 'en';
-      const storedLmp = localStorage.getItem('bukupink_ttc_lmp');
-      const storedCycle = parseInt(localStorage.getItem('bukupink_ttc_cycle') || '28');
+      const { lmp: storedLmp, cycle: cycleDays } = getTtcLocalValues();
 
       const today = new Date();
       let lmpDate = storedLmp ? new Date(storedLmp) : new Date(today.getTime() - (12 * 24 * 60 * 60 * 1000));
-      const cycleDays = isNaN(storedCycle) ? 28 : storedCycle;
 
       // Ovulasi berlaku kira-kira 14 hari sebelum haid seterusnya
       const ovulationDayOffset = Math.max(10, cycleDays - 14);
@@ -7484,46 +7748,50 @@
       const cycleEl = document.getElementById('ttc-cycle-display');
       if (cycleEl) cycleEl.innerText = isEn ? `${cycleDays} Days` : `${cycleDays} Hari`;
 
-      loadOpkLogs();
+      loadOpkLogs({ syncCloud: syncOpk });
     }
 
-    function handleSaveTtcSettings(e) {
+    async function handleSaveTtcSettings(e) {
       e.preventDefault();
       const isEn = currentLang === 'en';
       const lmp = document.getElementById('inp-ttc-lmp').value;
       const cycle = document.getElementById('inp-ttc-cycle').value;
 
-      if (lmp) localStorage.setItem('bukupink_ttc_lmp', lmp);
-      if (cycle) localStorage.setItem('bukupink_ttc_cycle', cycle);
-
+      setTtcLocalValues(lmp, cycle);
       closeModal('modal-ttc-settings');
-      showToast(isEn ? "✅ Menstrual cycle updated. Ovulation recalculated!" : "✅ Kitaran haid dikemaskini. Waktu subur dikira semula!");
-      calculateTtcDates();
+      calculateTtcDates({ syncOpk: false });
+
+      const { error } = await saveTtcSettings(lmp, cycle);
+      if (error) {
+        showCloudSyncNotice(error, true);
+      } else {
+        showToast(isEn ? "✅ Menstrual cycle updated & synced! Ovulation recalculated." : "✅ Kitaran haid dikemaskini & diselaraskan ke awan!");
+      }
     }
 
-    function toggleTtcMed(person) {
+    async function toggleTtcMed(person) {
       const isEn = currentLang === 'en';
       if (person === 'wife') {
         ttcMedWifeTaken = !ttcMedWifeTaken;
-        const btn = document.getElementById('btn-ttc-med-wife');
-        if (ttcMedWifeTaken) {
-          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800";
-          btn.innerText = isEn ? "✓ Taken" : "✓ Dah Ambil";
-          showToast(isEn ? "Wife's folic acid & vitamins marked taken." : "Suplemen & Asid Folik isteri ditanda diambil.");
-        } else {
-          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700";
-          btn.innerText = isEn ? "Not Taken" : "Belum Ambil";
-        }
       } else {
         ttcMedHusbandTaken = !ttcMedHusbandTaken;
-        const btn = document.getElementById('btn-ttc-med-husband');
+      }
+      renderDailyMedsUI();
+
+      const { error } = await persistDailyMedsState();
+      if (error) {
+        showCloudSyncNotice(error, true);
+      } else if (person === 'wife') {
+        if (ttcMedWifeTaken) {
+          showToast(isEn ? "Wife's folic acid & vitamins marked taken." : "Suplemen & Asid Folik isteri ditanda diambil.");
+        } else {
+          showToast(isEn ? "Wife's supplement marked as Not Taken." : "Suplemen isteri ditukar ke Belum Ambil.");
+        }
+      } else {
         if (ttcMedHusbandTaken) {
-          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800";
-          btn.innerText = isEn ? "✓ Taken" : "✓ Dah Ambil";
           showToast(isEn ? "Husband's zinc & vitamins marked taken." : "Suplemen & Zinc suami ditanda diambil.");
         } else {
-          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700";
-          btn.innerText = isEn ? "Not Taken" : "Belum Ambil";
+          showToast(isEn ? "Husband's supplement marked as Not Taken." : "Suplemen suami ditukar ke Belum Ambil.");
         }
       }
     }
@@ -7541,6 +7809,32 @@
       showToast(isEn ? "📲 WhatsApp opened to notify your partner of Peak Fertility!" : "📲 WhatsApp dibuka untuk khabarkan waktu subur puncak kepada pasangan!");
     }
 
+    function parseCloudOpkRow(row) {
+      const parsed = parseJsonSafe(row.notes);
+      if (parsed && typeof parsed === 'object') {
+        return {
+          id: String(row.id),
+          cloudId: String(row.id),
+          clientId: parsed.clientId || null,
+          result: parsed.result || String(row.title || '').replace(/^Log OPK:\s*/i, ''),
+          temp: parsed.temp || '-',
+          date: row.memory_date || '',
+          notes: parsed.notes || '-'
+        };
+      }
+      const noteText = String(row.notes || '');
+      const legacyMatch = noteText.match(/Suhu BBT:\s*([^°|]+)(?:°C)?\s*\|\s*Catatan:\s*(.*)$/i);
+      return {
+        id: String(row.id),
+        cloudId: String(row.id),
+        clientId: null,
+        result: String(row.title || '').replace(/^Log OPK:\s*/i, '') || 'OPK',
+        temp: legacyMatch ? legacyMatch[1].trim() : '-',
+        date: row.memory_date || '',
+        notes: legacyMatch ? legacyMatch[2].trim() : (noteText || '-')
+      };
+    }
+
     async function handleSaveOpkLog(e) {
       e.preventDefault();
       const isEn = currentLang === 'en';
@@ -7550,12 +7844,13 @@
       const notes = document.getElementById('inp-opk-notes').value || (isEn ? 'No notes' : 'Tiada catatan');
 
       const key = getOpkStorageKey();
-      let logs = JSON.parse(localStorage.getItem(key) || localStorage.getItem('bukupink_opk_logs') || '[]');
-      const newEntry = { id: 'opk-' + Date.now(), result, temp, date, notes };
+      let logs = parseJsonSafe(localStorage.getItem(key) || localStorage.getItem('bukupink_opk_logs'), []);
+      const clientId = 'opk-' + Date.now();
+      const newEntry = { id: clientId, clientId, result, temp, date, notes };
       logs.unshift(newEntry);
       localStorage.setItem(key, JSON.stringify(logs));
 
-      // Sync ke Supabase baby_memories jika ada
+      // Sync ke Supabase baby_memories supaya suami & isteri kongsi log OPK sama
       let cloudSyncErr = null;
       if (db && currentFamilyId) {
         try {
@@ -7563,7 +7858,7 @@
             title: `Log OPK: ${result}`,
             category: 'Ujian OPK',
             memory_date: date,
-            notes: `Suhu BBT: ${temp}°C | Catatan: ${notes}`,
+            notes: JSON.stringify({ clientId, result, temp, notes }),
             uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
           });
           if (error) cloudSyncErr = error;
@@ -7576,10 +7871,11 @@
       closeModal('modal-add-opk');
       if (cloudSyncErr) {
         showCloudSyncNotice(cloudSyncErr, true);
+        loadOpkLogs({ syncCloud: false });
       } else {
-        showToast(isEn ? "📊 OPK test reading logged!" : "📊 Rekod ujian OPK berjaya disimpan!");
+        showToast(isEn ? "📊 OPK test reading logged & synced!" : "📊 Rekod ujian OPK berjaya disimpan & diselaraskan!");
+        await loadOpkLogs({ syncCloud: true });
       }
-      loadOpkLogs();
 
       // Jika Puncak / Peak Ovulasi, tawarkan notifikasi WhatsApp ke suami
       const isPeak = result.includes('Puncak') || result.includes('Peak') || result.includes('🔥');
@@ -7595,14 +7891,12 @@
       }
     }
 
-    function loadOpkLogs() {
+    function renderOpkLogsList(logs) {
       const isEn = currentLang === 'en';
       const container = document.getElementById('opk-logs-list');
       if (!container) return;
 
-      const key = getOpkStorageKey();
-      const logs = JSON.parse(localStorage.getItem(key) || localStorage.getItem('bukupink_opk_logs') || '[]');
-      if (logs.length === 0) {
+      if (!logs || logs.length === 0) {
         container.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">${isEn ? "No OPK tests logged yet. Tap '+ Log New Test'." : "Belum ada ujian OPK direkodkan. Klik '+ Log Ujian Baru'."}</div>`;
         return;
       }
@@ -7658,14 +7952,48 @@
       lucide.createIcons();
     }
 
-    function deleteOpkLog(id) {
+    async function loadOpkLogs({ syncCloud = true } = {}) {
+      const container = document.getElementById('opk-logs-list');
+      if (!container) return;
+
+      const key = getOpkStorageKey();
+      const cachedLogs = parseJsonSafe(localStorage.getItem(key) || (currentFamilyId !== DEMO_FAMILY_ID ? localStorage.getItem('bukupink_opk_logs') : '[]'), []);
+      renderOpkLogsList(cachedLogs);
+
+      if (!syncCloud || !db || !currentFamilyId) return;
+      try {
+        const { data, error } = await secureGetRecords('baby_memories', { category: 'Ujian OPK' });
+        if (!error && Array.isArray(data)) {
+          const cloudLogs = data.map(parseCloudOpkRow).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+          if (cloudLogs.length > 0 || currentFamilyId !== DEMO_FAMILY_ID) {
+            localStorage.setItem(key, JSON.stringify(cloudLogs));
+            renderOpkLogsList(cloudLogs);
+          }
+        }
+      } catch (err) {
+        console.warn("Gagal muat log OPK dari Supabase:", err);
+      }
+    }
+
+    async function deleteOpkLog(id) {
       const isEn = currentLang === 'en';
       const key = getOpkStorageKey();
-      let logs = JSON.parse(localStorage.getItem(key) || localStorage.getItem('bukupink_opk_logs') || '[]');
-      logs = logs.filter(x => x.id !== id);
+      let logs = parseJsonSafe(localStorage.getItem(key) || '[]', []);
+      const target = logs.find(x => String(x.id) === String(id));
+      logs = logs.filter(x => String(x.id) !== String(id));
       localStorage.setItem(key, JSON.stringify(logs));
+      renderOpkLogsList(logs);
+
+      const cloudRowId = target?.cloudId || (!String(id).startsWith('opk-') ? String(id) : null);
+      if (cloudRowId && db && currentFamilyId) {
+        const { error } = await secureDeleteRecord('baby_memories', { rowId: cloudRowId });
+        if (error) {
+          showCloudSyncNotice(error, true);
+          return;
+        }
+      }
+
       showToast(isEn ? "🗑️ OPK log entry deleted." : "🗑️ Rekod ujian OPK dipadam.");
-      loadOpkLogs();
     }
 
     function celebratePregnancySuccess() {
@@ -7730,10 +8058,48 @@
       }
     }
 
-    function confirmSwitchToPregnancy() {
+    async function saveFamilyPhaseState(phase) {
+      const cleanPhase = ['ttc', 'pregnancy', 'child'].includes(phase) ? phase : 'pregnancy';
+      localStorage.setItem(getFamilyScopedKey('bukupink_pregnancy_status'), cleanPhase);
+      localStorage.setItem('bukupink_pregnancy_status', cleanPhase);
+      return await upsertFamilySyncRecord('Status Fasa', 'STATUS_FASA_KELUARGA', { phase: cleanPhase });
+    }
+
+    async function loadFamilyPhaseState() {
+      const cachedPhase = localStorage.getItem(getFamilyScopedKey('bukupink_pregnancy_status'));
+      let resolvedPhase = ['ttc', 'pregnancy', 'child'].includes(cachedPhase) ? cachedPhase : null;
+
+      if (db && currentFamilyId) {
+        try {
+          const { data, error } = await secureGetRecords('baby_memories', { category: 'Status Fasa' });
+          if (!error && data) {
+            const row = data.find(r => r.title === 'STATUS_FASA_KELUARGA');
+            const parsed = row ? parseJsonSafe(row.notes) : null;
+            if (parsed && ['ttc', 'pregnancy', 'child'].includes(parsed.phase)) {
+              resolvedPhase = parsed.phase;
+              localStorage.setItem(getFamilyScopedKey('bukupink_pregnancy_status'), resolvedPhase);
+            }
+          }
+        } catch (err) {
+          console.warn("Gagal muat status fasa:", err);
+        }
+      }
+
+      if (resolvedPhase && hasAppliedCloudPhaseForFamily !== currentFamilyId) {
+        hasAppliedCloudPhaseForFamily = currentFamilyId;
+        switchPhase(resolvedPhase);
+      }
+    }
+
+    async function confirmSwitchToPregnancy() {
       closeModal('modal-bfp-celebrate');
+      hasAppliedCloudPhaseForFamily = currentFamilyId;
       switchPhase('pregnancy');
-      localStorage.setItem('bukupink_pregnancy_status', 'pregnancy');
+      const { error } = await saveFamilyPhaseState('pregnancy');
+      if (error) {
+        showCloudSyncNotice(error, true);
+        return;
+      }
       const isEn = currentLang === 'en';
       showToast(isEn ? "🌸 Welcome to Pregnancy Phase (Pink Book)!" : "🌸 Selamat datang ke Fasa Hamil (Buku Pink)!");
     }
@@ -7913,7 +8279,10 @@
         try {
           const { data, error } = await secureGetRecords('baby_memories');
           if (!error && data && data.length > 0) {
-            memories = data.slice().sort((a, b) => String(a.memory_date || '').localeCompare(String(b.memory_date || '')));
+            memories = data
+              .filter(item => !NON_PHOTOBOOK_CATEGORIES.includes(item.category))
+              .slice()
+              .sort((a, b) => String(a.memory_date || '').localeCompare(String(b.memory_date || '')));
           }
         } catch (e) {
           console.error("Gagal load photobook memories:", e);
