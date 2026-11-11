@@ -1,8 +1,11 @@
 {
   "name": "BukuPinkKu - Peneman Ibu & Anak",
   "short_name": "BukuPinkKu",
-  "start_url": "./index.html",
+  "lang": "ms",
+  "scope": "./",
+  "start_url": "./",
   "display": "standalone",
+  "categories": ["health", "lifestyle", "parenting"],
   "background_color": "#fdf7f8",
   "theme_color": "#f28ba2",
   "orientation": "portrait-primary",
