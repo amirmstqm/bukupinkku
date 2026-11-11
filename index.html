@@ -896,12 +896,12 @@
 
       <!-- Pilihan Lihat Demo Contoh -->
       <div class="pt-2 border-t border-slate-100 text-center space-y-2">
-        <button onclick="loadDemoMode()" data-i18n="btn_demo_mode" class="text-xs text-slate-500 hover:text-pastel-600 font-semibold underline block mx-auto">
+        <button id="demo-mode-btn" onclick="loadDemoMode()" data-i18n="btn_demo_mode" class="text-xs text-slate-500 hover:text-pastel-600 font-semibold underline block mx-auto">
           Atau Terus Cuba Mod Demo (Keluarga Contoh Amir & Sarah)
         </button>
 
         <!-- Jaminan Privasi Data PDPA Onboarding -->
-        <div class="pt-2 border-t border-slate-100/70 flex items-center justify-center space-x-1.5 text-[10px] text-slate-400">
+        <div class="pt-1 flex items-center justify-center space-x-1.5 text-[10px] text-slate-400">
           <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
           <span data-i18n="onboard_privacy_note">Data kesihatan keluarga dilindungi.</span>
           <button type="button" onclick="openPrivacyModal()" class="text-pastel-600 hover:text-pastel-800 underline font-semibold transition" data-i18n="link_privacy_pdpa">
@@ -3908,17 +3908,20 @@
       const tabDad = document.getElementById('tab-auth-father');
       const formMom = document.getElementById('form-register-mother');
       const formDad = document.getElementById('form-join-father');
+      const demoBtn = document.getElementById('demo-mode-btn');
 
       if (role === 'father') {
         tabDad.className = "flex-1 py-2.5 rounded-xl bg-white text-teal-700 shadow-sm transition";
         tabMom.className = "flex-1 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition";
         formMom.classList.add('hidden');
         formDad.classList.remove('hidden');
+        if (demoBtn) demoBtn.classList.add('hidden');
       } else {
         tabMom.className = "flex-1 py-2.5 rounded-xl bg-white text-pastel-600 shadow-sm transition";
         tabDad.className = "flex-1 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition";
         formDad.classList.add('hidden');
         formMom.classList.remove('hidden');
+        if (demoBtn) demoBtn.classList.remove('hidden');
       }
     }
 
