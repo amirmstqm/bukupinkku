@@ -3805,70 +3805,99 @@
 
       try {
         if (db) {
-          // Pastikan Kod Keluarga baharu tidak bertindih dalam pangkalan data
-          for (let attempt = 0; attempt < 5; attempt++) {
-            const { data: dupCheck } = await db
-              .from('families')
-              .select('id')
-              .eq('invite_code', finalCode)
-              .limit(1);
-            if (!dupCheck || dupCheck.length === 0) break;
-            finalCode = generateSecureFamilyCode();
-          }
-          // 1. Semak berdasarkan No. Telefon Unik Ibu dahulu!
-          const { data: phoneMatch } = await db
-            .from('families')
-            .select('*')
-            .ilike('family_name', `%[${cleanPhone}]%`)
-            .limit(1);
+          // Gunakan Supabase RPC selamat (RLS aktif — tiada SELECT terbuka pada jadual families)
+          const { data: regRows, error: regErr } = await db.rpc('register_or_login_mother', {
+            p_mom_name: momName,
+            p_phone: cleanPhone
+          });
 
-          if (phoneMatch && phoneMatch.length > 0) {
-            newFamilyId = phoneMatch[0].id;
-            finalCode = phoneMatch[0].invite_code;
-            isExistingFamily = true;
-          } else {
-            // 2. Semak jika ada profil sedia ada dengan nama ini yang belum dikunci no. telefon (cth: PINK-1147)
-            const { data: legacyMatch } = await db
+          const isMissingRpc = regErr && (
+            regErr.code === 'PGRST202' ||
+            (regErr.message || '').includes('Could not find the function')
+          );
+
+          if (!regErr && regRows && regRows.length > 0) {
+            const regRes = regRows[0];
+            newFamilyId = regRes.ret_family_id;
+            finalCode = regRes.ret_invite_code;
+            isExistingFamily = !!regRes.ret_is_existing;
+
+            if (!isExistingFamily) {
+              await db
+                .from('children')
+                .insert({
+                  family_id: newFamilyId,
+                  nickname: status === 'born' ? childName : babyNickname,
+                  status: status,
+                  edd_date: eddDate,
+                  birth_date: birthDate,
+                  blood_type: 'O+'
+                });
+            }
+          } else if (isMissingRpc) {
+            // Fallback sementara jika skrip RPC Supabase belum dijalankan
+            for (let attempt = 0; attempt < 5; attempt++) {
+              const { data: dupCheck } = await db
+                .from('families')
+                .select('id')
+                .eq('invite_code', finalCode)
+                .limit(1);
+              if (!dupCheck || dupCheck.length === 0) break;
+              finalCode = generateSecureFamilyCode();
+            }
+            const { data: phoneMatch } = await db
               .from('families')
               .select('*')
-              .ilike('family_name', `Keluarga ${momName}`)
+              .ilike('family_name', `%[${cleanPhone}]%`)
               .limit(1);
 
-            if (legacyMatch && legacyMatch.length > 0 && !legacyMatch[0].family_name.includes('[')) {
-              // Kunci profil sedia ada ini terus kepada No. Telefon Ibu ini
-              newFamilyId = legacyMatch[0].id;
-              finalCode = legacyMatch[0].invite_code;
+            if (phoneMatch && phoneMatch.length > 0) {
+              newFamilyId = phoneMatch[0].id;
+              finalCode = phoneMatch[0].invite_code;
               isExistingFamily = true;
-              await db
-                .from('families')
-                .update({ family_name: `Keluarga ${momName} [${cleanPhone}]` })
-                .eq('id', newFamilyId);
             } else {
-              // 3. Pengguna baharu (walaupun nama sama dengan orang lain, no. telefon berbeza -> dapat Kod Keluarga tersendiri!)
-              const { data: familyData, error: famErr } = await db
+              const { data: legacyMatch } = await db
                 .from('families')
-                .insert({
-                  family_name: `Keluarga ${momName} [${cleanPhone}]`,
-                  invite_code: finalCode
-                })
-                .select()
-                .single();
+                .select('*')
+                .ilike('family_name', `Keluarga ${momName}`)
+                .limit(1);
 
-              if (!famErr && familyData) {
-                newFamilyId = familyData.id;
-
+              if (legacyMatch && legacyMatch.length > 0 && !legacyMatch[0].family_name.includes('[')) {
+                newFamilyId = legacyMatch[0].id;
+                finalCode = legacyMatch[0].invite_code;
+                isExistingFamily = true;
                 await db
-                  .from('children')
+                  .from('families')
+                  .update({ family_name: `Keluarga ${momName} [${cleanPhone}]` })
+                  .eq('id', newFamilyId);
+              } else {
+                const { data: familyData, error: famErr } = await db
+                  .from('families')
                   .insert({
-                    family_id: newFamilyId,
-                    nickname: status === 'born' ? childName : babyNickname,
-                    status: status,
-                    edd_date: eddDate,
-                    birth_date: birthDate,
-                    blood_type: 'O+'
-                  });
+                    family_name: `Keluarga ${momName} [${cleanPhone}]`,
+                    invite_code: finalCode
+                  })
+                  .select()
+                  .single();
+
+                if (!famErr && familyData) {
+                  newFamilyId = familyData.id;
+
+                  await db
+                    .from('children')
+                    .insert({
+                      family_id: newFamilyId,
+                      nickname: status === 'born' ? childName : babyNickname,
+                      status: status,
+                      edd_date: eddDate,
+                      birth_date: birthDate,
+                      blood_type: 'O+'
+                    });
+                }
               }
             }
+          } else if (regErr) {
+            throw regErr;
           }
         }
 
@@ -3974,40 +4003,77 @@
           return;
         }
 
-        const { data: familyData, error } = await db
-          .from('families')
-          .select('*')
-          .eq('invite_code', enteredCode)
-          .single();
+        let verifiedFamilyId = null;
+        let verifiedInviteCode = null;
+        let cleanFamTitle = 'Keluarga';
 
-        if (error || !familyData) {
-          recordJoinFailure();
-          return;
-        }
+        // Gunakan Supabase RPC selamat terlebih dahulu (RLS aktif — tiada SELECT terbuka)
+        const { data: rpcRows, error: rpcErr } = await db.rpc('verify_family_access', {
+          p_invite_code: enteredCode,
+          p_phone4: verifyPhone4
+        });
 
-        // Pengesahan Pilihan A: Padankan 4 digit terakhir no. telefon isteri yang disimpan dalam [cleanPhone]
-        const phoneMatch = (familyData.family_name || '').match(/\[(\d+)\]/);
-        if (!phoneMatch || verifyPhone4 !== phoneMatch[1].slice(-4)) {
-          recordJoinFailure();
-          return;
+        const isMissingVerifyRpc = rpcErr && (
+          rpcErr.code === 'PGRST202' ||
+          (rpcErr.message || '').includes('Could not find the function')
+        );
+
+        if (!rpcErr) {
+          const res = (rpcRows && rpcRows.length > 0) ? rpcRows[0] : { ret_status: 'INVALID' };
+          if (res.ret_status === 'LOCKED') {
+            const waitSecs = res.ret_retry_after_seconds || 300;
+            showToast(currentLang === 'en'
+              ? `🔒 Too many failed attempts. Please wait ${waitSecs}s before trying again.`
+              : `🔒 Terlalu banyak percubaan gagal. Sila tunggu ${waitSecs} saat lagi.`);
+            return;
+          }
+          if (res.ret_status !== 'OK' || !res.ret_family_id) {
+            recordJoinFailure();
+            return;
+          }
+          verifiedFamilyId = res.ret_family_id;
+          verifiedInviteCode = res.ret_invite_code;
+          cleanFamTitle = res.ret_family_name || 'Keluarga';
+        } else if (isMissingVerifyRpc) {
+          // Fallback sementara jika skrip RPC Supabase belum dijalankan
+          const { data: familyData, error } = await db
+            .from('families')
+            .select('*')
+            .eq('invite_code', enteredCode)
+            .single();
+
+          if (error || !familyData) {
+            recordJoinFailure();
+            return;
+          }
+
+          const phoneMatch = (familyData.family_name || '').match(/\[(\d+)\]/);
+          if (!phoneMatch || verifyPhone4 !== phoneMatch[1].slice(-4)) {
+            recordJoinFailure();
+            return;
+          }
+          verifiedFamilyId = familyData.id;
+          verifiedInviteCode = familyData.invite_code;
+          cleanFamTitle = (familyData.family_name || 'Keluarga').split(' [')[0];
+        } else {
+          throw rpcErr;
         }
 
         // Pautan berjaya! Kosongkan kiraan gagal
         localStorage.removeItem('bukupink_join_fails');
         localStorage.removeItem('bukupink_join_lock_until');
 
-        localStorage.setItem('bukupink_family_id', familyData.id);
+        localStorage.setItem('bukupink_family_id', verifiedFamilyId);
         localStorage.setItem('bukupink_role', selectedRole);
         localStorage.setItem('bukupink_user_name', `${userName} (${roleLabel})`);
-        localStorage.setItem('bukupink_invite_code', familyData.invite_code);
+        localStorage.setItem('bukupink_invite_code', verifiedInviteCode);
 
-        currentFamilyId = familyData.id;
+        currentFamilyId = verifiedFamilyId;
         currentRole = selectedRole;
         currentUserName = `${userName} (${roleLabel})`;
-        currentFamilyCode = familyData.invite_code;
+        currentFamilyCode = verifiedInviteCode;
 
-        const cleanFamTitle = (familyData.family_name || 'Keluarga').split(' [')[0];
-        showToast(`❤️ Berjaya masuk ke ${cleanFamTitle} (${familyData.invite_code})!`);
+        showToast(`❤️ Berjaya masuk ke ${cleanFamTitle} (${verifiedInviteCode})!`);
         showDashboardScreen();
 
       } catch (err) {
