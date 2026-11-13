@@ -1924,8 +1924,8 @@
             </button>
           </div>
 
-          <!-- Quick Card Jaundis / Kuning Bayi -->
-          <div onclick="switchChildSubtab('jaundice')" class="bg-white p-3.5 rounded-2xl border border-amber-200/80 shadow-sm cursor-pointer hover:border-amber-400 transition flex items-center justify-between gap-3">
+          <!-- Quick Card Jaundis / Kuning Bayi (Hanya Ditunjukkan Pada Fasa Bayi Baru Lahir <= 28 Hari) -->
+          <div id="card-overview-jaundice" onclick="switchChildSubtab('jaundice')" class="hidden bg-white p-3.5 rounded-2xl border border-amber-200/80 shadow-sm cursor-pointer hover:border-amber-400 transition flex items-center justify-between gap-3">
             <div class="flex items-center space-x-3 min-w-0">
               <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0 text-lg">🟡</div>
               <div class="min-w-0">
@@ -3269,24 +3269,30 @@
               <p data-i18n="pb_cover_sub" class="text-xs text-pastel-600 font-bold mt-1">Koleksi Tumbesaran & Memori Kasih Sayang (0 - 3 Tahun)</p>
             </div>
 
-            <!-- Foto Utama Bayi -->
-            <div class="mx-auto w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden shadow-lg border-4 border-pastel-100 bg-pastel-50 flex items-center justify-center" id="pb-hero-photo-wrapper">
-              <div class="text-center p-4">
-                <span class="text-6xl block mb-2">👶✨</span>
-                <p data-i18n="pb_sweet_photo" class="text-xs font-bold text-slate-700">Foto Manis Si Comel</p>
-                <p class="text-[10px] text-slate-400">BukuPinkKu</p>
+            <!-- Foto Utama Bayi (Boleh Muat Naik Gambar Sebenar) -->
+            <div class="relative mx-auto w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden shadow-lg border-4 border-pastel-200 bg-pastel-50 flex items-center justify-center cursor-pointer group hover:border-pastel-400 transition" id="pb-hero-photo-wrapper" onclick="document.getElementById('inp-pb-cover-photo').click()" title="Klik untuk muat naik / tukar foto bayi">
+              <div id="pb-hero-photo-placeholder" class="text-center p-4">
+                <span class="text-5xl block mb-2 group-hover:scale-110 transition">📷</span>
+                <p data-i18n="pb_sweet_photo" class="text-xs font-bold text-slate-700">Muat Naik Foto Anak</p>
+                <p class="text-[10px] text-pastel-600 font-semibold mt-1 bg-white/80 px-2.5 py-0.5 rounded-full border border-pastel-200 inline-block">Klik Untuk Pilih Gambar</p>
+              </div>
+              <img id="pb-hero-photo-img" src="" class="hidden w-full h-full object-cover rounded-2xl" alt="Foto Anak">
+              <div class="absolute bottom-2 right-2 bg-black/60 hover:bg-black/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl flex items-center space-x-1 shadow-sm opacity-90 group-hover:opacity-100 transition">
+                <span>📷</span>
+                <span>Tukar Foto</span>
               </div>
             </div>
+            <input type="file" id="inp-pb-cover-photo" accept="image/*" class="hidden" onchange="handlePhotobookCoverUpload(event)">
 
             <!-- Kad Maklumat Kelahiran -->
             <div class="grid grid-cols-3 gap-2 text-center text-xs pt-2">
               <div class="p-2 bg-pastel-50/60 rounded-xl border border-pastel-100">
                 <p data-i18n="lbl_birth_date" class="text-[9px] font-semibold text-slate-500 uppercase">Tarikh Lahir</p>
-                <p id="pb-birth-date" class="font-bold text-slate-800 text-[11px]">15 Mac 2026</p>
+                <p id="pb-birth-date" class="font-bold text-slate-800 text-[11px]">2026-08-20</p>
               </div>
               <div class="p-2 bg-pastel-50/60 rounded-xl border border-pastel-100">
                 <p data-i18n="pb_curr_weight" class="text-[9px] font-semibold text-slate-500 uppercase">Berat Terkini</p>
-                <p id="pb-weight-display" class="font-bold text-slate-800 text-[11px]">7.8 kg</p>
+                <p id="pb-weight-display" class="font-bold text-slate-800 text-[11px]">-- kg</p>
               </div>
               <div class="p-2 bg-pastel-50/60 rounded-xl border border-pastel-100">
                 <p data-i18n="pb_blood" class="text-[9px] font-semibold text-slate-500 uppercase">Darah</p>
@@ -3295,7 +3301,7 @@
             </div>
 
             <p id="pb-family-subtitle" class="text-xs text-slate-500 font-medium italic">
-              "Keluarga Siti Sarah & Amir Mustaqim"
+              "Keluarga"
             </p>
           </div>
 
@@ -3306,23 +3312,8 @@
               <span data-i18n="pb_vac_section">Rekod Kesihatan & Vaksinasi KKM (0 - 24 Bulan)</span>
             </h2>
             
-            <div class="grid grid-cols-2 gap-2 text-[11px]">
-              <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
-                <p data-i18n="pb_vac_0m" class="font-bold text-emerald-900">BCG &amp; Hepatitis B (Dos 1)</p>
-                <p data-i18n="pb_vac_done_hosp" class="text-[10px] text-emerald-700">✓ Selesai Masa Lahir (Hospital)</p>
-              </div>
-              <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
-                <p data-i18n="pb_vac_2m" class="font-bold text-emerald-900">2 Bulan (Heksavalen)</p>
-                <p data-i18n="pb_vac_done_kk" class="text-[10px] text-emerald-700">✓ Selesai di KK</p>
-              </div>
-              <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
-                <p data-i18n="pb_vac_3m" class="font-bold text-emerald-900">3 Bulan (Heksavalen)</p>
-                <p data-i18n="pb_vac_done_kk" class="text-[10px] text-emerald-700">✓ Selesai di KK</p>
-              </div>
-              <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-0.5">
-                <p data-i18n="pb_vac_5m" class="font-bold text-emerald-900">5 Bulan (Pneumokokal)</p>
-                <p data-i18n="pb_vac_done_kk" class="text-[10px] text-emerald-700">✓ Selesai di KK</p>
-              </div>
+            <div id="pb-vac-container" class="grid grid-cols-2 gap-2 text-[11px]">
+              <!-- Dynamically rendered based on actual child records and age -->
             </div>
           </div>
 
@@ -6236,6 +6227,30 @@
         document.getElementById('hero-child-age-tag').innerText = isEn
           ? `👶 Age: ${months} Months ${days} Days`
           : `👶 Umur: ${months} Bulan ${days} Hari`;
+
+        // Pantau Jaundis hanya relevan pada fasa bayi baru lahir (<= 28 hari)
+        const ovJaundiceCard = document.getElementById('card-overview-jaundice');
+        if (ovJaundiceCard) {
+          if (diffDaysTotal > 28) {
+            ovJaundiceCard.classList.add('hidden');
+          } else {
+            ovJaundiceCard.classList.remove('hidden');
+          }
+        }
+
+        // Kemaskini maklumat photobook PDF dengan data sebenar anak
+        const pbBlood = document.getElementById('pb-blood-display');
+        if (pbBlood) pbBlood.innerText = data.blood_type || 'O+';
+        const pbWeight = document.getElementById('pb-weight-display');
+        if (pbWeight) {
+          const logs = getSavedGrowthLogs();
+          if (logs.length > 0 && logs[0].weight) {
+            pbWeight.innerText = `${logs[0].weight} kg`;
+          } else {
+            const hWeight = document.getElementById('hero-child-weight')?.innerText;
+            pbWeight.innerText = (hWeight && hWeight !== '--') ? `${hWeight} kg` : '-- kg';
+          }
+        }
 
         const feedEl = document.getElementById('hero-child-feeding');
         if (feedEl) {
@@ -10185,16 +10200,135 @@
     }
 
     // ================= LOGIK PHOTOBOOK PDF =================
+    function handlePhotobookCoverUpload(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      if (file.size > 8 * 1024 * 1024) {
+        showToast("⚠️ Saiz gambar terlalu besar. Sila pilih gambar bawah 8MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        const cid = getActiveChildId() || 'default';
+        localStorage.setItem('bukupink_cover_photo_' + cid, dataUrl);
+        updatePhotobookCoverPhotoDisplay(dataUrl);
+        showToast(currentLang === 'en' ? "📸 Baby cover photo updated!" : "📸 Foto anak berjaya dimuat naik ke Buku Kenangan!");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updatePhotobookCoverPhotoDisplay(imgUrl) {
+      const imgEl = document.getElementById('pb-hero-photo-img');
+      const phEl = document.getElementById('pb-hero-photo-placeholder');
+      if (imgUrl) {
+        if (imgEl) {
+          imgEl.src = imgUrl;
+          imgEl.classList.remove('hidden');
+        }
+        if (phEl) phEl.classList.add('hidden');
+      } else {
+        if (imgEl) {
+          imgEl.src = '';
+          imgEl.classList.add('hidden');
+        }
+        if (phEl) phEl.classList.remove('hidden');
+      }
+    }
+
     async function openPhotobookModal() {
       const isEn = currentLang === 'en';
+      const child = getActiveChildRecord();
+      const logs = getSavedGrowthLogs();
+      const latestLog = logs.length > 0 ? logs[0] : null;
+
       const yearEl = document.getElementById('pb-current-year');
       if (yearEl) yearEl.innerText = new Date().getFullYear();
 
+      // 1. Tajuk Nama Anak
+      const pbTitle = document.getElementById('pb-child-title');
+      if (pbTitle) {
+        pbTitle.innerText = child?.nickname || document.getElementById('hero-child-name')?.innerText || (isEn ? 'Sweet Baby' : 'Anak Comel');
+      }
+
+      // 2. Tarikh Lahir
+      const pbBirth = document.getElementById('pb-birth-date');
+      if (pbBirth) {
+        pbBirth.innerText = child?.birth_date || '2026-08-20';
+      }
+
+      // 3. Berat Terkini (Dinamik daripada log timbangan sebenar!)
+      const pbWeight = document.getElementById('pb-weight-display');
+      if (pbWeight) {
+        if (latestLog && latestLog.weight) {
+          pbWeight.innerText = `${latestLog.weight} kg`;
+        } else {
+          const hWeight = document.getElementById('hero-child-weight')?.innerText;
+          pbWeight.innerText = (hWeight && hWeight !== '--') ? `${hWeight} kg` : '-- kg';
+        }
+      }
+
+      // 4. Jenis Darah
+      const pbBlood = document.getElementById('pb-blood-display');
+      if (pbBlood) {
+        pbBlood.innerText = child?.blood_type || 'O+';
+      }
+
+      // 5. Nama Pasangan / Keluarga
       const subtitleEl = document.getElementById('pb-family-subtitle');
       if (subtitleEl && currentUserName) {
         subtitleEl.innerText = isEn
           ? `"Family of ${currentUserName} & Partner (Code: ${currentFamilyCode || 'PINK-8821'})"`
           : `"Keluarga ${currentUserName} & Pasangan (Kod: ${currentFamilyCode || 'PINK-8821'})"`;
+      }
+
+      // 6. Muat Turun Foto Kulit Depan
+      const cid = getActiveChildId() || 'default';
+      let coverPhoto = localStorage.getItem('bukupink_cover_photo_' + cid);
+
+      // 7. Render Rekod Vaksinasi KKM Sebenar Mengikut Umur & Data yang Ditanda
+      const vacContainer = document.getElementById('pb-vac-container');
+      if (vacContainer) {
+        const state = getSavedVaccines();
+        let bDate = child?.birth_date ? parseLocalDate(child.birth_date) : null;
+        let childMonths = 0;
+        if (bDate) {
+          childMonths = Math.max(0, Math.floor((new Date() - bDate) / (1000 * 60 * 60 * 24 * 30.4375)));
+        }
+
+        vacContainer.innerHTML = KKM_VACCINE_LIST.slice(0, 6).map(vac => {
+          const isDone = Boolean(state[vac.id] && state[vac.id].done);
+          const vacDate = state[vac.id]?.date;
+          const reqMonths = parseInt(vac.id.replace('v_', '').replace('m', ''), 10) || 0;
+
+          let statusBadge = '';
+          let bgClass = '';
+          let textClass = '';
+
+          if (isDone) {
+            statusBadge = `✓ Selesai ${vacDate ? '(' + vacDate + ')' : 'di KK'}`;
+            bgClass = 'bg-emerald-50/70 border-emerald-200';
+            textClass = 'text-emerald-900';
+          } else if (childMonths < reqMonths) {
+            statusBadge = isEn ? `⏳ Upcoming (Age ${reqMonths} Mos)` : `⏳ Belum Tiba Jadual (Umur ${reqMonths} Bln)`;
+            bgClass = 'bg-slate-50 border-slate-200';
+            textClass = 'text-slate-600';
+          } else {
+            statusBadge = isEn ? `⚠️ Pending / Waiting Appointment` : `⚠️ Menanti Jadual / Belum Ditanda`;
+            bgClass = 'bg-amber-50/60 border-amber-200';
+            textClass = 'text-amber-900';
+          }
+
+          const ageLabel = isEn ? vac.ageEn : vac.ageMs;
+          const nameLabel = isEn ? vac.nameEn : vac.nameMs;
+
+          return `
+            <div class="p-2.5 rounded-xl ${bgClass} border space-y-0.5 text-[11px]">
+              <p class="font-bold ${textClass}">${escapeHtml(ageLabel)}: ${escapeHtml(nameLabel)}</p>
+              <p class="text-[10px] font-semibold">${escapeHtml(statusBadge)}</p>
+            </div>
+          `;
+        }).join('');
       }
 
       const container = document.getElementById('pb-memories-container');
@@ -10215,6 +10349,13 @@
           console.error("Gagal load photobook memories:", e);
         }
       }
+
+      // Jika tiada cover photo tersimpan tapi ada foto dalam kenangan, gunakan foto kenangan pertama
+      if (!coverPhoto && memories.length > 0) {
+        const memWithImg = memories.find(m => m.image_url);
+        if (memWithImg) coverPhoto = memWithImg.image_url;
+      }
+      updatePhotobookCoverPhotoDisplay(coverPhoto);
 
       if (memories.length === 0) {
         memories = isEn ? [
@@ -11157,7 +11298,24 @@
       const latest = logs[0] || null;
       const prev = logs[1] || null;
 
-      // 1. Overview Quick Card
+      // 1. Overview Quick Card (Hanya dipaparkan jika bayi baru lahir <= 28 hari)
+      const ovCard = document.getElementById('card-overview-jaundice');
+      if (ovCard) {
+        const child = getActiveChildRecord();
+        let babyAgeDays = 999;
+        if (child && child.birth_date) {
+          const b = parseLocalDate(child.birth_date);
+          if (b) {
+            babyAgeDays = Math.floor((new Date() - b) / (1000 * 60 * 60 * 24));
+          }
+        }
+        if (babyAgeDays > 28) {
+          ovCard.classList.add('hidden');
+        } else {
+          ovCard.classList.remove('hidden');
+        }
+      }
+
       const ovSub = document.getElementById('overview-jaundice-sub');
       if (ovSub) {
         if (!latest) {
