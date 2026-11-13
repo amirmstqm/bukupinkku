@@ -2745,7 +2745,7 @@
       <!-- GAME 3: KUIZ SANTAI IBU & AYAH -->
       <div id="game-panel-quiz" class="hidden space-y-3">
         <div class="flex justify-between items-center text-xs bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl">
-          <span>Soalan <span id="quiz-q-num" class="font-black text-amber-800">1</span>/6</span>
+          <span>Soalan <span id="quiz-q-num" class="font-black text-amber-800">1</span>/<span id="quiz-q-total">10</span></span>
           <span>Skor: <span id="quiz-score" class="font-black text-emerald-700">0</span></span>
           <button type="button" onclick="initParentingQuiz()" class="text-[11px] font-bold bg-white border border-amber-200 text-amber-800 px-2.5 py-1 rounded-lg hover:bg-amber-100 transition">🔄 Ulang Kuiz</button>
         </div>
@@ -12501,8 +12501,191 @@
         opts: ["Untuk cepat berjalan", "Membantu menurunkan kuning (jaundis) & menambah berat", "Supaya bayi tidak bosan", "Untuk tumbuh gigi lebih awal"],
         ans: 1,
         info: "Penyusuan kerap membantu bayi membuang air besar/kecil dengan lebih kerap bagi menyingkirkan bilirubin (punca jaundis)."
+      },
+      {
+        q: "Mengapakah bayi di bawah umur 1 tahun TIDAK boleh diberikan madu?",
+        opts: ["Madu terlalu manis untuk gigi", "Risiko keracunan bakteria Clostridium botulinum (Infant Botulism)", "Menyebabkan bayi susah tidur", "Membuatkan bayi tidak suka susu"],
+        ans: 1,
+        info: "Sistem penghadaman bayi bawah 1 tahun belum matang untuk menangkis spora bakteria botulism yang boleh wujud dalam madu."
+      },
+      {
+        q: "Apakah tujuan ujian minum air gula (MOGTT) semasa pemeriksaan Buku Pink?",
+        opts: ["Mengukur tahap kalsium ibu", "Mengesan kencing manis semasa hamil (GDM)", "Mengetahui jantina bayi", "Mengukur tekanan darah rendah"],
+        ans: 1,
+        info: "Ujian MOGTT dilakukan untuk mengesan Diabetes Mellitus Gestasi (GDM) lebih awal supaya diet atau rawatan dapat dirancang."
+      },
+      {
+        q: "Apakah posisi tidur yang paling selamat untuk bayi baru lahir bagi mengurangkan risiko SIDS?",
+        opts: ["Menelentang di atas tilam rata", "Meniarap di atas bantal lembut", "Mengiring dengan bantal peluk penuh", "Tidur di atas sofa bersama selimut tebal"],
+        ans: 0,
+        info: "KKM & pakar pediatrik menyarankan posisi 'Back to Sleep' — bayi tidur menelentang di atas permukaan tilam yang rata dan bebas objek longgar."
+      },
+      {
+        q: "Apakah peraturan '3-Day Rule' apabila memperkenalkan makanan baru kepada bayi?",
+        opts: ["Beri 3 jenis makanan berbeza setiap hari", "Beri 1 jenis makanan baru selama 3 hari berturut-turut untuk pantau alahan", "Masak makanan untuk stok 3 hari", "Beri makan hanya 3 sudu sehari"],
+        ans: 1,
+        info: "Memperkenalkan satu bahan baru selama 3 hari memudahkan ibu ayah mengenal pasti jika berlaku ruam atau alahan makanan."
+      },
+      {
+        q: "Vitamin apakah yang sangat penting diambil sebelum hamil dan pada trimester pertama untuk mengelakkan kecacatan tiub saraf bayi?",
+        opts: ["Vitamin C", "Asid Folik (Vitamin B9)", "Vitamin E", "Kalsium sahaja"],
+        ans: 1,
+        info: "Asid folik (sekurang-kurangnya 400mcg sehari) membantu pembentukan otak dan saraf tunjang bayi yang sihat."
+      },
+      {
+        q: "Pada paras hemoglobin (HB) berapakah ibu hamil biasanya dianggap mengalami anemia ringan di klinik KKM?",
+        opts: ["Bawah 11.0 g/dL", "Bawah 15.0 g/dL", "Atas 13.0 g/dL", "Bawah 20.0 g/dL"],
+        ans: 0,
+        info: "Bacaan HB normal ibu hamil ialah 11.0 g/dL ke atas. Jika rendah, doktor akan menasihatkan pemakanan kaya zat besi dan ubat tambah darah."
+      },
+      {
+        q: "Apakah warna zon pelekat Buku Pink yang menandakan kehamilan berisiko rendah dan sihat?",
+        opts: ["Merah", "Kuning", "Hijau", "Putih"],
+        ans: 2,
+        info: "Tag Putih/Hijau menandakan penjagaan rutin di klinik; tag Hijau biasanya dipantau oleh jururawat/pegawai perubatan mengikut jadual."
+      },
+      {
+        q: "Dalam kitaran haid tetap 28 hari, bilakah anggaran hari ovulasi (subur) biasanya berlaku?",
+        opts: ["Hari ke-2 haid", "Sekitar Hari ke-14", "Hari ke-27", "Hari pertama haid"],
+        ans: 1,
+        info: "Ovulasi lazimnya berlaku sekitar 14 hari sebelum tarikh jangkaan haid seterusnya."
+      },
+      {
+        q: "Apakah kegunaan jalur ujian OPK (Ovulation Predictor Kit) untuk pasangan TTC?",
+        opts: ["Mengesan kehamilan", "Mengesan lonjakan hormon LH menandakan ovulasi hampir tiba", "Mengukur paras gula dalam air kencing", "Mengira usia kandungan"],
+        ans: 1,
+        info: "OPK positif (garisan ujian sama atau lebih gelap daripada kawalan) bermakna ovulasi dijangka berlaku dalam 12–36 jam."
+      },
+      {
+        q: "Bilakah bayi biasanya menerima suntikan vaksin MMR (Campak, Beguk, Rubela) Dos 1 dalam Jadual Imunisasi KKM?",
+        opts: ["Baru lahir", "3 Bulan", "9 Bulan", "24 Bulan"],
+        ans: 2,
+        info: "Mengikut Jadual Imunisasi Kebangsaan KKM, MMR Dos 1 diberikan pada usia 9 bulan (diikuti Dos 2 pada 12 bulan)."
+      },
+      {
+        q: "Gigi susu pertama bayi kebiasaannya mula tumbuh pada sekitar usia berapa?",
+        opts: ["1 Bulan", "6 Bulan", "18 Bulan", "3 Tahun"],
+        ans: 1,
+        info: "Kebanyakan bayi mula tumbuh gigi kacip bawah sekitar usia 6 bulan, namun julat 4–10 bulan masih dianggap normal."
+      },
+      {
+        q: "Apakah tanda amaran 'bengkak' atau simptom pre-eklampsia yang memerlukan ibu hamil segera ke klinik?",
+        opts: ["Mengidam makanan masam", "Sakit kepala teruk, penglihatan kabur & bengkak muka/tangan mendadak", "Kekerapan membuang air kecil", "Mengantuk pada waktu petang"],
+        ans: 1,
+        info: "Sakit kepala kuat, kabur penglihatan, sakit ulu hati atau bengkak mendadak boleh menandakan tekanan darah tinggi berbahaya (pre-eklampsia)."
+      },
+      {
+        q: "Mengapakah ibu hamil trimester kedua dan ketiga digalakkan tidur mengiring ke sebelah KIRI?",
+        opts: ["Supaya bayi cepat tidur", "Melancarkan aliran darah & oksigen ke plasenta serta buah pinggang ibu", "Mengelakkan ibu berdengkur", "Supaya perut kelihatan lebih kecil"],
+        ans: 1,
+        info: "Tidur mengiring ke kiri mengelakkan rahim menekan salur darah utama (vena cava inferior), sekali gus melancarkan bekalan darah ke bayi."
+      },
+      {
+        q: "Apakah makanan semula jadi yang membantu penyerapan pil zat besi (iron) dengan lebih berkesan?",
+        opts: ["Teh tarik atau kopi", "Jus oren / buah kaya Vitamin C", "Susu penuh krim sejurus selepas makan ubat", "Minuman berkarbonat"],
+        ans: 1,
+        info: "Vitamin C meningkatkan penyerapan zat besi, manakala teh, kopi dan kalsium tinggi boleh menghalang penyerapannya jika diambil serentak."
+      },
+      {
+        q: "Jika bayi demam dan berumur bawah 3 bulan (suhu 38°C ke atas), apakah tindakan paling tepat?",
+        opts: ["Tunggu 3 hari di rumah", "Bawa segera berjumpa doktor di klinik atau hospital", "Beri ubat demam dewasa dalam dos kecil", "Selimutkan bayi dengan kain tebal"],
+        ans: 1,
+        info: "Demam pada bayi bawah 3 bulan perlu pemeriksaan doktor segera untuk memastikan tiada jangkitan serius."
+      },
+      {
+        q: "Apakah perkara penting yang perlu dielakkan ketika menyediakan makanan pejal bayi 6–12 bulan?",
+        opts: ["Sayur-sayuran dikukus", "Garam dan gula tambahan", "Beras putih atau perang", "Buah-buahan segar dilenyek"],
+        ans: 1,
+        info: "Buah pinggang bayi bawah 1 tahun masih belum sesuai memproses garam tambahan, dan gula tambahan tidak diperlukan."
+      },
+      {
+        q: "Apakah nama bahan kekuningan awal pada susu ibu yang sangat kaya antibodi untuk bayi baru lahir?",
+        opts: ["Kalsium", "Kolostrum", "Kasein", "Laktosa"],
+        ans: 1,
+        info: "Kolostrum ialah 'susu pertama' berwarna keemasan pekat yang bertindak sebagai imunisasi semula jadi pertama untuk bayi."
+      },
+      {
+        q: "Berapa lamakah jarak masa minimum yang disarankan oleh KKM antara kelahiran untuk pemulihan badan ibu?",
+        opts: ["3 Bulan", "6 Bulan", "Sekurang-kurangnya 2 Tahun", "10 Tahun"],
+        ans: 2,
+        info: "Menjarakkan kehamilan sekurang-kurangnya 2 tahun memberi ruang badan ibu pulih sepenuhnya dan mengurangkan risiko komplikasi."
+      },
+      {
+        q: "Apakah tanda kontraksi bersalin sebenar (true labour) berbanding kontraksi palsu (Braxton Hicks)?",
+        opts: ["Hilang apabila ibu berjalan atau berehat", "Semakin kerap, teratur, kuat dan tidak hilang walaupun berehat", "Hanya berlaku sekejap di bahagian atas paha", "Tiada rasa tegang pada perut"],
+        ans: 1,
+        info: "Kontraksi sebenar datang dalam selang masa semakin rapat dan konsisten serta semakin kuat."
+      },
+      {
+        q: "Bila suhu air mandian bayi baru lahir diuji tanpa termometer, bahagian badan manakah yang paling sesuai digunakan?",
+        opts: ["Hujung jari kaki", "Bahagian dalam pergelangan tangan atau siku", "Tapak tangan yang kasar", "Pipi"],
+        ans: 1,
+        info: "Kulit di bahagian dalam pergelangan tangan atau siku lebih sensitif dan memberi anggaran suhu suam yang selamat."
+      },
+      {
+        q: "Apakah tujuan utama suami/pasangan digalakkan turut serta memeriksa Buku Pink dan hadir ke temujanji klinik?",
+        opts: ["Supaya dapat mengambil gambar klinik sahaja", "Memahami risiko kesihatan ibu/bayi, memberi sokongan emosi & bersedia saat kecemasan", "Menggantikan doktor memeriksa tekanan darah", "Mengisi borang kerja"],
+        ans: 1,
+        info: "Penglibatan ayah meningkatkan sokongan mental ibu, membantu pemantauan tanda amaran, dan mengeratkan ikatan sekeluarga."
+      },
+      {
+        q: "Antara berikut, yang manakah merupakan pencapaian (milestone) biasa bayi berumur sekitar 6 bulan?",
+        opts: ["Berlari laju", "Mula duduk dengan sokongan & mencapai objek dengan tangan", "Membaca buku cerita", "Melompat dengan sebelah kaki"],
+        ans: 1,
+        info: "Pada usia 6 bulan, kebanyakan bayi sudah pandai meniarap/bergolek, mencapai mainan dan mula duduk dengan sokongan."
+      },
+      {
+        q: "Mengapakah pelawat yang selesema atau demam dinasihatkan TIDAK mencium bayi baru lahir?",
+        opts: ["Bayi tidak suka bau minyak wangi", "Imuniti bayi masih lemah dan mudah dijangkiti virus berbahaya (seperti RSV/HSV)", "Supaya bayi tidak terjaga daripada tidur sahaja", "Kerana kulit bayi berminyak"],
+        ans: 1,
+        info: "Jangkitan ringan pada orang dewasa seperti selesema atau kudis bibir boleh membawa komplikasi serius kepada bayi baru lahir."
+      },
+      {
+        q: "Apakah maksud 'EDD' (Estimated Due Date) pada muka hadapan Buku Pink?",
+        opts: ["Tarikh jangkaan haid seterusnya", "Tarikh jangkaan bersalin", "Tarikh mula cuti bersalin wajib", "Tarikh suntikan vaksin pertama anak"],
+        ans: 1,
+        info: "EDD ialah tarikh jangkaan bersalin (40 minggu dari tarikh LMP atau disahkan melalui imbasan ultrasound awal)."
+      },
+      {
+        q: "Apakah kesan jika bayi kurang menyusu dan kelihatan terlalu lesu semasa mengalami jaundis?",
+        opts: ["Perlu dibiarkan tidur lebih lama tanpa menyusu", "Merupakan tanda amaran — perlu segera berjumpa doktor", "Normal sehingga umur 2 bulan", "Cukup sekadar menjemur bayi di luar rumah"],
+        ans: 1,
+        info: "Kuning yang menyebabkan bayi terlalu mengantuk, enggan menyusu atau merebak ke tapak tangan/kaki memerlukan pemeriksaan doktor segera."
+      },
+      {
+        q: "Adakah menjemur bayi di bawah matahari pagi masih disyorkan KKM sebagai rawatan utama jaundis?",
+        opts: ["Ya, mesti jemur 2 jam setiap hari", "Tidak, fototerapi di hospital ialah rawatan selamat jika paras bilirubin tinggi", "Ya, jika menggunakan cermin mata hitam", "Ya, pada waktu tengah hari"],
+        ans: 1,
+        info: "KKM tidak lagi menyarankan jemuran matahari sebagai rawatan kuning kerana risiko dehidrasi dan selaran kulit; rawatan tepat ialah penyusuan kerap dan fototerapi jika perlu."
+      },
+      {
+        q: "Apakah makanan yang menjadi sumber protein awal yang baik untuk bayi berusia 6–8 bulan?",
+        opts: ["Isi ikan tanpa tulang, ayam dikisar halus & kuning telur masak penuh", "Daging salai berempah pedas", "Sosej dan nuget segera", "Kacang tanah sebiji tanpa dikisar"],
+        ans: 0,
+        info: "Protein lembut seperti ayam, ikan tanpa tulang, kekacang dilumat atau telur masak sepenuhnya membantu tumbesaran serta membekalkan zat besi."
+      },
+      {
+        q: "Apakah kegunaan utama beg bersalin (hospital bag) yang disiapkan seawal minggu ke-34?",
+        opts: ["Untuk melancong selepas bersalin", "Memudahkan ibu & ayah terus ke hospital apabila tanda bersalin muncul tiba-tiba", "Untuk menyimpan baju sekolah anak", "Syarat wajib mendaftar perkahwinan"],
+        ans: 1,
+        info: "Persediaan awal mengelakkan panik apabila air ketuban pecah atau kontraksi bermula lebih awal daripada jangkaan."
+      },
+      {
+        q: "Apakah langkah pertama yang betul apabila susu ibu perahan (EBM) sejuk beku ingin diberikan kepada bayi?",
+        opts: ["Didihkan di atas dapur gas", "Panaskan dalam ketuhar gelombang mikro (microwave)", "Cairkan perlahan dalam peti sejuk bawah (chiller) dan suamkan dalam air suam", "Campur terus dengan air panas mendidih"],
+        ans: 2,
+        info: "Memanaskan susu secara terus pada api atau microwave boleh merosakkan nutrien dan menyebabkan suhu tidak sekata."
+      },
+      {
+        q: "Bilakah waktu terbaik memulakan penjagaan kebersihan gusi atau gigi anak?",
+        opts: ["Selepas anak berumur 5 tahun", "Seawal sebelum gigi tumbuh (lap gusi dengan kain lembap) & berus sebaik gigi pertama muncul", "Hanya apabila gigi anak mula rosak", "Selepas anak pandai berkumur sendiri"],
+        ans: 1,
+        info: "Membersihkan gusi sejak bayi dan memberus dengan ubat gigi berfluorida sebesar biji beras sebaik gigi pertama tumbuh melindungi gigi susu anak."
       }
     ];
+    const QUIZ_ROUND_SIZE = 10;
+    let quizDeckOrder = [];
+    let quizRoundQuestions = [];
     let quizIdx = 0;
     let quizScore = 0;
     let quizAnswered = false;
@@ -12733,16 +12916,35 @@
     }
 
     // --- GAME 3: KUIZ SANTAI IBU & AYAH ---
+    function refillQuizDeck() {
+      const indices = PARENTING_QUIZ_DATA.map((_, i) => i);
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+      quizDeckOrder = indices;
+    }
+
     function initParentingQuiz() {
+      if (quizDeckOrder.length < QUIZ_ROUND_SIZE) {
+        refillQuizDeck();
+      }
+      const pickedIndices = quizDeckOrder.splice(0, QUIZ_ROUND_SIZE);
+      quizRoundQuestions = pickedIndices.map(idx => PARENTING_QUIZ_DATA[idx]);
       quizIdx = 0;
       quizScore = 0;
+      const totalEl = document.getElementById('quiz-q-total');
+      if (totalEl) totalEl.innerText = String(quizRoundQuestions.length);
       renderQuizQuestion();
     }
 
     function renderQuizQuestion() {
       quizAnswered = false;
-      const item = PARENTING_QUIZ_DATA[quizIdx];
+      const item = quizRoundQuestions[quizIdx];
+      if (!item) return;
       document.getElementById('quiz-q-num').innerText = String(quizIdx + 1);
+      const totalEl = document.getElementById('quiz-q-total');
+      if (totalEl) totalEl.innerText = String(quizRoundQuestions.length);
       document.getElementById('quiz-score').innerText = String(quizScore);
       document.getElementById('quiz-question-text').innerText = item.q;
       document.getElementById('quiz-feedback-box').classList.add('hidden');
@@ -12759,7 +12961,8 @@
     function answerQuizQuestion(chosenIdx) {
       if (quizAnswered) return;
       quizAnswered = true;
-      const item = PARENTING_QUIZ_DATA[quizIdx];
+      const item = quizRoundQuestions[quizIdx];
+      if (!item) return;
       const isCorrect = chosenIdx === item.ans;
       if (isCorrect) {
         quizScore += 10;
@@ -12784,17 +12987,18 @@
       fb.innerHTML = `<strong>${isCorrect ? '✅ Betul!' : '💡 Hampir Tepat!'}</strong> ${escapeHtml(item.info)}`;
 
       const nextBtn = document.getElementById('btn-quiz-next');
-      if (quizIdx < PARENTING_QUIZ_DATA.length - 1) {
+      if (quizIdx < quizRoundQuestions.length - 1) {
         nextBtn.innerText = "Soalan Seterusnya →";
         nextBtn.classList.remove('hidden');
       } else {
-        nextBtn.innerText = `🎉 Selesai! Skor Akhir: ${quizScore}/60 (Main Semula)`;
+        const maxScore = quizRoundQuestions.length * 10;
+        nextBtn.innerText = `🎉 Selesai! Skor Akhir: ${quizScore}/${maxScore} (Pusingan Baru)`;
         nextBtn.classList.remove('hidden');
       }
     }
 
     function nextQuizQuestion() {
-      if (quizIdx < PARENTING_QUIZ_DATA.length - 1) {
+      if (quizIdx < quizRoundQuestions.length - 1) {
         quizIdx++;
         renderQuizQuestion();
       } else {
