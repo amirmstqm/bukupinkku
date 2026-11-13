@@ -6643,9 +6643,19 @@
       const delBtn = document.getElementById('btn-delete-child-profile');
       if (delBtn) delBtn.disabled = true;
       try {
-        const { error } = await secureDeleteRecord('children', { rowId: active.id });
+        let { error } = await secureDeleteRecord('children', { rowId: active.id });
+        if (error && String(error.message || '').includes('INVALID_TABLE') && db) {
+          const fallbackRes = await db.from('children').delete().eq('id', active.id).eq('family_id', currentFamilyId);
+          error = fallbackRes.error || null;
+        }
         if (error) {
-          showCloudSyncNotice(error, false);
+          if (String(error.message || '').includes('INVALID_TABLE')) {
+            showToast(isEn
+              ? '⚠️ Please run the updated supabase_security_rpc.sql in Supabase SQL Editor to enable deleting child profiles.'
+              : '⚠️ Pelayan Supabase perlu dikemaskini: jalankan semula supabase_security_rpc.sql di Supabase SQL Editor untuk aktifkan padam profil anak.');
+          } else {
+            showCloudSyncNotice(error, false);
+          }
           return;
         }
         const remaining = cachedChildren.filter(c => String(c.id) !== String(active.id));
