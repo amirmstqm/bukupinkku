@@ -1098,7 +1098,10 @@
             <p id="sidebar-family-title" data-i18n="hdr_happy_family" class="text-[10px] text-slate-500">Keluarga Bahagia</p>
           </div>
         </div>
-        <button onclick="logoutProfile()" data-i18n-title="title_logout" title="Log Keluar" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition">
+        <button type="button" onclick="openMiniGamesModal()" title="Sudut Santai &amp; Mini Game" class="p-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200 transition">
+            <i data-lucide="gamepad-2" class="w-4 h-4"></i>
+          </button>
+          <button onclick="logoutProfile()" data-i18n-title="title_logout" title="Log Keluar" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition">
           <i data-lucide="log-out" class="w-4 h-4"></i>
         </button>
       </div>
@@ -1249,6 +1252,15 @@
           </button>
 
           <!-- 💬 USER FEEDBACK BUTTON -->
+          <!-- 🎮 SUDUT SANTAI & MINI GAME -->
+          <button onclick="openMiniGamesModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-gradient-to-r from-violet-50 to-fuchsia-50 hover:from-violet-100 hover:to-fuchsia-100 border border-violet-200 text-violet-900 text-xs font-bold transition">
+            <span class="flex items-center space-x-2">
+              <span>🎮</span>
+              <span>Sudut Santai &amp; Mini Game</span>
+            </span>
+            <span class="text-[9px] bg-violet-200 text-violet-900 px-1.5 py-0.5 rounded-full font-extrabold">SANTAI</span>
+          </button>
+
           <button onclick="openFeedbackModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-purple-50/80 hover:bg-purple-100/80 border border-purple-200 text-pastel-700 text-xs font-bold transition">
             <span class="flex items-center space-x-2">
               <span>💬</span>
@@ -2636,6 +2648,77 @@
           <span data-i18n="btn_start_test">Mula Ujian 3 Hari</span>
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SUDUT SANTAI & MINI GAME ================= -->
+  <div id="modal-mini-games" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto p-5 space-y-4 shadow-2xl border border-violet-200">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-xl">🎮</span>
+          <div>
+            <h3 class="text-base font-extrabold text-slate-800">Sudut Santai &amp; Mini Game</h3>
+            <p class="text-[10px] text-slate-500">Hilangkan bosan sementara menunggu giliran klinik atau anak tidur</p>
+          </div>
+        </div>
+        <button onclick="closeMiniGamesModal()" class="p-1.5 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- TAB PILIHAN GAME -->
+      <div class="flex bg-slate-100 p-1 rounded-2xl text-[11px] font-bold">
+        <button type="button" onclick="switchMiniGameTab('memory')" id="btn-game-tab-memory" class="flex-1 py-2 rounded-xl bg-white text-violet-700 shadow-xs transition">🧸 Memori</button>
+        <button type="button" onclick="switchMiniGameTab('catch')" id="btn-game-tab-catch" class="flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">🍼 Tangkap Susu</button>
+        <button type="button" onclick="switchMiniGameTab('quiz')" id="btn-game-tab-quiz" class="flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">💡 Kuiz Santai</button>
+      </div>
+
+      <!-- GAME 1: MEMORI SI COMEL -->
+      <div id="game-panel-memory" class="space-y-3">
+        <div class="flex justify-between items-center text-xs bg-violet-50 border border-violet-100 px-3 py-2 rounded-xl">
+          <div>Langkah: <span id="mem-game-moves" class="font-black text-violet-700">0</span></div>
+          <div>Rekod Terbaik: <span id="mem-game-best" class="font-bold text-emerald-700">--</span></div>
+          <button type="button" onclick="initMemoryGame()" class="text-[11px] font-bold bg-white border border-violet-200 text-violet-700 px-2.5 py-1 rounded-lg hover:bg-violet-100 transition">🔄 Mula Baru</button>
+        </div>
+        <div id="mem-game-grid" class="grid grid-cols-4 gap-2"></div>
+        <div id="mem-game-win" class="hidden p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-center text-xs text-emerald-900 font-bold">
+          🎉 Tahniah! Anda berjaya padankan semua kad dalam <span id="mem-win-moves">0</span> langkah!
+        </div>
+      </div>
+
+      <!-- GAME 2: TANGKAP SUSU & BINTANG -->
+      <div id="game-panel-catch" class="hidden space-y-3">
+        <div class="flex justify-between items-center text-xs bg-pink-50 border border-pink-100 px-3 py-2 rounded-xl">
+          <div>Skor: <span id="catch-game-score" class="font-black text-rose-600">0</span></div>
+          <div>Masa: <span id="catch-game-time" class="font-black text-slate-800">25s</span></div>
+          <div>Terbaik: <span id="catch-game-best" class="font-bold text-emerald-700">0</span></div>
+        </div>
+        <p class="text-[10px] text-center text-slate-500">Tap 🍼 (+10), ⭐ (+20), 🧸 (+15). Elakkan ⏰ (-10) supaya si comel tak terjaga!</p>
+        <div id="catch-game-board" class="grid grid-cols-3 gap-2.5 bg-gradient-to-b from-sky-50 to-pink-50 border border-pink-200/80 p-3 rounded-2xl min-h-[210px] relative">
+          <!-- 9 slots -->
+        </div>
+        <button type="button" id="btn-start-catch-game" onclick="startCatchGame()" class="w-full py-2.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold rounded-xl text-xs shadow-sm transition">
+          ▶️ Mula Main (25 Saat)
+        </button>
+      </div>
+
+      <!-- GAME 3: KUIZ SANTAI IBU & AYAH -->
+      <div id="game-panel-quiz" class="hidden space-y-3">
+        <div class="flex justify-between items-center text-xs bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl">
+          <span>Soalan <span id="quiz-q-num" class="font-black text-amber-800">1</span>/6</span>
+          <span>Skor: <span id="quiz-score" class="font-black text-emerald-700">0</span></span>
+          <button type="button" onclick="initParentingQuiz()" class="text-[11px] font-bold bg-white border border-amber-200 text-amber-800 px-2.5 py-1 rounded-lg hover:bg-amber-100 transition">🔄 Ulang Kuiz</button>
+        </div>
+        <div id="quiz-card" class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3 text-xs">
+          <p id="quiz-question-text" class="font-bold text-slate-800 text-sm leading-snug"></p>
+          <div id="quiz-options-list" class="space-y-2"></div>
+          <div id="quiz-feedback-box" class="hidden p-2.5 rounded-xl text-[11px] leading-relaxed"></div>
+          <button type="button" id="btn-quiz-next" onclick="nextQuizQuestion()" class="hidden w-full py-2 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-xl text-xs transition">
+            Soalan Seterusnya →
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -5285,6 +5368,7 @@
       // Update UI Header
       updateFamilyCodeDisplay();
       document.getElementById('display-user-name').innerText = currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah');
+      applyCoupleProfileUI();
       const shareCodeEl = document.getElementById('invite-share-code');
       if (shareCodeEl) shareCodeEl.innerText = currentFamilyCode || 'PINK-8821';
 
@@ -6058,11 +6142,131 @@
       }
     }
 
+    let cachedCoupleProfile = { motherName: '', fatherName: '' };
+
+    function getCleanFamilyDisplayName() {
+      const isEn = currentLang === 'en';
+      const mom = (cachedCoupleProfile.motherName || '').trim();
+      const dad = (cachedCoupleProfile.fatherName || '').trim();
+      if (mom && dad) {
+        return isEn ? `Family of ${mom} & ${dad}` : `Keluarga ${mom} & ${dad}`;
+      }
+      const savedFam = (localStorage.getItem('bukupink_saved_family_name') || '').replace(/\s*\[\d+\]/g, '').trim();
+      if (savedFam && savedFam !== 'Keluarga' && savedFam !== 'Keluarga Anda') {
+        if (isEn && /^Keluarga\s+/i.test(savedFam)) {
+          return savedFam.replace(/^Keluarga\s+/i, 'Family of ');
+        }
+        return savedFam;
+      }
+      if (mom) return isEn ? `Family of ${mom}` : `Keluarga ${mom}`;
+      const cleanUser = (currentUserName || '').replace(/\s*\((Ibu|Ayah|Mother|Father)\)/gi, '').trim();
+      if (cleanUser) return isEn ? `Family of ${cleanUser}` : `Keluarga ${cleanUser}`;
+      return isEn ? 'Our Happy Family' : 'Keluarga Bahagia';
+    }
+
+    function applyCoupleProfileUI() {
+      const famTitle = getCleanFamilyDisplayName();
+      const hdrFamEl = document.getElementById('display-family-title');
+      if (hdrFamEl) hdrFamEl.innerText = famTitle;
+
+      const pbSubEl = document.getElementById('pb-family-subtitle');
+      if (pbSubEl) pbSubEl.innerText = `"${famTitle}"`;
+
+      if (famTitle && famTitle !== 'Keluarga Bahagia' && famTitle !== 'Our Happy Family') {
+        localStorage.setItem('bukupink_saved_family_name', famTitle);
+      }
+
+      // Kemaskini status kad jemputan jika nama pasangan sudah terpaut
+      if (cachedCoupleProfile.fatherName && currentRole === 'mother') {
+        const badgeEl = document.querySelector('#card-invite-husband [data-i18n="badge_link_husband"]');
+        if (badgeEl) {
+          badgeEl.innerText = currentLang === 'en'
+            ? `✓ Linked with ${cachedCoupleProfile.fatherName}`
+            : `✓ Terpaut dengan ${cachedCoupleProfile.fatherName}`;
+        }
+      }
+    }
+
+    async function loadFamilyCoupleProfile() {
+      const localProfile = parseJsonSafe(localStorage.getItem(getFamilyScopedKey('bukupink_couple_profile')));
+      if (localProfile && typeof localProfile === 'object') {
+        cachedCoupleProfile = {
+          motherName: localProfile.motherName || '',
+          fatherName: localProfile.fatherName || ''
+        };
+      } else {
+        cachedCoupleProfile = { motherName: '', fatherName: '' };
+      }
+
+      // Isi fallback dari maklumat tempatan jika belum ada
+      const savedFam = (localStorage.getItem('bukupink_saved_family_name') || '').replace(/\s*\[\d+\]/g, '').trim();
+      if (!cachedCoupleProfile.motherName && savedFam && savedFam !== 'Keluarga' && savedFam !== 'Keluarga Anda') {
+        const stripped = savedFam.replace(/^(Keluarga|Family of|Family)\s+/i, '').trim();
+        if (stripped.includes('&')) {
+          const parts = stripped.split('&').map(s => s.trim());
+          cachedCoupleProfile.motherName = parts[0] || '';
+          if (!cachedCoupleProfile.fatherName && parts[1]) cachedCoupleProfile.fatherName = parts[1];
+        } else if (currentRole === 'mother') {
+          cachedCoupleProfile.motherName = stripped;
+        }
+      }
+
+      const cleanSelf = (currentUserName || '').replace(/\s*\((Ibu|Ayah|Mother|Father)\)/gi, '').trim();
+      if (currentRole === 'mother' && cleanSelf && !cachedCoupleProfile.motherName) {
+        cachedCoupleProfile.motherName = cleanSelf;
+      }
+      if (currentRole === 'father' && cleanSelf && !cachedCoupleProfile.fatherName) {
+        cachedCoupleProfile.fatherName = cleanSelf;
+      }
+
+      applyCoupleProfileUI();
+
+      if (!db || !currentFamilyId || currentFamilyId === DEMO_FAMILY_ID) return;
+      try {
+        const { data, error } = await secureGetRecords('baby_memories', { category: 'Tetapan Keluarga' });
+        let cloudProfile = null;
+        if (!error && data) {
+          const row = data.find(r => r.title === 'PROFIL_PASANGAN');
+          cloudProfile = row ? parseJsonSafe(row.notes) : null;
+        }
+
+        let needsSync = false;
+        if (cloudProfile && typeof cloudProfile === 'object') {
+          if (cloudProfile.motherName && (!cachedCoupleProfile.motherName || cloudProfile.motherName !== cachedCoupleProfile.motherName)) {
+            cachedCoupleProfile.motherName = cloudProfile.motherName;
+          }
+          if (cloudProfile.fatherName && (!cachedCoupleProfile.fatherName || cloudProfile.fatherName !== cachedCoupleProfile.fatherName)) {
+            cachedCoupleProfile.fatherName = cloudProfile.fatherName;
+          }
+          if (currentRole === 'father' && cleanSelf && !cloudProfile.fatherName) {
+            cachedCoupleProfile.fatherName = cleanSelf;
+            needsSync = true;
+          }
+          if (currentRole === 'mother' && cleanSelf && !cloudProfile.motherName) {
+            cachedCoupleProfile.motherName = cleanSelf;
+            needsSync = true;
+          }
+        } else if (cachedCoupleProfile.motherName || cachedCoupleProfile.fatherName) {
+          needsSync = true;
+        }
+
+        localStorage.setItem(getFamilyScopedKey('bukupink_couple_profile'), JSON.stringify(cachedCoupleProfile));
+        applyCoupleProfileUI();
+
+        if (needsSync) {
+          await upsertFamilySyncRecord('Tetapan Keluarga', 'PROFIL_PASANGAN', cachedCoupleProfile);
+        }
+      } catch (err) {
+        console.warn("Gagal muat profil pasangan:", err);
+      }
+    }
+
     async function loadAllSupabaseData() {
       if (!db || !currentFamilyId) return;
       try {
         await loadChildInfo();
         await Promise.all([
+          loadFamilyCoupleProfile(),
           loadFamilyPhaseState(),
           loadTtcSettings(),
           loadDailyMedsState(),
@@ -10691,15 +10895,7 @@
       // 5. Nama Pasangan / Keluarga (Paparkan nama keluarga bersih tanpa tag peranan atau kod)
       const subtitleEl = document.getElementById('pb-family-subtitle');
       if (subtitleEl) {
-        const savedFam = (localStorage.getItem('bukupink_saved_family_name') || '').replace(/\s*\[\d+\]/g, '').trim();
-        const cleanUser = (currentUserName || '').replace(/\s*\((Ibu|Ayah|Mother|Father)\)/gi, '').trim();
-        let displayFamily = savedFam;
-        if (!displayFamily || displayFamily === 'Keluarga' || displayFamily === 'Keluarga Anda') {
-          displayFamily = cleanUser ? (isEn ? `Family of ${cleanUser}` : `Keluarga ${cleanUser}`) : (isEn ? 'Our Beloved Family' : 'Keluarga Bahagia Kami');
-        } else if (isEn && /^Keluarga\s+/i.test(displayFamily)) {
-          displayFamily = displayFamily.replace(/^Keluarga\s+/i, 'Family of ');
-        }
-        subtitleEl.innerText = `"${displayFamily}"`;
+        subtitleEl.innerText = `"${getCleanFamilyDisplayName()}"`;
       }
 
       // 6. Muat Turun Foto Kulit Depan
@@ -11865,6 +12061,359 @@
     window.addEventListener('online', () => {
       syncFamilyDataNow({ silent: true });
     });
+  
+    // ==========================================
+    // SUDUT SANTAI & MINI GAME (MEMORI, TANGKAP SUSU, KUIZ)
+    // ==========================================
+    let memCards = [];
+    let memFlipped = [];
+    let memMatched = 0;
+    let memMoves = 0;
+    let memLocked = false;
+
+    let catchTimer = null;
+    let catchSpawnTimer = null;
+    let catchTimeLeft = 25;
+    let catchScore = 0;
+    let catchRunning = false;
+
+    const PARENTING_QUIZ_DATA = [
+      {
+        q: "Apakah suntikan vaksin pertama yang diberikan kepada bayi sebaik sahaja lahir di hospital Malaysia?",
+        opts: ["BCG & Hepatitis B (Dos 1)", "MMR & Pneumokokal", "Heksavalen Dos 1", "Rotavirus"],
+        ans: 0,
+        info: "Suntikan BCG (lengan kiri) dan Hepatitis B Dos 1 diberikan semasa bayi baru lahir di hospital."
+      },
+      {
+        q: "Pada usia berapakah bayi biasanya mula diperkenalkan dengan makanan pejal (bubur lembut)?",
+        opts: ["3 Bulan", "4 Bulan", "6 Bulan", "9 Bulan"],
+        ans: 2,
+        info: "KKM & WHO menyarankan susu ibu/formula sahaja sehingga 6 bulan sebelum memulakan makanan pelengkap."
+      },
+      {
+        q: "Apakah maksud singkatan 'BFP' yang sering digunakan dalam komuniti ikhtiar hamil (TTC)?",
+        opts: ["Baby Feeding Plan", "Big Fat Positive (Ujian Hamil Positif)", "Before First Period", "Best Fertility Period"],
+        ans: 1,
+        info: "BFP bermaksud Big Fat Positive — berita gembira dua garisan jelas pada alat ujian kehamilan (UPT)!"
+      },
+      {
+        q: "Berapa minggukah tempoh kehamilan yang dianggap cukup bulan (full term)?",
+        opts: ["32 – 34 Minggu", "35 – 36 Minggu", "37 – 40 Minggu", "43 – 45 Minggu"],
+        ans: 2,
+        info: "Bayi yang lahir antara minggu ke-37 hingga ke-40 dikira cukup bulan (full term)."
+      },
+      {
+        q: "Apakah bacaan pergerakan bayi (kick count) yang normal dalam tempoh 12 jam selepas usia kandungan 28 minggu?",
+        opts: ["Sekurang-kurangnya 3 kali", "Sekurang-kurangnya 5 kali", "Sekurang-kurangnya 10 kali", "Sekurang-kurangnya 50 kali"],
+        ans: 2,
+        info: "Ibu hamil perlu mencatat sekurang-kurangnya 10 pergerakan bayi dalam masa 12 jam (9 pagi – 9 malam)."
+      },
+      {
+        q: "Mengapakah bayi baru lahir digalakkan menyusu dengan kerap (setiap 2-3 jam) pada minggu pertama?",
+        opts: ["Untuk cepat berjalan", "Membantu menurunkan kuning (jaundis) & menambah berat", "Supaya bayi tidak bosan", "Untuk tumbuh gigi lebih awal"],
+        ans: 1,
+        info: "Penyusuan kerap membantu bayi membuang air besar/kecil dengan lebih kerap bagi menyingkirkan bilirubin (punca jaundis)."
+      }
+    ];
+    let quizIdx = 0;
+    let quizScore = 0;
+    let quizAnswered = false;
+
+    function openMiniGamesModal() {
+      openModal('modal-mini-games');
+      switchMiniGameTab('memory');
+      initMemoryGame();
+      renderCatchBoardIdle();
+      initParentingQuiz();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function closeMiniGamesModal() {
+      stopCatchGame();
+      closeModal('modal-mini-games');
+    }
+
+    function switchMiniGameTab(tab) {
+      const tabs = ['memory', 'catch', 'quiz'];
+      tabs.forEach(t => {
+        const panel = document.getElementById('game-panel-' + t);
+        const btn = document.getElementById('btn-game-tab-' + t);
+        if (panel) panel.classList.toggle('hidden', t !== tab);
+        if (btn) {
+          btn.className = t === tab
+            ? "flex-1 py-2 rounded-xl bg-white text-violet-700 shadow-xs transition"
+            : "flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
+        }
+      });
+      if (tab !== 'catch') {
+        stopCatchGame();
+      }
+    }
+
+    // --- GAME 1: MEMORI SI COMEL ---
+    function initMemoryGame() {
+      const icons = ['🍼', '👶', '🧸', '🎀', '👣', '❤️'];
+      memCards = [...icons, ...icons].sort(() => Math.random() - 0.5);
+      memFlipped = [];
+      memMatched = 0;
+      memMoves = 0;
+      memLocked = false;
+
+      const movesEl = document.getElementById('mem-game-moves');
+      const winEl = document.getElementById('mem-game-win');
+      const bestEl = document.getElementById('mem-game-best');
+      const grid = document.getElementById('mem-game-grid');
+
+      if (movesEl) movesEl.innerText = '0';
+      if (winEl) winEl.classList.add('hidden');
+      const best = localStorage.getItem('bukupink_game_mem_best');
+      if (bestEl) bestEl.innerText = best ? `${best} langkah` : '--';
+
+      if (grid) {
+        grid.innerHTML = memCards.map((icon, idx) => `
+          <button type="button" onclick="flipMemCard(${idx})" id="mem-card-${idx}" class="h-16 rounded-2xl bg-violet-100 hover:bg-violet-200 border-2 border-violet-200 flex items-center justify-center text-2xl font-bold transition transform active:scale-95 shadow-xs">
+            <span class="text-violet-400 text-lg">❓</span>
+          </button>
+        `).join('');
+      }
+    }
+
+    function flipMemCard(idx) {
+      if (memLocked) return;
+      const btn = document.getElementById('mem-card-' + idx);
+      if (!btn || btn.dataset.matched === '1' || memFlipped.includes(idx)) return;
+
+      btn.innerHTML = `<span>${memCards[idx]}</span>`;
+      btn.className = "h-16 rounded-2xl bg-white border-2 border-violet-400 flex items-center justify-center text-2xl transition shadow-sm";
+      memFlipped.push(idx);
+
+      if (memFlipped.length === 2) {
+        memMoves++;
+        const movesEl = document.getElementById('mem-game-moves');
+        if (movesEl) movesEl.innerText = String(memMoves);
+
+        const [i1, i2] = memFlipped;
+        if (memCards[i1] === memCards[i2]) {
+          const b1 = document.getElementById('mem-card-' + i1);
+          const b2 = document.getElementById('mem-card-' + i2);
+          if (b1) {
+            b1.dataset.matched = '1';
+            b1.className = "h-16 rounded-2xl bg-emerald-50 border-2 border-emerald-400 flex items-center justify-center text-2xl transition";
+          }
+          if (b2) {
+            b2.dataset.matched = '1';
+            b2.className = "h-16 rounded-2xl bg-emerald-50 border-2 border-emerald-400 flex items-center justify-center text-2xl transition";
+          }
+          memMatched += 2;
+          memFlipped = [];
+
+          if (memMatched === memCards.length) {
+            const winEl = document.getElementById('mem-game-win');
+            const winMovesEl = document.getElementById('mem-win-moves');
+            if (winMovesEl) winMovesEl.innerText = String(memMoves);
+            if (winEl) winEl.classList.remove('hidden');
+
+            const prevBest = parseInt(localStorage.getItem('bukupink_game_mem_best') || '999', 10);
+            if (memMoves < prevBest) {
+              localStorage.setItem('bukupink_game_mem_best', String(memMoves));
+              const bestEl = document.getElementById('mem-game-best');
+              if (bestEl) bestEl.innerText = `${memMoves} langkah`;
+            }
+          }
+        } else {
+          memLocked = true;
+          setTimeout(() => {
+            [i1, i2].forEach(i => {
+              const b = document.getElementById('mem-card-' + i);
+              if (b) {
+                b.innerHTML = `<span class="text-violet-400 text-lg">❓</span>`;
+                b.className = "h-16 rounded-2xl bg-violet-100 hover:bg-violet-200 border-2 border-violet-200 flex items-center justify-center text-2xl font-bold transition transform active:scale-95 shadow-xs";
+              }
+            });
+            memFlipped = [];
+            memLocked = false;
+          }, 650);
+        }
+      }
+    }
+
+    // --- GAME 2: TANGKAP SUSU & BINTANG ---
+    function renderCatchBoardIdle() {
+      const board = document.getElementById('catch-game-board');
+      const bestEl = document.getElementById('catch-game-best');
+      const best = localStorage.getItem('bukupink_game_catch_best') || '0';
+      if (bestEl) bestEl.innerText = best;
+      if (board) {
+        board.innerHTML = Array.from({ length: 9 }).map((_, idx) => `
+          <button type="button" id="catch-slot-${idx}" onclick="tapCatchSlot(${idx})" class="h-14 rounded-2xl bg-white/80 border border-pink-100 flex items-center justify-center text-2xl transition active:scale-90 select-none">
+          </button>
+        `).join('');
+      }
+    }
+
+    function stopCatchGame() {
+      catchRunning = false;
+      if (catchTimer) clearInterval(catchTimer);
+      if (catchSpawnTimer) clearInterval(catchSpawnTimer);
+      catchTimer = null;
+      catchSpawnTimer = null;
+      const btn = document.getElementById('btn-start-catch-game');
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "▶️ Mula Main (25 Saat)";
+        btn.classList.remove('opacity-60');
+      }
+    }
+
+    function startCatchGame() {
+      stopCatchGame();
+      catchRunning = true;
+      catchScore = 0;
+      catchTimeLeft = 25;
+      renderCatchBoardIdle();
+
+      document.getElementById('catch-game-score').innerText = '0';
+      document.getElementById('catch-game-time').innerText = '25s';
+      const btn = document.getElementById('btn-start-catch-game');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = "Sedang Bermain...";
+        btn.classList.add('opacity-60');
+      }
+
+      spawnCatchItems();
+      catchSpawnTimer = setInterval(spawnCatchItems, 750);
+      catchTimer = setInterval(() => {
+        catchTimeLeft--;
+        const timeEl = document.getElementById('catch-game-time');
+        if (timeEl) timeEl.innerText = catchTimeLeft + 's';
+        if (catchTimeLeft <= 0) {
+          stopCatchGame();
+          const prevBest = parseInt(localStorage.getItem('bukupink_game_catch_best') || '0', 10);
+          if (catchScore > prevBest) {
+            localStorage.setItem('bukupink_game_catch_best', String(catchScore));
+            document.getElementById('catch-game-best').innerText = String(catchScore);
+            showToast(`🏆 Rekod Baharu! Skor anda: ${catchScore} mata!`);
+          } else {
+            showToast(`⏰ Masa tamat! Skor anda: ${catchScore} mata.`);
+          }
+          renderCatchBoardIdle();
+        }
+      }, 1000);
+    }
+
+    function spawnCatchItems() {
+      if (!catchRunning) return;
+      for (let i = 0; i < 9; i++) {
+        const slot = document.getElementById('catch-slot-' + i);
+        if (slot) {
+          slot.innerText = '';
+          slot.dataset.item = '';
+          slot.className = "h-14 rounded-2xl bg-white/80 border border-pink-100 flex items-center justify-center text-2xl transition active:scale-90 select-none";
+        }
+      }
+      const count = Math.random() > 0.45 ? 2 : 1;
+      const items = [
+        { icon: '🍼', pts: 10, cls: 'bg-white border-sky-300 shadow-sm' },
+        { icon: '🍼', pts: 10, cls: 'bg-white border-sky-300 shadow-sm' },
+        { icon: '🧸', pts: 15, cls: 'bg-white border-amber-300 shadow-sm' },
+        { icon: '⭐', pts: 20, cls: 'bg-yellow-50 border-yellow-300 shadow-sm' },
+        { icon: '⏰', pts: -10, cls: 'bg-rose-50 border-rose-300 shadow-sm' }
+      ];
+      for (let c = 0; c < count; c++) {
+        const idx = Math.floor(Math.random() * 9);
+        const pick = items[Math.floor(Math.random() * items.length)];
+        const slot = document.getElementById('catch-slot-' + idx);
+        if (slot) {
+          slot.innerText = pick.icon;
+          slot.dataset.pts = String(pick.pts);
+          slot.className = `h-14 rounded-2xl border-2 flex items-center justify-center text-2xl transition transform active:scale-90 cursor-pointer select-none ${pick.cls}`;
+        }
+      }
+    }
+
+    function tapCatchSlot(idx) {
+      if (!catchRunning) return;
+      const slot = document.getElementById('catch-slot-' + idx);
+      if (!slot || !slot.innerText) return;
+      const pts = parseInt(slot.dataset.pts || '0', 10);
+      catchScore = Math.max(0, catchScore + pts);
+      document.getElementById('catch-game-score').innerText = String(catchScore);
+      slot.innerText = pts > 0 ? `+${pts}` : `${pts}`;
+      slot.className = `h-14 rounded-2xl flex items-center justify-center text-xs font-black ${pts > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`;
+      slot.dataset.pts = '0';
+    }
+
+    // --- GAME 3: KUIZ SANTAI IBU & AYAH ---
+    function initParentingQuiz() {
+      quizIdx = 0;
+      quizScore = 0;
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      quizAnswered = false;
+      const item = PARENTING_QUIZ_DATA[quizIdx];
+      document.getElementById('quiz-q-num').innerText = String(quizIdx + 1);
+      document.getElementById('quiz-score').innerText = String(quizScore);
+      document.getElementById('quiz-question-text').innerText = item.q;
+      document.getElementById('quiz-feedback-box').classList.add('hidden');
+      document.getElementById('btn-quiz-next').classList.add('hidden');
+
+      const optsEl = document.getElementById('quiz-options-list');
+      optsEl.innerHTML = item.opts.map((opt, idx) => `
+        <button type="button" onclick="answerQuizQuestion(${idx})" id="quiz-opt-${idx}" class="w-full text-left p-2.5 rounded-xl bg-white hover:bg-violet-50 border border-slate-200 font-semibold text-slate-700 transition">
+          ${escapeHtml(opt)}
+        </button>
+      `).join('');
+    }
+
+    function answerQuizQuestion(chosenIdx) {
+      if (quizAnswered) return;
+      quizAnswered = true;
+      const item = PARENTING_QUIZ_DATA[quizIdx];
+      const isCorrect = chosenIdx === item.ans;
+      if (isCorrect) {
+        quizScore += 10;
+        document.getElementById('quiz-score').innerText = String(quizScore);
+      }
+
+      item.opts.forEach((_, idx) => {
+        const btn = document.getElementById('quiz-opt-' + idx);
+        if (!btn) return;
+        if (idx === item.ans) {
+          btn.className = "w-full text-left p-2.5 rounded-xl bg-emerald-100 border border-emerald-400 font-bold text-emerald-900";
+        } else if (idx === chosenIdx) {
+          btn.className = "w-full text-left p-2.5 rounded-xl bg-rose-100 border border-rose-400 font-bold text-rose-900";
+        } else {
+          btn.className = "w-full text-left p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-400";
+        }
+      });
+
+      const fb = document.getElementById('quiz-feedback-box');
+      fb.classList.remove('hidden');
+      fb.className = `p-2.5 rounded-xl text-[11px] leading-relaxed ${isCorrect ? 'bg-emerald-50 border border-emerald-200 text-emerald-900' : 'bg-amber-50 border border-amber-200 text-amber-900'}`;
+      fb.innerHTML = `<strong>${isCorrect ? '✅ Betul!' : '💡 Hampir Tepat!'}</strong> ${escapeHtml(item.info)}`;
+
+      const nextBtn = document.getElementById('btn-quiz-next');
+      if (quizIdx < PARENTING_QUIZ_DATA.length - 1) {
+        nextBtn.innerText = "Soalan Seterusnya →";
+        nextBtn.classList.remove('hidden');
+      } else {
+        nextBtn.innerText = `🎉 Selesai! Skor Akhir: ${quizScore}/60 (Main Semula)`;
+        nextBtn.classList.remove('hidden');
+      }
+    }
+
+    function nextQuizQuestion() {
+      if (quizIdx < PARENTING_QUIZ_DATA.length - 1) {
+        quizIdx++;
+        renderQuizQuestion();
+      } else {
+        initParentingQuiz();
+      }
+    }
+
   </script>
 </body>
 </html>
