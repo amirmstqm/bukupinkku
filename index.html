@@ -2038,7 +2038,7 @@
                 <div>
                   <label data-i18n="jaundice_reading_lbl" class="block font-semibold text-slate-700 mb-1">Bacaan Kuning</label>
                   <div class="flex gap-1.5">
-                    <input type="number" step="0.1" min="0" max="999" id="inp-jaundice-val" required data-i18n-placeholder="ph_jaundice_val" placeholder="cth: 185" class="w-full min-w-0 p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-300 font-bold text-slate-800">
+                    <input type="number" step="any" min="0" max="999" id="inp-jaundice-val" required data-i18n-placeholder="ph_jaundice_val" placeholder="cth: 185" class="w-full min-w-0 p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-300 font-bold text-slate-800">
                     <select id="inp-jaundice-unit" aria-label="Unit" class="p-2 bg-slate-50 border border-slate-200 rounded-xl outline-none text-[11px] font-bold text-slate-700 shrink-0">
                       <option value="umol">µmol/L</option>
                       <option value="mgdl">mg/dL</option>
@@ -2563,7 +2563,7 @@
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block font-semibold mb-1" data-i18n="lbl_opk_temp">Suhu Basal BBT (°C)</label>
-            <input type="number" step="0.1" id="inp-opk-temp" placeholder="Cth: 36.4" data-i18n-placeholder="ph_opk_temp" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+            <input type="number" step="any" min="30" max="45" id="inp-opk-temp" placeholder="Cth: 36.4" data-i18n-placeholder="ph_opk_temp" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
           </div>
           <div>
             <label class="block font-semibold mb-1" data-i18n="lbl_opk_date">Tarikh Ujian</label>
