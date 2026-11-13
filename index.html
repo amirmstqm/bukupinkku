@@ -4965,9 +4965,6 @@
       if (currentPhase === 'ttc') {
         loadTtcLetters();
       }
-      if (tab === 'supplements') {
-        renderTtcSupplementsUI();
-      }
 
       renderChildSwitcher();
       renderActiveChildInfo(getActiveChildRecord());
@@ -5837,7 +5834,14 @@
           localStorage.setItem('bukupink_saved_user_name', userName);
           localStorage.setItem('bukupink_saved_pin', joinPin);
           localStorage.setItem('bukupink_saved_role', selectedRole);
-          localStorage.setItem('bukupink_saved_family_name', cleanFamTitle);
+          let displayFamTitle = cleanFamTitle;
+          if (selectedRole === 'father' && userName && cleanFamTitle) {
+            const momOnly = cleanFamTitle.replace(/^(Keluarga|Family of|Family)\s+/i, '').trim();
+            if (momOnly && !momOnly.toLowerCase().includes(userName.toLowerCase())) {
+              displayFamTitle = `Keluarga ${momOnly} & ${userName}`;
+            }
+          }
+          localStorage.setItem('bukupink_saved_family_name', displayFamTitle);
         }
 
         showToast(`❤️ Berjaya masuk ke ${cleanFamTitle} (${verifiedInviteCode})!`);
@@ -5890,8 +5894,10 @@
         med1Taken = true;
         ttcMedWifeTaken = false;
         ttcMedHusbandTaken = false;
-        showOnboardingScreen();
-        showToast("Anda telah log keluar.");
+        const hasSaved = Boolean(localStorage.getItem('bukupink_saved_family_code'));
+        showOnboardingScreen(hasSaved ? 'father' : 'mother');
+        if (hasSaved) prefillLoginFormFromSaved();
+        showToast("Anda telah log keluar. Klik 'Sambung Sesi' untuk masuk semula tanpa isi semula.");
       }
     }
 
@@ -7820,9 +7826,6 @@
         updateSidebarActiveMenu('ttc', 'fertility');
         calculateTtcDates();
         loadTtcLetters();
-      }
-      if (tab === 'supplements') {
-        renderTtcSupplementsUI();
       } else if (phase === 'child') {
         if (childSec) childSec.classList.remove('hidden');
         if (btnChild) btnChild.className = activeBtnClass;
@@ -10685,12 +10688,18 @@
         pbBlood.innerText = child?.blood_type || 'O+';
       }
 
-      // 5. Nama Pasangan / Keluarga
+      // 5. Nama Pasangan / Keluarga (Paparkan nama keluarga bersih tanpa tag peranan atau kod)
       const subtitleEl = document.getElementById('pb-family-subtitle');
-      if (subtitleEl && currentUserName) {
-        subtitleEl.innerText = isEn
-          ? `"Family of ${currentUserName} & Partner (Code: ${currentFamilyCode || 'PINK-8821'})"`
-          : `"Keluarga ${currentUserName} & Pasangan (Kod: ${currentFamilyCode || 'PINK-8821'})"`;
+      if (subtitleEl) {
+        const savedFam = (localStorage.getItem('bukupink_saved_family_name') || '').replace(/\s*\[\d+\]/g, '').trim();
+        const cleanUser = (currentUserName || '').replace(/\s*\((Ibu|Ayah|Mother|Father)\)/gi, '').trim();
+        let displayFamily = savedFam;
+        if (!displayFamily || displayFamily === 'Keluarga' || displayFamily === 'Keluarga Anda') {
+          displayFamily = cleanUser ? (isEn ? `Family of ${cleanUser}` : `Keluarga ${cleanUser}`) : (isEn ? 'Our Beloved Family' : 'Keluarga Bahagia Kami');
+        } else if (isEn && /^Keluarga\s+/i.test(displayFamily)) {
+          displayFamily = displayFamily.replace(/^Keluarga\s+/i, 'Family of ');
+        }
+        subtitleEl.innerText = `"${displayFamily}"`;
       }
 
       // 6. Muat Turun Foto Kulit Depan
