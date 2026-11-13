@@ -273,6 +273,24 @@
               </button>
             </div>
 
+            <!-- Kad Akses Pantas (Akaun Tersimpan / Ingat Saya) -->
+            <div id="landing-quick-resume-card" class="hidden max-w-xl mx-auto lg:mx-0 p-3.5 bg-gradient-to-r from-pastel-50 via-rose-50 to-pink-50 border border-pastel-300 rounded-2xl shadow-sm text-xs flex items-center justify-between">
+              <div class="flex items-center space-x-2.5 text-left">
+                <span class="text-2xl">🌸</span>
+                <div>
+                  <p class="font-extrabold text-slate-800 text-xs flex items-center space-x-1.5">
+                    <span id="land-qr-name">Keluarga Anda</span>
+                    <span class="bg-emerald-100 text-emerald-800 text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-emerald-200">Akaun Tersimpan</span>
+                  </p>
+                  <p class="text-[11px] text-slate-500 font-mono">Kod Tetap: <strong class="text-pastel-700 font-bold" id="land-qr-code">PINK-XXXXXX</strong></p>
+                </div>
+              </div>
+              <button type="button" onclick="handleQuickResumeLogin()" class="px-3.5 py-2 bg-pastel-500 hover:bg-pastel-600 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center space-x-1.5 whitespace-nowrap active:scale-95">
+                <span>Terus Masuk</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+
             <!-- Trust micro-copy (Dengan Data Peribadi Dilindungi) -->
             <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-xs text-slate-600 font-medium">
               <span class="flex items-center space-x-1 text-emerald-700">
@@ -803,6 +821,34 @@
         <p data-i18n="onboard_subtitle" class="text-xs text-slate-600 font-medium">Peneman Digital Kehamilan Buku Pink sehingga Anak Umur 3 Tahun bersama Pasangan</p>
       </div>
 
+      <!-- Kad Akses Pantas (Akaun Tersimpan / Ingat Saya) -->
+      <div id="card-quick-resume" class="hidden bg-gradient-to-r from-pastel-50 via-rose-50 to-pink-50 border border-pastel-300 p-4 rounded-2xl shadow-sm text-xs space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2 text-left">
+            <span class="text-xl">🌸</span>
+            <div>
+              <p class="font-extrabold text-slate-800 text-sm" id="qr-family-name">Keluarga Sarah</p>
+              <p class="text-[11px] text-slate-500 font-mono">Kod Tetap: <strong class="text-pastel-700 font-bold" id="qr-family-code">PINK-L8R7BZ</strong></p>
+            </div>
+          </div>
+          <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+            Akaun Tersimpan
+          </span>
+        </div>
+        <button type="button" onclick="handleQuickResumeLogin()" id="btn-quick-resume" class="w-full py-2.5 bg-pastel-500 hover:bg-pastel-600 text-white font-extrabold rounded-xl shadow-sm flex items-center justify-center space-x-2 transition transform active:scale-95">
+          <span>🚀 Masuk Terus Ke Dashboard (1-Klik)</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+        <div class="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+          <button type="button" onclick="prefillLoginFormFromSaved(); switchAuthTab('father');" class="text-pastel-600 hover:underline font-semibold">
+            Gunakan di borang log masuk
+          </button>
+          <button type="button" onclick="forgetSavedCredentials()" class="hover:text-rose-600 transition">
+            Lupakan akaun ini
+          </button>
+        </div>
+      </div>
+
       <!-- Pilihan Masuk (Tab Onboarding) -->
       <div class="bg-slate-100 p-1.5 rounded-2xl flex border border-slate-200 text-xs font-bold">
         <button onclick="switchAuthTab('mother')" id="tab-auth-mother" data-i18n="tab_new_mom" class="flex-1 py-2.5 rounded-xl bg-white text-pastel-600 shadow-sm transition">
@@ -911,6 +957,11 @@
           </div>
         </div>
 
+        <label class="flex items-center space-x-2 text-xs text-slate-700 cursor-pointer pt-1 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+          <input type="checkbox" id="reg-remember-me" checked class="w-4 h-4 text-pastel-500 rounded border-slate-300 focus:ring-pastel-400">
+          <span class="font-bold text-[11px] text-slate-700">🔒 Ingat saya pada telefon ini (masuk terus bila buka laman)</span>
+        </label>
+
         <button type="submit" id="btn-submit-register" class="w-full py-3.5 bg-pastel-500 hover:bg-pastel-600 text-white font-extrabold rounded-2xl shadow-md transition flex items-center justify-center space-x-2">
           <span data-i18n="btn_create_profile">Cipta Profil Keluarga Baharu</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -977,6 +1028,11 @@
             </button>
           </div>
         </div>
+
+        <label class="flex items-center space-x-2 text-xs text-slate-700 cursor-pointer pt-1 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+          <input type="checkbox" id="join-remember-me" checked class="w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-400">
+          <span class="font-bold text-[11px] text-slate-700">🔒 Ingat maklumat pada peranti ini (tak perlu isi berulang kali)</span>
+        </label>
 
         <button type="submit" id="btn-submit-join" class="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-extrabold rounded-2xl shadow-md transition flex items-center justify-center space-x-2">
           <span data-i18n="btn_login_code">Log Masuk Ke Kod Keluarga</span>
@@ -4871,42 +4927,211 @@
       checkAuthSession();
     });
 
+    // ==========================================
+    // SISTEM INGAT MAKLUMAT PENGGUNA & SESI KEKAL
+    // ==========================================
+    function renderQuickResumeCards() {
+      const savedCode = localStorage.getItem('bukupink_saved_family_code') || localStorage.getItem('bukupink_invite_code');
+      const savedName = localStorage.getItem('bukupink_saved_family_name') || 'Keluarga Anda';
+      const savedUserName = localStorage.getItem('bukupink_saved_user_name') || localStorage.getItem('bukupink_user_name') || 'Pengguna';
+
+      // Onboarding card
+      const qrCard = document.getElementById('card-quick-resume');
+      const qrName = document.getElementById('qr-family-name');
+      const qrCode = document.getElementById('qr-family-code');
+
+      if (qrCard) {
+        if (savedCode) {
+          qrCard.classList.remove('hidden');
+          if (qrName) qrName.innerText = savedName;
+          if (qrCode) qrCode.innerText = savedCode;
+        } else {
+          qrCard.classList.add('hidden');
+        }
+      }
+
+      // Landing card
+      const landCard = document.getElementById('landing-quick-resume-card');
+      const landName = document.getElementById('land-qr-name');
+      const landCode = document.getElementById('land-qr-code');
+
+      if (landCard) {
+        if (savedCode) {
+          landCard.classList.remove('hidden');
+          if (landName) landName.innerText = `${savedName} (${savedUserName})`;
+          if (landCode) landCode.innerText = savedCode;
+        } else {
+          landCard.classList.add('hidden');
+        }
+      }
+
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function prefillLoginFormFromSaved() {
+      const savedCode = localStorage.getItem('bukupink_saved_family_code') || localStorage.getItem('bukupink_invite_code');
+      const savedPhone4 = localStorage.getItem('bukupink_saved_phone4');
+      const savedName = localStorage.getItem('bukupink_saved_user_name');
+      const savedPin = localStorage.getItem('bukupink_saved_pin');
+      const savedRole = localStorage.getItem('bukupink_saved_role') || 'mother';
+
+      const codeInp = document.getElementById('join-invite-code');
+      if (codeInp && savedCode && !codeInp.value) {
+        codeInp.value = savedCode;
+      }
+      const phoneInp = document.getElementById('join-verify-phone4');
+      if (phoneInp && savedPhone4 && !phoneInp.value) {
+        phoneInp.value = savedPhone4;
+      }
+      const nameInp = document.getElementById('join-dad-name');
+      if (nameInp && savedName && !nameInp.value) {
+        nameInp.value = savedName;
+      }
+      const pinInp = document.getElementById('join-family-pin');
+      if (pinInp && savedPin && !pinInp.value) {
+        pinInp.value = savedPin;
+      }
+      if (savedRole) {
+        const roleRadio = document.querySelector(`input[name="join_role"][value="${savedRole}"]`);
+        if (roleRadio) roleRadio.checked = true;
+      }
+    }
+
+    function forgetSavedCredentials() {
+      if (confirm("Adakah anda ingin memadam maklumat akaun tersimpan daripada peranti ini?")) {
+        localStorage.removeItem('bukupink_saved_family_code');
+        localStorage.removeItem('bukupink_saved_phone4');
+        localStorage.removeItem('bukupink_saved_pin');
+        localStorage.removeItem('bukupink_saved_user_name');
+        localStorage.removeItem('bukupink_saved_role');
+        localStorage.removeItem('bukupink_saved_family_name');
+        renderQuickResumeCards();
+        showToast("Maklumat akaun tersimpan telah dipadam dari peranti ini.");
+      }
+    }
+
+    async function handleQuickResumeLogin() {
+      const savedCode = localStorage.getItem('bukupink_saved_family_code') || localStorage.getItem('bukupink_invite_code');
+      const savedPhone4 = localStorage.getItem('bukupink_saved_phone4');
+      const savedPin = localStorage.getItem('bukupink_saved_pin');
+      const savedRole = localStorage.getItem('bukupink_saved_role') || localStorage.getItem('bukupink_role') || 'mother';
+      const savedName = localStorage.getItem('bukupink_saved_user_name') || localStorage.getItem('bukupink_user_name') || 'Ibu';
+      const savedFamilyName = localStorage.getItem('bukupink_saved_family_name') || 'Keluarga';
+
+      if (!savedCode) {
+        showToast("Tiada maklumat akaun tersimpan.");
+        return;
+      }
+
+      // 1. Jika sesi sedia ada masih aktif, terus masuk ke dashboard!
+      if (currentFamilyId && currentFamilyId !== DEMO_FAMILY_ID && currentFamilyToken) {
+        showDashboardScreen();
+        showToast(`🌸 Selamat kembali, ${currentUserName || savedName}!`);
+        return;
+      }
+
+      // 2. Cuba log masuk automatik menggunakan kelayakan tersimpan
+      if (savedPhone4 && savedPin && db) {
+        const btn = document.getElementById('btn-quick-resume');
+        const origText = btn ? btn.innerHTML : '';
+        if (btn) btn.innerText = "Menghubungkan akaun...";
+
+        try {
+          const { data: rpcRows, error: rpcErr } = await db.rpc('verify_family_access', {
+            p_invite_code: savedCode,
+            p_phone4: savedPhone4,
+            p_pin: savedPin
+          });
+
+          if (!rpcErr && rpcRows && rpcRows.length > 0 && rpcRows[0].ret_status === 'OK') {
+            const res = rpcRows[0];
+            const roleLabel = savedRole === 'mother' ? 'Ibu' : 'Ayah';
+            const fullName = savedName.includes('(') ? savedName : `${savedName} (${roleLabel})`;
+
+            localStorage.setItem('bukupink_family_id', res.ret_family_id);
+            localStorage.setItem('bukupink_family_token', res.ret_access_token || '');
+            localStorage.setItem('bukupink_role', savedRole);
+            localStorage.setItem('bukupink_user_name', fullName);
+            localStorage.setItem('bukupink_invite_code', res.ret_invite_code);
+
+            currentFamilyId = res.ret_family_id;
+            currentFamilyToken = res.ret_access_token || '';
+            currentRole = savedRole;
+            currentUserName = fullName;
+            currentFamilyCode = res.ret_invite_code;
+
+            showToast(`🌸 Selamat kembali ke ${res.ret_family_name || savedFamilyName}!`);
+            showDashboardScreen();
+            return;
+          }
+        } catch (err) {
+          console.warn("Quick resume auth error:", err);
+        } finally {
+          if (btn && origText) btn.innerHTML = origText;
+          if (window.lucide && lucide.createIcons) lucide.createIcons();
+        }
+      }
+
+      // 3. Fallback: buka tab log masuk dan isikan semua maklumat siap-siap
+      showOnboardingScreen('father');
+      prefillLoginFormFromSaved();
+      showToast("Maklumat akaun telah diisikan. Sila tekan 'Log Masuk' atau masukkan PIN anda.");
+    }
+
     // SEMAK SESI AUTH
-    function checkAuthSession() {
+    async function checkAuthSession() {
       // Semak query parameter URL jika suami buka link WhatsApp cth: bukupinkku.my?code=PINK-XXXX
       const urlParams = new URLSearchParams(window.location.search);
       const inviteCodeParam = urlParams.get('code');
 
-      // Jika sesi lama belum ada token keselamatan baharu, minta pengguna log masuk sekali lagi
-      if (currentFamilyId && currentFamilyId !== DEMO_FAMILY_ID && !currentFamilyToken) {
-        localStorage.removeItem('bukupink_family_id');
-        localStorage.removeItem('bukupink_role');
-        localStorage.removeItem('bukupink_user_name');
-        localStorage.removeItem('bukupink_invite_code');
-        currentFamilyId = null;
-        showOnboardingScreen(inviteCodeParam ? 'father' : 'mother');
-        if (inviteCodeParam) {
-          const joinInput = document.getElementById('join-invite-code');
-          if (joinInput) joinInput.value = inviteCodeParam.trim().toUpperCase();
-        }
-        showToast(currentLang === 'en'
-          ? "🔒 Security upgrade applied. Please sign in once more."
-          : "🔒 Naik taraf keselamatan baharu: sila log masuk sekali lagi.");
-        return;
-      }
-
-      if (currentFamilyId && !inviteCodeParam) {
-        showDashboardScreen();
-      } else if (inviteCodeParam) {
+      if (inviteCodeParam) {
         showOnboardingScreen('father');
         const joinInput = document.getElementById('join-invite-code');
         if (joinInput) joinInput.value = inviteCodeParam.trim().toUpperCase();
         showToast(currentLang === 'en'
           ? `Invite code ${inviteCodeParam.toUpperCase()} detected! Enter your name and the last 4 digits of your wife's phone number.`
           : `Kod jemputan ${inviteCodeParam.toUpperCase()} dikesan! Masukkan nama & 4 digit terakhir no. telefon isteri.`);
-      } else {
-        showLandingScreen();
+        return;
       }
+
+      // 1. Jika pengguna SUDAH ada sesi aktif dalam telefon: TERUS KE DASHBOARD!
+      if (currentFamilyId) {
+        if (currentFamilyToken || currentFamilyId === DEMO_FAMILY_ID) {
+          showDashboardScreen();
+          return;
+        }
+
+        // Jika sesi ada tapi token keselamatan kosong, cuba refresh secara senyap
+        const savedCode = localStorage.getItem('bukupink_saved_family_code') || currentFamilyCode;
+        const savedPhone4 = localStorage.getItem('bukupink_saved_phone4');
+        const savedPin = localStorage.getItem('bukupink_saved_pin');
+
+        if (savedCode && savedPhone4 && savedPin && db) {
+          try {
+            const { data: rpcRows, error: rpcErr } = await db.rpc('verify_family_access', {
+              p_invite_code: savedCode,
+              p_phone4: savedPhone4,
+              p_pin: savedPin
+            });
+            if (!rpcErr && rpcRows && rpcRows.length > 0 && rpcRows[0].ret_status === 'OK') {
+              const res = rpcRows[0];
+              currentFamilyToken = res.ret_access_token || '';
+              localStorage.setItem('bukupink_family_token', currentFamilyToken);
+              showDashboardScreen();
+              return;
+            }
+          } catch (e) {
+            console.warn("Silent re-auth error:", e);
+          }
+        }
+
+        // Tetap kekalkan sesi dan tunjukkan dashboard
+        showDashboardScreen();
+        return;
+      }
+
+      // 2. Jika tiada sesi aktif, tunjukkan laman utama (berserta kad sambung pantas jika ada akaun tersimpan)
+      showLandingScreen();
     }
 
     function showLandingScreen() {
@@ -4914,6 +5139,7 @@
       if (landEl) landEl.classList.remove('hidden');
       document.getElementById('screen-onboarding').classList.add('hidden');
       document.getElementById('screen-dashboard').classList.add('hidden');
+      renderQuickResumeCards();
       window.scrollTo({ top: 0, behavior: 'smooth' });
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
@@ -4923,6 +5149,7 @@
       if (landEl) landEl.classList.add('hidden');
       document.getElementById('screen-onboarding').classList.remove('hidden');
       document.getElementById('screen-dashboard').classList.add('hidden');
+      renderQuickResumeCards();
       switchAuthTab(initialRole);
       if (initialRole === 'mother' && preselectPhase) {
         const phaseRadio = document.querySelector(`input[name="pregnancy_status"][value="${preselectPhase}"]`);
@@ -4986,6 +5213,19 @@
       document.getElementById('display-user-name').innerText = currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah');
       const shareCodeEl = document.getElementById('invite-share-code');
       if (shareCodeEl) shareCodeEl.innerText = currentFamilyCode || 'PINK-8821';
+
+      // Ingat maklumat akaun aktif pada peranti
+      if (currentFamilyCode && currentFamilyId !== DEMO_FAMILY_ID) {
+        if (!localStorage.getItem('bukupink_saved_family_code')) {
+          localStorage.setItem('bukupink_saved_family_code', currentFamilyCode);
+        }
+        if (currentUserName && !localStorage.getItem('bukupink_saved_user_name')) {
+          localStorage.setItem('bukupink_saved_user_name', currentUserName.replace(/\s*\([^)]*\)/, ''));
+        }
+        if (currentRole && !localStorage.getItem('bukupink_saved_role')) {
+          localStorage.setItem('bukupink_saved_role', currentRole);
+        }
+      }
 
       const isInviteHidden = (currentRole === 'father') || (localStorage.getItem('bukupink_hide_invite_' + currentFamilyCode) === 'true');
       const inviteCard = document.getElementById('card-invite-husband');
@@ -5072,12 +5312,24 @@
         formMom.classList.add('hidden');
         formDad.classList.remove('hidden');
         if (demoBtn) demoBtn.classList.add('hidden');
+        prefillLoginFormFromSaved();
       } else {
         tabMom.className = "flex-1 py-2.5 rounded-xl bg-white text-pastel-600 shadow-sm transition";
         tabDad.className = "flex-1 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 transition";
         formDad.classList.add('hidden');
         formMom.classList.remove('hidden');
         if (demoBtn) demoBtn.classList.remove('hidden');
+
+        const savedClientName = localStorage.getItem('bukupink_saved_client_name') || localStorage.getItem('bukupink_saved_user_name');
+        const savedPhone = localStorage.getItem('bukupink_saved_client_phone');
+        const momNameInp = document.getElementById('reg-mom-name');
+        if (momNameInp && savedClientName && !momNameInp.value) {
+          momNameInp.value = savedClientName;
+        }
+        const momPhoneInp = document.getElementById('reg-mom-phone');
+        if (momPhoneInp && savedPhone && !momPhoneInp.value) {
+          momPhoneInp.value = savedPhone;
+        }
       }
     }
 
@@ -5293,6 +5545,19 @@
         currentUserName = `${momName} (Ibu)`;
         currentFamilyCode = finalCode;
 
+        // Simpan maklumat client untuk auto-fill & login 1-klik akan datang
+        const rememberMe = document.getElementById('reg-remember-me') ? document.getElementById('reg-remember-me').checked : true;
+        if (rememberMe) {
+          localStorage.setItem('bukupink_saved_family_code', finalCode);
+          localStorage.setItem('bukupink_saved_phone4', cleanPhone.slice(-4));
+          localStorage.setItem('bukupink_saved_user_name', momName);
+          localStorage.setItem('bukupink_saved_pin', familyPin);
+          localStorage.setItem('bukupink_saved_role', 'mother');
+          localStorage.setItem('bukupink_saved_family_name', `Keluarga ${momName}`);
+          localStorage.setItem('bukupink_saved_client_name', momName);
+          localStorage.setItem('bukupink_saved_client_phone', cleanPhone);
+        }
+
         hasAppliedCloudPhaseForFamily = newFamilyId;
         const initialPhase = status === 'ttc' ? 'ttc' : (status === 'born' ? 'child' : 'pregnancy');
         await saveFamilyPhaseState(initialPhase);
@@ -5486,6 +5751,17 @@
         currentRole = selectedRole;
         currentUserName = `${userName} (${roleLabel})`;
         currentFamilyCode = verifiedInviteCode;
+
+        // Simpan maklumat client untuk auto-fill & login 1-klik akan datang
+        const rememberMe = document.getElementById('join-remember-me') ? document.getElementById('join-remember-me').checked : true;
+        if (rememberMe) {
+          localStorage.setItem('bukupink_saved_family_code', verifiedInviteCode);
+          localStorage.setItem('bukupink_saved_phone4', verifyPhone4);
+          localStorage.setItem('bukupink_saved_user_name', userName);
+          localStorage.setItem('bukupink_saved_pin', joinPin);
+          localStorage.setItem('bukupink_saved_role', selectedRole);
+          localStorage.setItem('bukupink_saved_family_name', cleanFamTitle);
+        }
 
         showToast(`❤️ Berjaya masuk ke ${cleanFamTitle} (${verifiedInviteCode})!`);
         showDashboardScreen();
