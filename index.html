@@ -1255,7 +1255,12 @@
                   <span data-i18n="btn_sync_now">Sync</span>
                 </button>
               </div>
-              <p class="text-[11px] text-slate-500"><span data-i18n="hdr_family_code">Kod:</span> <span id="display-invite-code" class="font-mono font-bold bg-pastel-50 text-pastel-700 px-1.5 py-0.5 rounded border border-pastel-200">PINK-8821</span></p>
+              <div class="flex items-center space-x-1.5 mt-0.5">
+                <p class="text-[11px] text-slate-500"><span data-i18n="hdr_family_code">Kod:</span> <span id="display-invite-code" onclick="toggleHideFamilyCode()" title="Klik untuk sorok/tunjuk kod keluarga" class="font-mono font-bold bg-pastel-50 hover:bg-pastel-100 text-pastel-700 px-1.5 py-0.5 rounded border border-pastel-200 cursor-pointer transition select-all">PINK-8821</span></p>
+                <button type="button" onclick="toggleHideFamilyCode()" id="btn-toggle-code-privacy" data-i18n-title="title_toggle_code" title="Sorokkan / Tunjukkan Kod Keluarga" class="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                  <i data-lucide="eye-off" id="icon-toggle-code" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1283,14 +1288,24 @@
       <!-- KAD JEMPUTAN SUAMI (MUNCUL JIKA SUAMI BELUM JOIN) -->
       <div id="card-invite-husband" class="bg-gradient-to-r from-teal-50/80 to-emerald-50/80 border border-teal-200/80 p-3.5 rounded-2xl flex items-center justify-between text-xs shadow-sm">
         <div class="space-y-0.5">
-          <span data-i18n="badge_link_husband" class="text-[10px] bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded-full">📲 Pautkan Pasangan Anda</span>
+          <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
+            <span data-i18n="badge_link_husband" class="text-[10px] bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded-full">📲 Pautkan Pasangan Anda</span>
+            <button type="button" onclick="dismissInviteCard()" title="Pasangan sudah berjaya log masuk" class="text-[10px] text-teal-700/80 hover:text-emerald-700 underline font-semibold transition">
+              ✓ Pasangan Dah Masuk
+            </button>
+          </div>
           <p class="font-bold text-slate-800"><span data-i18n="lbl_share_code">Kongsi Kod:</span> <span id="invite-share-code" class="font-mono text-teal-700 font-black">PINK-8821</span></p>
           <p data-i18n="desc_share_code" class="text-[11px] text-slate-600">Supaya pasangan dapat lihat rekod klinik & ubat secara masa nyata.</p>
         </div>
-        <button onclick="shareWhatsAppInvite()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs px-3 py-2 rounded-xl flex items-center space-x-1 shadow-sm whitespace-nowrap">
-          <span data-i18n="btn_whatsapp_partner">WhatsApp Pasangan</span>
-          <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
-        </button>
+        <div class="flex items-center space-x-1.5 flex-shrink-0 ml-2">
+          <button onclick="shareWhatsAppInvite()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs px-3 py-2 rounded-xl flex items-center space-x-1 shadow-sm whitespace-nowrap">
+            <span data-i18n="btn_whatsapp_partner">WhatsApp</span>
+            <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+          </button>
+          <button type="button" onclick="dismissInviteCard()" title="Sembunyikan kad ini" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
       </div>
 
       <!-- FASA TOGGLE: TTC vs HAMIL vs ANAK LAHIR -->
@@ -1794,10 +1809,13 @@
               <h2 id="hero-child-name" class="text-xl font-extrabold text-slate-800">Anak Comel</h2>
               <p class="text-xs text-slate-600 font-medium mt-0.5" id="hero-child-sub">Darah: --</p>
             </div>
-            <div class="text-right bg-white/80 border border-sky-100 px-3 py-1.5 rounded-2xl shadow-sm">
-              <span class="text-2xl font-black text-sky-800" id="hero-child-weight">--</span>
-              <span class="text-xs font-bold text-sky-800">kg</span>
-              <p class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold" id="hero-child-height">Tinggi: --</p>
+            <div onclick="openAddGrowthModal()" title="Klik untuk kemaskini / edit berat & tinggi anak" class="text-right bg-white/90 border border-sky-200 hover:border-sky-400 hover:bg-white px-3 py-1.5 rounded-2xl shadow-sm cursor-pointer transition transform active:scale-95 group">
+              <div class="flex items-baseline justify-end space-x-1">
+                <span class="text-2xl font-black text-sky-800 group-hover:text-sky-600" id="hero-child-weight">--</span>
+                <span class="text-xs font-bold text-sky-800">kg</span>
+                <span class="text-xs text-sky-400 group-hover:text-sky-600 ml-0.5" title="Edit berat">✏️</span>
+              </div>
+              <p class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold group-hover:text-slate-700" id="hero-child-height">Tinggi: --</p>
             </div>
           </div>
 
@@ -2202,6 +2220,7 @@
       </div>
 
       <form onsubmit="handleSaveGrowthLog(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="inp-growth-edit-id" value="">
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label data-i18n="lbl_growth_date" class="block font-semibold mb-1">Tarikh Timbangan</label>
@@ -4918,6 +4937,44 @@
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
+    let isFamilyCodeMasked = localStorage.getItem('bukupink_mask_code') === 'true';
+
+    function updateFamilyCodeDisplay() {
+      const code = currentFamilyCode || 'PINK-8821';
+      const displayCode = isFamilyCodeMasked ? 'PINK-••••••' : code;
+
+      const headerCodeEl = document.getElementById('display-invite-code');
+      if (headerCodeEl) headerCodeEl.innerText = displayCode;
+
+      const sidebarCodeEl = document.getElementById('sidebar-invite-code');
+      if (sidebarCodeEl) sidebarCodeEl.innerText = displayCode;
+
+      const iconToggle = document.getElementById('icon-toggle-code');
+      if (iconToggle) {
+        iconToggle.setAttribute('data-lucide', isFamilyCodeMasked ? 'eye' : 'eye-off');
+      }
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function toggleHideFamilyCode() {
+      isFamilyCodeMasked = !isFamilyCodeMasked;
+      localStorage.setItem('bukupink_mask_code', isFamilyCodeMasked ? 'true' : 'false');
+      updateFamilyCodeDisplay();
+      const isEn = currentLang === 'en';
+      showToast(isFamilyCodeMasked
+        ? (isEn ? '🔒 Family code masked for privacy' : '🔒 Kod keluarga disorokkan untuk privasi')
+        : (isEn ? '👁️ Family code visible' : '👁️ Kod keluarga dipaparkan'));
+    }
+
+    function dismissInviteCard() {
+      const card = document.getElementById('card-invite-husband');
+      if (card) card.classList.add('hidden');
+      if (currentFamilyCode) {
+        localStorage.setItem('bukupink_hide_invite_' + currentFamilyCode, 'true');
+      }
+      showToast(currentLang === 'en' ? "✅ Invite banner hidden." : "✅ Kad jemputan pasangan telah disembunyikan.");
+    }
+
     function showDashboardScreen() {
       const landEl = document.getElementById('screen-landing');
       if (landEl) landEl.classList.add('hidden');
@@ -4925,12 +4982,19 @@
       document.getElementById('screen-dashboard').classList.remove('hidden');
 
       // Update UI Header
-      document.getElementById('display-invite-code').innerText = currentFamilyCode || 'PINK-8821';
+      updateFamilyCodeDisplay();
       document.getElementById('display-user-name').innerText = currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah');
-      document.getElementById('invite-share-code').innerText = currentFamilyCode || 'PINK-8821';
+      const shareCodeEl = document.getElementById('invite-share-code');
+      if (shareCodeEl) shareCodeEl.innerText = currentFamilyCode || 'PINK-8821';
 
-      if (currentRole === 'father') {
-        document.getElementById('card-invite-husband').classList.add('hidden');
+      const isInviteHidden = (currentRole === 'father') || (localStorage.getItem('bukupink_hide_invite_' + currentFamilyCode) === 'true');
+      const inviteCard = document.getElementById('card-invite-husband');
+      if (inviteCard) {
+        if (isInviteHidden) {
+          inviteCard.classList.add('hidden');
+        } else {
+          inviteCard.classList.remove('hidden');
+        }
       }
 
       // Muat data dari Supabase
@@ -7304,8 +7368,7 @@
       if (open) {
         overlay.classList.remove('hidden');
         // update invite code & user in sidebar
-        const sbCode = document.getElementById('sidebar-invite-code');
-        if (sbCode) sbCode.innerText = currentFamilyCode || 'PINK-8821';
+        updateFamilyCodeDisplay();
         const sbUser = document.getElementById('sidebar-user-name');
         if (sbUser) sbUser.innerText = currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah');
         setTimeout(() => {
@@ -8653,9 +8716,21 @@
     }
 
     function openAddGrowthModal() {
+      const isEn = currentLang === 'en';
       const today = new Date().toISOString().split('T')[0];
       const dateInp = document.getElementById('inp-growth-date');
       if (dateInp) dateInp.value = today;
+
+      const editIdInp = document.getElementById('inp-growth-edit-id');
+      if (editIdInp) editIdInp.value = '';
+
+      const modalTitle = document.getElementById('title-modal-growth');
+      if (modalTitle) modalTitle.innerText = isEn ? "📏 Record MOH Weigh-in & Height" : "📏 Rekod Timbangan & Ukuran KK";
+
+      const submitBtn = document.getElementById('btn-save-growth');
+      if (submitBtn) {
+        submitBtn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i><span>${isEn ? 'Save Measurement Record' : 'Simpan Rekod Ukuran'}</span>`;
+      }
 
       const ageSelect = document.getElementById('inp-growth-age-months');
       const birthSub = document.getElementById('hero-child-sub');
@@ -8687,7 +8762,50 @@
       const notesInp = document.getElementById('inp-growth-notes');
       if (notesInp) notesInp.value = '';
 
-      openModal('modal-add-growth');
+      openModal('modal-add-growth', false);
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function editGrowthLog(id) {
+      const isEn = currentLang === 'en';
+      const logs = getSavedGrowthLogs();
+      const target = logs.find(x => String(x.id) === String(id) || String(x.cloudId) === String(id));
+      if (!target) return;
+
+      const dateInp = document.getElementById('inp-growth-date');
+      if (dateInp) dateInp.value = target.date || '';
+
+      const ageSelect = document.getElementById('inp-growth-age-months');
+      if (ageSelect) ageSelect.value = String(target.ageMonths !== undefined ? target.ageMonths : 0);
+
+      const weightInp = document.getElementById('inp-growth-weight');
+      if (weightInp) weightInp.value = target.weight || '';
+
+      const heightInp = document.getElementById('inp-growth-height');
+      if (heightInp) heightInp.value = target.height || '';
+
+      const headInp = document.getElementById('inp-growth-head');
+      if (headInp) headInp.value = target.headCirc || '';
+
+      const statusSelect = document.getElementById('inp-growth-status');
+      if (statusSelect) statusSelect.value = target.status || 'auto';
+
+      const notesInp = document.getElementById('inp-growth-notes');
+      if (notesInp) notesInp.value = target.notes || '';
+
+      const editIdInp = document.getElementById('inp-growth-edit-id');
+      if (editIdInp) editIdInp.value = String(target.id);
+
+      const modalTitle = document.getElementById('title-modal-growth');
+      if (modalTitle) modalTitle.innerText = isEn ? "✏️ Edit Measurement Record" : "✏️ Kemaskini Rekod Timbangan & Ukuran KK";
+
+      const submitBtn = document.getElementById('btn-save-growth');
+      if (submitBtn) {
+        submitBtn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i><span>${isEn ? 'Update Record' : 'Kemaskini Rekod'}</span>`;
+      }
+
+      openModal('modal-add-growth', true);
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     async function handleSaveGrowthLog(e) {
@@ -8705,19 +8823,36 @@
         ? calculatePercentileStatus(ageMonths, weight).code
         : rawStatus;
 
-      const newRecord = {
-        id: 'growth_' + Date.now(),
-        date,
-        ageMonths,
-        weight,
-        height,
-        headCirc,
-        status: assessment,
-        notes
-      };
+      const editId = document.getElementById('inp-growth-edit-id') ? document.getElementById('inp-growth-edit-id').value.trim() : '';
+      let logs = getSavedGrowthLogs();
+      let targetRecord = null;
 
-      const logs = getSavedGrowthLogs();
-      logs.unshift(newRecord);
+      if (editId) {
+        targetRecord = logs.find(x => String(x.id) === String(editId) || String(x.cloudId) === String(editId));
+      }
+
+      if (targetRecord) {
+        targetRecord.date = date;
+        targetRecord.ageMonths = ageMonths;
+        targetRecord.weight = weight;
+        targetRecord.height = height;
+        targetRecord.headCirc = headCirc;
+        targetRecord.status = assessment;
+        targetRecord.notes = notes;
+      } else {
+        targetRecord = {
+          id: 'growth_' + Date.now(),
+          date,
+          ageMonths,
+          weight,
+          height,
+          headCirc,
+          status: assessment,
+          notes
+        };
+        logs.unshift(targetRecord);
+      }
+
       logs.sort((a, b) => new Date(b.date) - new Date(a.date));
       saveGrowthLogsState(logs);
 
@@ -8727,31 +8862,48 @@
       let cloudSyncErr = null;
       if (db && currentFamilyId) {
         try {
-          const { data, error } = await secureInsertRecord('baby_memories', {
-            child_id: getActiveChildId(),
-            title: `Tumbesaran ${ageMonths} Bulan: ${weight} kg`,
-            category: 'Tumbesaran',
-            memory_date: date,
-            notes: JSON.stringify({
-              ageMonths,
-              weight,
-              height,
-              headCirc,
-              status: assessment,
-              notes
-            }),
-            uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
-          });
+          if (targetRecord.cloudId) {
+            const { error: updErr } = await secureUpdateRecord('baby_memories', targetRecord.cloudId, {
+              title: `Tumbesaran ${ageMonths} Bulan: ${weight} kg`,
+              category: 'Tumbesaran',
+              memory_date: date,
+              notes: JSON.stringify({
+                ageMonths,
+                weight,
+                height,
+                headCirc,
+                status: assessment,
+                notes
+              })
+            });
+            if (updErr) cloudSyncErr = updErr;
+          } else {
+            const { data, error } = await secureInsertRecord('baby_memories', {
+              child_id: getActiveChildId(),
+              title: `Tumbesaran ${ageMonths} Bulan: ${weight} kg`,
+              category: 'Tumbesaran',
+              memory_date: date,
+              notes: JSON.stringify({
+                ageMonths,
+                weight,
+                height,
+                headCirc,
+                status: assessment,
+                notes
+              }),
+              uploaded_by: currentUserName || (currentRole === 'mother' ? 'Ibu' : 'Ayah')
+            });
 
-          if (error) {
-            cloudSyncErr = error;
-          } else if (data && data.id) {
-            newRecord.cloudId = data.id;
-            saveGrowthLogsState(logs);
+            if (error) {
+              cloudSyncErr = error;
+            } else if (data && data.id) {
+              targetRecord.cloudId = data.id;
+              saveGrowthLogsState(logs);
+            }
           }
         } catch (err) {
           cloudSyncErr = err;
-          console.warn("Supabase growth insert error:", err);
+          console.warn("Supabase growth save error:", err);
         }
       }
       if (cloudSyncErr) {
@@ -8905,9 +9057,14 @@
 
             <div class="pt-1.5 border-t border-slate-100 flex justify-between items-center text-[10px] text-slate-400">
               <span>${isEn ? 'Verified MOH record' : 'Rekod Buku Pink / Kesihatan Kanak-Kanak'}</span>
-              <button onclick="deleteGrowthLog('${safeGrowthId}')" class="px-2 py-0.5 rounded-md bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
-                🗑️ ${isEn ? 'Delete' : 'Padam'}
-              </button>
+              <div class="flex items-center space-x-1.5">
+                <button onclick="editGrowthLog('${safeGrowthId}')" class="px-2 py-0.5 rounded-md bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold border border-sky-200 transition">
+                  ✏️ ${isEn ? 'Edit' : 'Ubah'}
+                </button>
+                <button onclick="deleteGrowthLog('${safeGrowthId}')" class="px-2 py-0.5 rounded-md bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold border border-rose-200 transition">
+                  🗑️ ${isEn ? 'Delete' : 'Padam'}
+                </button>
+              </div>
             </div>
           `;
           container.appendChild(card);
