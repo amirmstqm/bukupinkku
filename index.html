@@ -2,7 +2,7 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>BukuPinkKu — Buku Pink Digital KKM, Kalkulator Subur TTC &amp; Rekod Anak</title>
   <meta name="description" content="BukuPinkKu ialah buku pink digital percuma tanpa iklan untuk pasangan Malaysia: pantau kehamilan KKM, waktu subur TTC, temujanji klinik &amp; vaksin bayi 0–3 tahun.">
   <meta name="keywords" content="bukupinkku, buku pink ku, buku pink digital, buku pink online, buku pink kkm, kalkulator subur ttc, ikhtiar hamil malaysia, jadual vaksin kkm, rekod berat bayi kkm">
@@ -183,6 +183,11 @@
     input[type="time"]::-webkit-date-and-time-value {
       text-align: left;
       min-height: 1.25rem;
+    }
+    @media screen and (max-width: 768px) {
+      input, textarea, select {
+        font-size: 16px !important;
+      }
     }
   </style>
 </head>
@@ -8008,12 +8013,9 @@
 
       cardEl.innerHTML = `
         <div class="flex justify-between items-start">
-          <div class="flex items-center space-x-2">
-            <div class="w-7 h-7 rounded-full bg-pastel-100 text-pastel-700 flex items-center justify-center font-bold text-[9px]">${isEn ? 'MEM' : 'MEMORI'}</div>
-            <div>
-              <h4 class="text-xs font-bold text-slate-800">${safeTitle}</h4>
-              <p class="text-[10px] text-slate-500">${safeDate}</p>
-            </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-800">${safeTitle}</h4>
+            <p class="text-[10px] text-slate-500">${safeDate}</p>
           </div>
           <span class="text-[10px] bg-pastel-50 text-pastel-700 font-semibold px-2 py-0.5 rounded-full border border-pastel-200">${safeCat}</span>
         </div>
