@@ -906,7 +906,7 @@
             </div>
             <div class="min-w-0">
               <label data-i18n="lbl_birth_weight" class="block font-bold text-slate-700 mb-1">Berat Lahir (kg)</label>
-              <input type="number" step="0.1" id="reg-birth-weight" data-i18n-placeholder="ph_birth_weight" placeholder="Cth: 3.2" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
+              <input type="number" step="any" min="0.1" max="15" id="reg-birth-weight" data-i18n-placeholder="ph_birth_weight" placeholder="Cth: 3.2" class="w-full min-w-0 max-w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white">
             </div>
           </div>
         </div>
@@ -2236,15 +2236,15 @@
         <div class="grid grid-cols-3 gap-2">
           <div>
             <label data-i18n="lbl_growth_weight" class="block font-semibold mb-1">Berat (kg)</label>
-            <input type="number" id="inp-growth-weight" step="0.05" min="1" max="30" required data-i18n-placeholder="ph_growth_weight" placeholder="Cth: 7.8" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+            <input type="number" id="inp-growth-weight" step="any" min="0.1" max="50" required data-i18n-placeholder="ph_growth_weight" placeholder="Cth: 7.8" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
           </div>
           <div>
             <label data-i18n="lbl_growth_height" class="block font-semibold mb-1">Tinggi (cm)</label>
-            <input type="number" id="inp-growth-height" step="0.1" min="30" max="130" data-i18n-placeholder="ph_growth_height" placeholder="Cth: 68.5" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+            <input type="number" id="inp-growth-height" step="any" min="20" max="150" data-i18n-placeholder="ph_growth_height" placeholder="Cth: 68.5" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
           </div>
           <div>
             <label data-i18n="lbl_growth_head" class="block font-semibold mb-1">Lilit Kepala (cm)</label>
-            <input type="number" id="inp-growth-head" step="0.1" min="20" max="60" data-i18n-placeholder="ph_growth_head" placeholder="Cth: 43.0" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
+            <input type="number" id="inp-growth-head" step="any" min="15" max="80" data-i18n-placeholder="ph_growth_head" placeholder="Cth: 43.0" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-300">
           </div>
         </div>
 
@@ -2416,7 +2416,7 @@
       <form onsubmit="handleSaveVital(event)" class="space-y-3 text-xs">
         <div>
           <label data-i18n="lbl_vital_hb" class="block font-semibold mb-1">Paras HB (Hemoglobin) g/dL</label>
-          <input type="number" step="0.1" id="inp-vital-hb" data-i18n-placeholder="ph_vital_hb" required placeholder="Cth: 11.5" class="w-full p-2.5 border border-slate-200 rounded-xl text-base font-bold outline-none">
+          <input type="number" step="any" id="inp-vital-hb" data-i18n-placeholder="ph_vital_hb" required placeholder="Cth: 11.5" class="w-full p-2.5 border border-slate-200 rounded-xl text-base font-bold outline-none">
           <p data-i18n="hint_vital_hb" class="text-[10px] text-slate-500 mt-0.5">Nilai &ge; 11.0 g/dL adalah normal KKM</p>
         </div>
         <div class="grid grid-cols-2 gap-2">
@@ -2426,7 +2426,7 @@
           </div>
           <div>
             <label data-i18n="lbl_vital_weight" class="block font-semibold mb-1">Berat Badan (kg)</label>
-            <input type="number" step="0.1" id="inp-vital-weight" data-i18n-placeholder="ph_vital_weight" placeholder="Cth: 58.5" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+            <input type="number" step="any" id="inp-vital-weight" data-i18n-placeholder="ph_vital_weight" placeholder="Cth: 58.5" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
           </div>
         </div>
         <div>
