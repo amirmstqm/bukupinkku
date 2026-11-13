@@ -3355,6 +3355,11 @@
           <i data-lucide="check-circle" class="w-4 h-4"></i>
           <span data-i18n="btn_save_child_profile">Simpan &amp; Selaraskan Profil</span>
         </button>
+
+        <button type="button" id="btn-delete-child-profile" onclick="deleteActiveChildProfile()" class="hidden w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold rounded-xl transition flex items-center justify-center space-x-1.5">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+          <span id="lbl-delete-child-profile">Padam Profil Ini</span>
+        </button>
       </form>
     </div>
   </div>
@@ -6607,8 +6612,57 @@
       }
 
       toggleChildProfileModalFields(statusEl ? statusEl.value : 'pregnancy');
+      const delBtn = document.getElementById('btn-delete-child-profile');
+      const delLbl = document.getElementById('lbl-delete-child-profile');
+      if (delLbl) delLbl.innerText = isEn ? 'Delete This Profile' : 'Padam Profil Ini';
+      if (delBtn) {
+        if (mode === 'edit' && active && active.id && Array.isArray(cachedChildrenList) && cachedChildrenList.length > 1) {
+          delBtn.classList.remove('hidden');
+        } else {
+          delBtn.classList.add('hidden');
+        }
+      }
       openModal('modal-child-profile');
       if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    async function deleteActiveChildProfile() {
+      const isEn = currentLang === 'en';
+      const active = getActiveChildRecord();
+      if (!active || !active.id) return;
+      if (!Array.isArray(cachedChildrenList) || cachedChildrenList.length <= 1) {
+        showToast(isEn ? '⚠️ At least one profile must remain.' : '⚠️ Sekurang-kurangnya satu profil perlu dikekalkan.');
+        return;
+      }
+
+      const confirmMsg = isEn
+        ? `Delete profile "${active.nickname || 'this profile'}"?`
+        : `Padam profil "${active.nickname || 'profil ini'}"?`;
+      if (!confirm(confirmMsg)) return;
+
+      const delBtn = document.getElementById('btn-delete-child-profile');
+      if (delBtn) delBtn.disabled = true;
+      try {
+        const { error } = await secureDeleteRecord('children', { rowId: active.id });
+        if (error) {
+          showCloudSyncNotice(error, false);
+          return;
+        }
+        const remaining = cachedChildrenList.filter(c => String(c.id) !== String(active.id));
+        if (remaining.length > 0) {
+          activeChildId = remaining[0].id;
+          localStorage.setItem(getFamilyScopedKey('bukupink_active_child_id'), String(activeChildId));
+        }
+        closeModal('modal-child-profile');
+        await loadChildInfo();
+        await reloadChildScopedData();
+        showToast(isEn ? `🗑️ Profile "${active.nickname}" deleted.` : `🗑️ Profil "${active.nickname}" telah dipadam.`);
+      } catch (err) {
+        console.warn("Gagal padam profil anak:", err);
+        showCloudSyncNotice(err, false);
+      } finally {
+        if (delBtn) delBtn.disabled = false;
+      }
     }
 
     async function handleSaveChildProfile(e) {
