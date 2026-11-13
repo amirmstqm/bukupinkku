@@ -6641,7 +6641,7 @@
       try {
         const active = getActiveChildRecord();
         let res;
-        if (mode === 'edit' && active && active.id) {
+        if ((mode === 'edit' || mode === 'born_transition') && active && active.id) {
           res = await secureUpdateRecord('children', active.id, payload);
         } else {
           res = await secureInsertRecord('children', payload);
@@ -6666,7 +6666,7 @@
         await reloadChildScopedData();
         switchPhase(newPhase);
 
-        if (status === 'born' && mode === 'edit') {
+        if (status === 'born' && (mode === 'edit' || mode === 'born_transition')) {
           showToast(isEn ? `🎉 Welcome ${nickname}! Switched to Child Tracker (0–3 Years).` : `🎉 Tahniah atas kelahiran ${nickname}! Fasa Anak 0–3 Tahun diaktifkan.`);
         } else if (mode === 'new') {
           showToast(isEn ? `👶 New profile "${nickname}" added & synced!` : `👶 Profil baharu "${nickname}" berjaya ditambah & diselaraskan!`);
