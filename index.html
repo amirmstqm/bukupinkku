@@ -3680,7 +3680,8 @@
       'Ubat Harian',
       'Status Fasa',
       'Beg Bersalin',
-      'Gigi Anak'
+      'Gigi Anak',
+      'Tetapan Keluarga'
     ];
     const NON_GALLERY_CATEGORIES = ['Warkah Buat Bakal Anak', ...NON_PHOTOBOOK_CATEGORIES];
     let hasAppliedCloudPhaseForFamily = null;
@@ -6248,6 +6249,41 @@
           }
         } else if (cachedCoupleProfile.motherName || cachedCoupleProfile.fatherName) {
           needsSync = true;
+        }
+
+        // Jika motherName masih kosong (cth: peranti ayah sudah sedia login sebelum kemaskini), dapatkan daripada jadual families / RPC
+        if (!cachedCoupleProfile.motherName) {
+          let rawFamName = '';
+          try {
+            const { data: famRow } = await db.from('families').select('family_name').eq('id', currentFamilyId).maybeSingle();
+            if (famRow && famRow.family_name) rawFamName = famRow.family_name;
+          } catch (e) {}
+
+          if (!rawFamName) {
+            const sCode = localStorage.getItem('bukupink_saved_family_code') || currentFamilyCode;
+            const sPhone4 = localStorage.getItem('bukupink_saved_phone4');
+            const sPin = localStorage.getItem('bukupink_saved_pin');
+            if (sCode && sPhone4 && sPin) {
+              try {
+                const { data: rpcRows } = await db.rpc('verify_family_access', {
+                  p_invite_code: sCode,
+                  p_phone4: sPhone4,
+                  p_pin: sPin
+                });
+                if (rpcRows && rpcRows.length > 0 && rpcRows[0].ret_family_name) {
+                  rawFamName = rpcRows[0].ret_family_name;
+                }
+              } catch (e) {}
+            }
+          }
+
+          if (rawFamName) {
+            const cleanMom = rawFamName.split(' [')[0].replace(/^(Keluarga|Family of|Family)\s+/i, '').trim();
+            if (cleanMom && cleanMom.toLowerCase() !== 'keluarga' && cleanMom.toLowerCase() !== 'keluarga anda') {
+              cachedCoupleProfile.motherName = cleanMom;
+              needsSync = true;
+            }
+          }
         }
 
         localStorage.setItem(getFamilyScopedKey('bukupink_couple_profile'), JSON.stringify(cachedCoupleProfile));
