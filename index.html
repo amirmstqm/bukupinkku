@@ -1388,14 +1388,14 @@
           <div class="absolute -right-6 -bottom-6 w-36 h-36 bg-rose-100/50 rounded-full blur-2xl"></div>
           <div class="flex justify-between items-start mb-3 relative z-10">
             <div>
-              <span id="hero-ttc-status-badge" class="inline-block bg-white/90 border border-rose-200 text-[11px] font-bold px-2.5 py-1 rounded-full mb-1.5 text-rose-700 shadow-sm">
-                🌸 Waktu Paling Subur (Hari ke-14)
+              <span id="hero-ttc-status-badge" class="inline-block bg-white/90 border border-slate-200 text-[11px] font-bold px-2.5 py-1 rounded-full mb-1.5 text-slate-600 shadow-sm">
+                🗓️ Belum Tetapkan Kitaran Haid
               </span>
               <h2 id="hero-ttc-name" data-i18n="hero_ttc_title" class="text-xl font-extrabold text-slate-800">Ikhtiar Zuriat Comel</h2>
-              <p class="text-xs text-slate-600 font-medium mt-0.5" id="hero-ttc-sub" data-i18n="hero_ttc_sub">Peluang persenyawaan tinggi dalam jendela subur ini</p>
+              <p class="text-xs text-slate-600 font-medium mt-0.5" id="hero-ttc-sub">Sila masukkan tarikh hari pertama haid terakhir (LMP) untuk mula mengira waktu subur & ovulasi.</p>
             </div>
             <div class="text-right bg-white/80 border border-rose-100 px-3 py-1.5 rounded-2xl shadow-sm">
-              <p class="text-2xl font-black text-rose-600" id="ttc-days-to-ovulation">2</p>
+              <p class="text-2xl font-black text-rose-600" id="ttc-days-to-ovulation">--</p>
               <p data-i18n="lbl_days_to_ovul" class="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Hari ke Ovulasi</p>
             </div>
           </div>
@@ -1403,21 +1403,21 @@
           <div class="grid grid-cols-3 gap-2 pt-3 border-t border-rose-200/50 text-center relative z-10 text-xs">
             <div class="bg-white/80 border border-rose-100 p-2 rounded-xl shadow-sm">
               <p data-i18n="lbl_fertile_window" class="text-[10px] font-semibold text-slate-500">Jendela Subur</p>
-              <p id="ttc-fertile-display" class="font-bold text-rose-700">12 - 17 Nov</p>
+              <p id="ttc-fertile-display" class="font-bold text-slate-400">--</p>
             </div>
             <div class="bg-white/80 border border-rose-100 p-2 rounded-xl shadow-sm">
               <p data-i18n="lbl_next_period" class="text-[10px] font-semibold text-slate-500">Jangkaan Haid</p>
-              <p id="ttc-period-display" class="font-bold text-slate-800">28 Nov 2026</p>
+              <p id="ttc-period-display" class="font-bold text-slate-400">--</p>
             </div>
             <div class="bg-white/80 border border-rose-100 p-2 rounded-xl shadow-sm">
               <p data-i18n="lbl_cycle_days" class="text-[10px] font-semibold text-slate-500">Panjang Kitaran</p>
-              <p id="ttc-cycle-display" class="font-bold text-purple-700">28 Hari</p>
+              <p id="ttc-cycle-display" class="font-bold text-slate-600">28 Hari (Lalai)</p>
             </div>
           </div>
 
           <!-- BUTANG CELEBRATE / BERTUKAR KE FASA HAMIL (BFP MOMENT) -->
           <div class="pt-3 border-t border-rose-200/50 flex justify-between items-center relative z-10">
-            <button onclick="openModal('modal-ttc-settings')" class="text-[11px] font-bold text-rose-700 hover:text-rose-900 flex items-center space-x-1">
+            <button id="btn-edit-ttc-cycle" onclick="openTtcSettingsModal()" class="text-[11px] font-bold text-rose-700 hover:text-rose-900 flex items-center space-x-1">
               <i data-lucide="settings" class="w-3.5 h-3.5"></i>
               <span data-i18n="btn_edit_cycle">Kemaskini Kitaran / LMP</span>
             </button>
@@ -1430,6 +1430,20 @@
 
         <!-- VIEW 1: SUB-TAB WAKTU SUBUR -->
         <div id="view-ttc-fertility" class="space-y-3">
+          <!-- BANNER PROMPT JIKA BELUM ISI LMP -->
+          <div id="ttc-lmp-prompt" class="hidden bg-gradient-to-r from-rose-50 to-pink-50 border border-rose-200 rounded-2xl p-4 text-xs space-y-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-xl">📅</span>
+              <h4 class="font-bold text-rose-950">Mula Kira Jendela Subur & Ovulasi Anda</h4>
+            </div>
+            <p class="text-slate-600 leading-relaxed text-[11px]">
+              Kalkulator waktu subur memerlukan tarikh hari pertama haid terakhir (LMP) untuk mengira hari ovulasi & jendela subur anda secara tepat. Masukkan tarikh haid untuk memulakan kiraan.
+            </p>
+            <button onclick="openTtcSettingsModal()" class="w-full py-2.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold rounded-xl shadow-sm transition flex items-center justify-center space-x-1.5">
+              <i data-lucide="calendar" class="w-4 h-4"></i>
+              <span>+ Masukkan Tarikh Hari Pertama Haid (LMP)</span>
+            </button>
+          </div>
           <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2">
             <div class="flex justify-between items-center">
               <span class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
@@ -1458,53 +1472,87 @@
           </div>
         </div>
 
-        <!-- VIEW 3: SUPLEMEN PASANGAN -->
+        <!-- VIEW 3: SUPLEMEN PASANGAN (PILIHAN & BOLEH DISUAIKAN) -->
         <div id="view-ttc-supplements" class="hidden space-y-3">
-          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
-            <div class="flex justify-between items-center">
-              <h3 class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
-                <i data-lucide="pill" class="w-4 h-4 text-teal-600"></i>
-                <span data-i18n="hdr_supps_couple">Senarai Semak Vitamin & Suplemen Pasangan</span>
-              </h3>
-              <button onclick="sendNudge('ttc_supplements')" data-i18n="btn_remind_partner" class="text-[11px] font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg">
+          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3" id="ttc-supplements-app">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
+                  <i data-lucide="pill" class="w-4 h-4 text-teal-600"></i>
+                  <span>Pilihan Vitamin & Suplemen Pasangan</span>
+                </h3>
+                <span class="inline-block text-[10px] font-semibold text-teal-800 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-full mt-1">
+                  🌿 Pilihan Peribadi (Tidak Wajib)
+                </span>
+              </div>
+              <button onclick="sendNudge('ttc_supplements')" data-i18n="btn_remind_partner" class="text-[11px] font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg hover:bg-teal-100 transition">
                 Ingatkan Pasangan 🔔
               </button>
             </div>
 
-            <div class="space-y-2 text-xs">
-              <!-- Isteri -->
-              <div class="p-3 rounded-xl bg-pink-50/60 border border-pink-100 flex items-center justify-between">
+            <!-- KAD PILIHAN: PEMAKANAN SEMULA JADI (TIADA SUPLEMEN) -->
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between text-xs transition">
+              <div class="flex items-center space-x-2.5 pr-2">
+                <span class="text-xl">🥗</span>
                 <div>
-                  <span data-i18n="lbl_supp_wife_tag" class="text-[10px] bg-pink-200 text-pink-900 font-bold px-1.5 py-0.5 rounded">Untuk Isteri</span>
-                  <p data-i18n="lbl_supp_wife_name" class="font-bold text-slate-800 mt-1">Asid Folik 5mg / CoQ10 / Inositol</p>
-                  <p data-i18n="lbl_supp_wife_desc" class="text-[10px] text-slate-500">Membantu kualiti ovum & pembentukan awal saraf janin</p>
+                  <p class="font-bold text-slate-800">Fokus Pemakanan Semula Jadi Sahaja</p>
+                  <p class="text-[10px] text-slate-500">Pilih jika anda & pasangan tidak mengambil sebarang pil suplemen</p>
                 </div>
-                <button onclick="toggleTtcMed('wife')" id="btn-ttc-med-wife" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800">
-                  ✓ Dah Ambil
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                <input type="checkbox" id="chk-ttc-natural-diet" onchange="toggleTtcNaturalDiet(this.checked)" class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              </label>
+            </div>
+
+            <!-- MESEJ PEMAKANAN SEMULA JADI -->
+            <div id="ttc-natural-diet-message" class="hidden p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs space-y-1.5 text-emerald-900">
+              <div class="flex items-center space-x-1.5 font-bold text-xs text-emerald-950">
+                <span>✨</span>
+                <span>Pilihan Pemakanan Semula Jadi Aktif</span>
+              </div>
+              <p class="text-[11px] leading-relaxed text-emerald-800">
+                Alhamdulillah! Pemakanan seimbang (sayuran hijau kaya folat semula jadi, kekacang, ikan, buah segar) serta hidrasi dan rehat mencukupi adalah asas kesuburan yang sangat kukuh. Tiada suplemen yang dipaksa atau perlu ditanda harian.
+              </p>
+            </div>
+
+            <!-- SENARAI SUPLEMEN PILIHAN (ISTERI & SUAMI) -->
+            <div id="ttc-supplements-main-list" class="space-y-3">
+              <div class="flex justify-between items-center pt-1 border-t border-slate-100">
+                <p class="text-[11px] text-slate-500 font-medium">Tanda <b>+ Pilih</b> pada suplemen yang anda amalkan sahaja:</p>
+                <button type="button" onclick="openModal('modal-add-custom-supp')" class="text-[10px] font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2 py-1 rounded-lg hover:bg-teal-100 transition flex items-center space-x-1 shrink-0">
+                  <i data-lucide="plus" class="w-3 h-3"></i>
+                  <span>Tambah Suplemen</span>
                 </button>
               </div>
 
-              <!-- Suami -->
-              <div class="p-3 rounded-xl bg-sky-50/60 border border-sky-100 flex items-center justify-between">
-                <div>
-                  <span data-i18n="lbl_supp_husb_tag" class="text-[10px] bg-sky-200 text-sky-900 font-bold px-1.5 py-0.5 rounded">Untuk Suami</span>
-                  <p data-i18n="lbl_supp_husb_name" class="font-bold text-slate-800 mt-1">Zinc & Selenium / Multivitamin Lelaki</p>
-                  <p data-i18n="lbl_supp_husb_desc" class="text-[10px] text-slate-500">Meningkatkan kualiti, bilangan & motiliti sperma sihat</p>
+              <!-- BAHAGIAN ISTERI -->
+              <div class="space-y-1.5">
+                <div class="flex items-center space-x-1.5">
+                  <span class="text-[10px] bg-pink-100 text-pink-800 font-bold px-2 py-0.5 rounded-full">Untuk Isteri</span>
+                  <span class="text-[10px] text-slate-400 font-medium">(Pilihan ikhtiar)</span>
                 </div>
-                <button onclick="toggleTtcMed('husband')" id="btn-ttc-med-husband" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700">
-                  Belum Ambil
-                </button>
+                <div id="ttc-supps-wife-list" class="space-y-1.5"></div>
               </div>
 
-              <!-- NOTIS NASIHAT DOKTOR & PENAFIAN KESIHATAN -->
-              <div class="p-3 bg-amber-50/80 rounded-xl border border-amber-200 flex items-start space-x-2.5 text-slate-700 mt-2">
-                <span class="text-base leading-none mt-0.5">🩺</span>
-                <div class="space-y-0.5">
-                  <p data-i18n="hdr_supp_disclaimer" class="font-bold text-[11px] text-amber-950">Rujukan & Nasihat Doktor</p>
-                  <p data-i18n="desc_supp_disclaimer" class="text-[10px] text-slate-600 leading-relaxed">
-                    Senarai ini adalah panduan rujukan umum untuk ikhtiar kesuburan. Keperluan tubuh setiap pasangan adalah berbeza. Sila dapatkan nasihat dan dos yang tepat daripada doktor atau ahli farmasi sebelum memulakan sebarang suplemen.
-                  </p>
+              <!-- BAHAGIAN SUAMI -->
+              <div class="space-y-1.5 pt-2 border-t border-slate-100">
+                <div class="flex items-center space-x-1.5">
+                  <span class="text-[10px] bg-sky-100 text-sky-800 font-bold px-2 py-0.5 rounded-full">Untuk Suami</span>
+                  <span class="text-[10px] text-slate-400 font-medium">(Pilihan sokongan kesuburan)</span>
                 </div>
+                <div id="ttc-supps-husb-list" class="space-y-1.5"></div>
+              </div>
+            </div>
+
+            <!-- NOTIS NASIHAT DOKTOR & PENAFIAN KESIHATAN -->
+            <div class="p-3 bg-amber-50/80 rounded-xl border border-amber-200 flex items-start space-x-2.5 text-slate-700 mt-2">
+              <span class="text-base leading-none mt-0.5">🩺</span>
+              <div class="space-y-0.5">
+                <p data-i18n="hdr_supp_disclaimer" class="font-bold text-[11px] text-amber-950">Rujukan & Nasihat Doktor</p>
+                <p data-i18n="desc_supp_disclaimer" class="text-[10px] text-slate-600 leading-relaxed">
+                  Senarai ini adalah panduan rujukan umum untuk ikhtiar kesuburan. Pengambilan adalah pilihan bebas dan keperluan tubuh setiap individu berbeza. Dapatkan nasihat doktor atau ahli farmasi sebelum memulakan sebarang suplemen.
+                </p>
               </div>
             </div>
           </div>
@@ -2591,6 +2639,38 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: TAMBAH SUPLEMEN TTC KUSTOM ================= -->
+  <div id="modal-add-custom-supp" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-teal-200">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base font-bold text-slate-800">Tambah Suplemen / Vitamin Pilihan</h3>
+        <button onclick="closeModal('modal-add-custom-supp')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form onsubmit="handleSaveCustomTtcSupp(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Untuk Siapa?</label>
+          <select id="inp-custom-supp-target" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+            <option value="wife">Isteri</option>
+            <option value="husband">Suami</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Nama Suplemen / Vitamin</label>
+          <input type="text" id="inp-custom-supp-name" required placeholder="Cth: Blackmores Conceive Well / Madu Ikhtiar" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Nota / Kebaikan (Pilihan)</label>
+          <input type="text" id="inp-custom-supp-desc" placeholder="Cth: 1 kapsul selepas makan tengah hari" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+        </div>
+        <button type="submit" class="w-full py-3 bg-gradient-to-r from-teal-500 to-emerald-600 text-white font-bold rounded-xl mt-2 shadow-sm transition">
+          + Simpan ke Senarai Pilihan
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- ================= MODAL: KEMASKINI KITARAN HAID TTC ================= -->
   <div id="modal-ttc-settings" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-rose-200">
@@ -2612,6 +2692,9 @@
         </div>
         <button type="submit" data-i18n="btn_save_ttc_calc" class="w-full py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold rounded-xl mt-2 shadow-sm transition">
           Simpan & Kira Waktu Subur
+        </button>
+        <button type="button" onclick="handleResetTtcSettings()" class="w-full text-center text-[11px] text-slate-400 hover:text-rose-600 pt-1 transition">
+          🗑️ Padam / Reset Tarikh Haid (LMP)
         </button>
       </form>
     </div>
@@ -4881,6 +4964,9 @@
       calculateTtcDates();
       if (currentPhase === 'ttc') {
         loadTtcLetters();
+      }
+      if (tab === 'supplements') {
+        renderTtcSupplementsUI();
       }
 
       renderChildSwitcher();
@@ -7734,6 +7820,9 @@
         updateSidebarActiveMenu('ttc', 'fertility');
         calculateTtcDates();
         loadTtcLetters();
+      }
+      if (tab === 'supplements') {
+        renderTtcSupplementsUI();
       } else if (phase === 'child') {
         if (childSec) childSec.classList.remove('hidden');
         if (btnChild) btnChild.className = activeBtnClass;
@@ -7759,6 +7848,9 @@
       updateSidebarActiveMenu('ttc', tab);
       if (tab === 'letters') {
         loadTtcLetters();
+      }
+      if (tab === 'supplements') {
+        renderTtcSupplementsUI();
       }
       lucide.createIcons();
     }
@@ -7819,6 +7911,7 @@
     }
 
     function renderDailyMedsUI() {
+      renderTtcSupplementsUI();
       const isEn = currentLang === 'en';
       const medBtn = document.getElementById('med-1-status');
       if (medBtn) {
@@ -9502,12 +9595,95 @@
       calculateTtcDates({ syncOpk: false });
     }
 
+    function openTtcSettingsModal() {
+      const { lmp, cycle } = getTtcLocalValues();
+      const lmpEl = document.getElementById('inp-ttc-lmp');
+      const cycleEl = document.getElementById('inp-ttc-cycle');
+      if (lmpEl) {
+        lmpEl.value = lmp || '';
+        lmpEl.max = getLocalTodayIso();
+      }
+      if (cycleEl) {
+        cycleEl.value = cycle || 28;
+      }
+      openModal('modal-ttc-settings');
+    }
+
+    function handleResetTtcSettings() {
+      const isEn = currentLang === 'en';
+      if (!confirm(isEn ? "Reset your menstrual cycle and LMP date?" : "Adakah anda pasti mahu memadam dan reset tarikh haid (LMP)?")) return;
+      localStorage.removeItem(getFamilyScopedKey('bukupink_ttc_lmp'));
+      localStorage.removeItem('bukupink_ttc_lmp');
+      const lmpEl = document.getElementById('inp-ttc-lmp');
+      if (lmpEl) lmpEl.value = '';
+      closeModal('modal-ttc-settings');
+      calculateTtcDates({ syncOpk: false });
+      showToast(isEn ? "Menstrual cycle reset." : "Tarikh haid telah dipadam & direset.");
+    }
+
     function calculateTtcDates({ syncOpk = false } = {}) {
       const isEn = currentLang === 'en';
       const { lmp: storedLmp, cycle: cycleDays } = getTtcLocalValues();
 
+      const dayOvulEl = document.getElementById('ttc-days-to-ovulation');
+      const badgeEl = document.getElementById('hero-ttc-status-badge');
+      const subEl = document.getElementById('hero-ttc-sub');
+      const fertileEl = document.getElementById('ttc-fertile-display');
+      const periodEl = document.getElementById('ttc-period-display');
+      const cycleEl = document.getElementById('ttc-cycle-display');
+      const promptBanner = document.getElementById('ttc-lmp-prompt');
+      const btnEditCycle = document.getElementById('btn-edit-ttc-cycle');
+
+      // JIKA PENGGUNA BELUM ISI TARIKH HAID (LMP), JANGAN PAPAR RAMALAN PALSU!
+      if (!storedLmp) {
+        if (dayOvulEl) dayOvulEl.innerText = "--";
+        if (badgeEl) {
+          badgeEl.innerText = isEn ? "🗓️ Menstrual Date (LMP) Not Set" : "🗓️ Belum Tetapkan Kitaran Haid";
+          badgeEl.className = "inline-block bg-white/90 border border-slate-300 text-[11px] font-bold px-2.5 py-1 rounded-full mb-1.5 text-slate-600 shadow-sm";
+        }
+        if (subEl) {
+          subEl.innerText = isEn
+            ? "Please enter your Last Menstrual Period (LMP) to calculate your fertile window and ovulation."
+            : "Sila masukkan tarikh hari pertama haid terakhir (LMP) untuk mula mengira waktu subur & ovulasi.";
+        }
+        if (fertileEl) {
+          fertileEl.innerText = "--";
+          fertileEl.className = "font-bold text-slate-400";
+        }
+        if (periodEl) {
+          periodEl.innerText = "--";
+          periodEl.className = "font-bold text-slate-400";
+        }
+        if (cycleEl) {
+          cycleEl.innerText = isEn ? `${cycleDays} Days (Default)` : `${cycleDays} Hari (Lalai)`;
+          cycleEl.className = "font-bold text-slate-600";
+        }
+        if (promptBanner) {
+          promptBanner.classList.remove('hidden');
+        }
+        if (btnEditCycle) {
+          btnEditCycle.innerHTML = `<i data-lucide="calendar" class="w-3.5 h-3.5"></i><span>${isEn ? '✨ Set LMP / Cycle' : '✨ Tetapkan Kitaran / LMP'}</span>`;
+          btnEditCycle.className = "text-[11px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-lg hover:bg-rose-100 flex items-center space-x-1 transition shadow-xs";
+        }
+        lucide.createIcons();
+        loadOpkLogs({ syncCloud: syncOpk });
+        return;
+      }
+
+      // DATA LMP WUJUD: KIRA SECARA DINAMIK & KEMASKINI UI
+      if (promptBanner) {
+        promptBanner.classList.add('hidden');
+      }
+      if (btnEditCycle) {
+        btnEditCycle.innerHTML = `<i data-lucide="settings" class="w-3.5 h-3.5"></i><span data-i18n="btn_edit_cycle">${isEn ? 'Update Cycle / LMP' : 'Kemaskini Kitaran / LMP'}</span>`;
+        btnEditCycle.className = "text-[11px] font-bold text-rose-700 hover:text-rose-900 flex items-center space-x-1";
+      }
+      if (subEl) {
+        subEl.innerText = isEn ? "Higher chance of conception during this fertile window" : "Peluang persenyawaan tinggi dalam jendela subur ini";
+      }
+
       const today = new Date();
-      let lmpDate = storedLmp ? new Date(storedLmp) : new Date(today.getTime() - (12 * 24 * 60 * 60 * 1000));
+      let lmpDate = new Date(storedLmp);
 
       // Ovulasi berlaku kira-kira 14 hari sebelum haid seterusnya
       const ovulationDayOffset = Math.max(10, cycleDays - 14);
@@ -9521,10 +9697,8 @@
       const daysToOvul = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
       // Kemaskini UI
-      const dayOvulEl = document.getElementById('ttc-days-to-ovulation');
       if (dayOvulEl) dayOvulEl.innerText = daysToOvul >= 0 ? daysToOvul : "--";
 
-      const badgeEl = document.getElementById('hero-ttc-status-badge');
       if (badgeEl) {
         if (daysToOvul === 0) {
           badgeEl.innerText = isEn ? "🔥 Peak Ovulation Day (Today)!" : "🔥 Hari Ovulasi Puncak (Hari Ini)!";
@@ -9541,15 +9715,22 @@
       const formatShort = (d) => `${d.getDate()} ${d.toLocaleString(isEn ? 'en-US' : 'ms-MY', { month: 'short' })}`;
       const formatFull = (d) => `${d.getDate()} ${d.toLocaleString(isEn ? 'en-US' : 'ms-MY', { month: 'short' })} ${d.getFullYear()}`;
 
-      const fertileEl = document.getElementById('ttc-fertile-display');
-      if (fertileEl) fertileEl.innerText = `${formatShort(fertileStart)} - ${formatShort(fertileEnd)}`;
+      if (fertileEl) {
+        fertileEl.innerText = `${formatShort(fertileStart)} - ${formatShort(fertileEnd)}`;
+        fertileEl.className = "font-bold text-rose-700";
+      }
 
-      const periodEl = document.getElementById('ttc-period-display');
-      if (periodEl) periodEl.innerText = formatFull(nextPeriodDate);
+      if (periodEl) {
+        periodEl.innerText = formatFull(nextPeriodDate);
+        periodEl.className = "font-bold text-slate-800";
+      }
 
-      const cycleEl = document.getElementById('ttc-cycle-display');
-      if (cycleEl) cycleEl.innerText = isEn ? `${cycleDays} Days` : `${cycleDays} Hari`;
+      if (cycleEl) {
+        cycleEl.innerText = isEn ? `${cycleDays} Days` : `${cycleDays} Hari`;
+        cycleEl.className = "font-bold text-purple-700";
+      }
 
+      lucide.createIcons();
       loadOpkLogs({ syncCloud: syncOpk });
     }
 
@@ -9569,6 +9750,236 @@
       } else {
         showToast(isEn ? "✅ Menstrual cycle updated & synced! Ovulation recalculated." : "✅ Kitaran haid dikemaskini & diselaraskan ke awan!");
       }
+
+    // ==========================================
+    // SISTEM PILIHAN VITAMIN & SUPLEMEN PASANGAN (TTC) - FLEKSIBEL & PILIHAN
+    // ==========================================
+    const DEFAULT_TTC_SUPPLEMENTS_CONFIG = {
+      naturalDietOnly: false,
+      wife: [
+        { id: 'w_folic', name: 'Asid Folik (Folic Acid)', desc: 'Penyediaan awal pembentukan saraf janin', active: false },
+        { id: 'w_coq10', name: 'CoQ10 (Coenzyme Q10)', desc: 'Menyokong kualiti ovum & tenaga sel', active: false },
+        { id: 'w_inositol', name: 'Myo-Inositol', desc: 'Membantu keseimbangan hormon & kitaran haid', active: false },
+        { id: 'w_vitd', name: 'Vitamin D3', desc: 'Menyokong kesihatan rahim & reseptor hormon', active: false },
+        { id: 'w_prenatal', name: 'Multivitamin Pranatal', desc: 'Gabungan mikronutrien lengkap untuk persediaan', active: false }
+      ],
+      husband: [
+        { id: 'h_zinc', name: 'Zinc & Selenium', desc: 'Menyokong bilangan, motiliti & kualiti sperma', active: false },
+        { id: 'h_coq10', name: 'CoQ10 Lelaki / Antioksidan', desc: 'Melindungi sel sperma daripada tekanan oksidatif', active: false },
+        { id: 'h_multi', name: 'Multivitamin Lelaki / Vit C & E', desc: 'Menyokong stamina & kecergasan fizikal', active: false }
+      ]
+    };
+
+    function getTtcSupplementsStorageKey() {
+      return getFamilyScopedKey('bukupink_ttc_supps_v2');
+    }
+
+    function getTtcSupplementsDailyStorageKey() {
+      const todayIso = getLocalTodayIso();
+      return getFamilyScopedKey('bukupink_ttc_supps_daily_' + todayIso);
+    }
+
+    function loadTtcSupplementsData() {
+      let config = parseJsonSafe(localStorage.getItem(getTtcSupplementsStorageKey()));
+      if (!config || !Array.isArray(config.wife) || !Array.isArray(config.husband)) {
+        config = JSON.parse(JSON.stringify(DEFAULT_TTC_SUPPLEMENTS_CONFIG));
+      }
+      const dailyTaken = parseJsonSafe(localStorage.getItem(getTtcSupplementsDailyStorageKey())) || {};
+      return { config, dailyTaken };
+    }
+
+    function saveTtcSupplementsData(config, dailyTaken) {
+      if (config) {
+        localStorage.setItem(getTtcSupplementsStorageKey(), JSON.stringify(config));
+        upsertFamilySyncRecord('Tetapan TTC', 'TETAPAN_SUPLEMEN_TTC', config).catch(e => console.warn(e));
+      }
+      if (dailyTaken) {
+        localStorage.setItem(getTtcSupplementsDailyStorageKey(), JSON.stringify(dailyTaken));
+      }
+    }
+
+    function renderTtcSupplementsUI() {
+      const isEn = currentLang === 'en';
+      const container = document.getElementById('ttc-supplements-app');
+      if (!container) return;
+
+      const { config, dailyTaken } = loadTtcSupplementsData();
+      const naturalDietChk = document.getElementById('chk-ttc-natural-diet');
+      const naturalDietMsg = document.getElementById('ttc-natural-diet-message');
+      const mainSuppsList = document.getElementById('ttc-supplements-main-list');
+
+      if (naturalDietChk) {
+        naturalDietChk.checked = Boolean(config.naturalDietOnly);
+      }
+
+      if (config.naturalDietOnly) {
+        if (naturalDietMsg) naturalDietMsg.classList.remove('hidden');
+        if (mainSuppsList) mainSuppsList.classList.add('hidden');
+        return;
+      } else {
+        if (naturalDietMsg) naturalDietMsg.classList.add('hidden');
+        if (mainSuppsList) mainSuppsList.classList.remove('hidden');
+      }
+
+      // Render Isteri List
+      const wifeContainer = document.getElementById('ttc-supps-wife-list');
+      if (wifeContainer) {
+        if (config.wife.length === 0) {
+          wifeContainer.innerHTML = `<p class="text-[11px] text-slate-400 p-2 italic text-center">${isEn ? 'No supplements configured.' : 'Tiada suplemen dikonfigurasi.'}</p>`;
+        } else {
+          wifeContainer.innerHTML = config.wife.map(s => {
+            const isTaken = Boolean(dailyTaken[s.id]);
+            return `
+              <div class="p-2.5 rounded-xl border ${s.active ? (isTaken ? 'bg-emerald-50/70 border-emerald-200' : 'bg-pink-50/50 border-pink-200/80') : 'bg-slate-50 border-slate-200/60 opacity-80'} flex items-center justify-between gap-2 transition">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center space-x-1.5 flex-wrap">
+                    <span class="text-[11px] font-bold text-slate-800 ${s.active ? '' : 'text-slate-600'}">${escapeHtml(s.name)}</span>
+                    ${s.active ? '<span class="text-[9px] bg-pink-100 text-pink-700 font-bold px-1.5 py-0.2 rounded">Pilihan Aktif</span>' : '<span class="text-[9px] bg-slate-200 text-slate-600 font-semibold px-1.5 py-0.2 rounded">Tidak Diambil</span>'}
+                  </div>
+                  <p class="text-[10px] text-slate-500 truncate mt-0.5">${escapeHtml(s.desc || '')}</p>
+                </div>
+                <div class="flex items-center space-x-1.5 shrink-0">
+                  <button onclick="toggleTtcSuppActive('wife', '${s.id}')" title="${s.active ? (isEn ? 'Remove from my choices' : 'Keluarkan dari pilihan saya') : (isEn ? 'Add to my choices' : 'Pilih suplemen ini')}" class="text-[10px] px-2 py-1 rounded-lg border font-bold transition ${s.active ? 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-pink-600 text-white border-pink-600 hover:bg-pink-700'}">
+                    ${s.active ? (isEn ? 'Remove' : 'Gugur') : (isEn ? '+ Choose' : '+ Pilih')}
+                  </button>
+                  ${s.active ? `
+                    <button onclick="toggleTtcSuppTaken('${s.id}')" class="text-[11px] font-bold px-2.5 py-1 rounded-lg transition shadow-xs ${isTaken ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
+                      ${isTaken ? (isEn ? '✓ Taken' : '✓ Dah Ambil') : (isEn ? 'Not Taken' : 'Belum Ambil')}
+                    </button>
+                  ` : ''}
+                  ${s.isCustom ? `
+                    <button onclick="deleteCustomTtcSupp('wife', '${s.id}')" title="Padam" class="text-slate-300 hover:text-rose-500 p-1">
+                      <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // Render Suami List
+      const husbContainer = document.getElementById('ttc-supps-husb-list');
+      if (husbContainer) {
+        if (config.husband.length === 0) {
+          husbContainer.innerHTML = `<p class="text-[11px] text-slate-400 p-2 italic text-center">${isEn ? 'No supplements configured.' : 'Tiada suplemen dikonfigurasi.'}</p>`;
+        } else {
+          husbContainer.innerHTML = config.husband.map(s => {
+            const isTaken = Boolean(dailyTaken[s.id]);
+            return `
+              <div class="p-2.5 rounded-xl border ${s.active ? (isTaken ? 'bg-emerald-50/70 border-emerald-200' : 'bg-sky-50/50 border-sky-200/80') : 'bg-slate-50 border-slate-200/60 opacity-80'} flex items-center justify-between gap-2 transition">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center space-x-1.5 flex-wrap">
+                    <span class="text-[11px] font-bold text-slate-800 ${s.active ? '' : 'text-slate-600'}">${escapeHtml(s.name)}</span>
+                    ${s.active ? '<span class="text-[9px] bg-sky-100 text-sky-700 font-bold px-1.5 py-0.2 rounded">Pilihan Aktif</span>' : '<span class="text-[9px] bg-slate-200 text-slate-600 font-semibold px-1.5 py-0.2 rounded">Tidak Diambil</span>'}
+                  </div>
+                  <p class="text-[10px] text-slate-500 truncate mt-0.5">${escapeHtml(s.desc || '')}</p>
+                </div>
+                <div class="flex items-center space-x-1.5 shrink-0">
+                  <button onclick="toggleTtcSuppActive('husband', '${s.id}')" title="${s.active ? (isEn ? 'Remove from my choices' : 'Keluarkan dari pilihan saya') : (isEn ? 'Add to my choices' : 'Pilih suplemen ini')}" class="text-[10px] px-2 py-1 rounded-lg border font-bold transition ${s.active ? 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-sky-600 text-white border-sky-600 hover:bg-sky-700'}">
+                    ${s.active ? (isEn ? 'Remove' : 'Gugur') : (isEn ? '+ Choose' : '+ Pilih')}
+                  </button>
+                  ${s.active ? `
+                    <button onclick="toggleTtcSuppTaken('${s.id}')" class="text-[11px] font-bold px-2.5 py-1 rounded-lg transition shadow-xs ${isTaken ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
+                      ${isTaken ? (isEn ? '✓ Taken' : '✓ Dah Ambil') : (isEn ? 'Not Taken' : 'Belum Ambil')}
+                    </button>
+                  ` : ''}
+                  ${s.isCustom ? `
+                    <button onclick="deleteCustomTtcSupp('husband', '${s.id}')" title="Padam" class="text-slate-300 hover:text-rose-500 p-1">
+                      <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      lucide.createIcons();
+    }
+
+    function toggleTtcNaturalDiet(checked) {
+      const { config, dailyTaken } = loadTtcSupplementsData();
+      config.naturalDietOnly = Boolean(checked);
+      saveTtcSupplementsData(config, dailyTaken);
+      renderTtcSupplementsUI();
+      showToast(checked
+        ? (currentLang === 'en' ? '🥗 Natural diet mode selected (no daily supplement prompts).' : '🥗 Pilihan pemakanan semula jadi aktif (tiada desakan suplemen harian).')
+        : (currentLang === 'en' ? 'Supplement choices enabled.' : 'Senarai pilihan suplemen diaktifkan.')
+      );
+    }
+
+    function toggleTtcSuppActive(target, id) {
+      const { config, dailyTaken } = loadTtcSupplementsData();
+      const list = target === 'husband' ? config.husband : config.wife;
+      const item = list.find(s => s.id === id);
+      if (item) {
+        item.active = !item.active;
+        if (!item.active) {
+          delete dailyTaken[id];
+        }
+        saveTtcSupplementsData(config, dailyTaken);
+        renderTtcSupplementsUI();
+      }
+    }
+
+    function toggleTtcSuppTaken(id) {
+      const { config, dailyTaken } = loadTtcSupplementsData();
+      dailyTaken[id] = !dailyTaken[id];
+      saveTtcSupplementsData(config, dailyTaken);
+      renderTtcSupplementsUI();
+      showToast(dailyTaken[id]
+        ? (currentLang === 'en' ? '✓ Marked as taken today.' : '✓ Ditanda telah diambil hari ini.')
+        : (currentLang === 'en' ? 'Marked as not taken.' : 'Ditukar ke belum ambil.')
+      );
+    }
+
+    function deleteCustomTtcSupp(target, id) {
+      const { config, dailyTaken } = loadTtcSupplementsData();
+      if (target === 'husband') {
+        config.husband = config.husband.filter(s => s.id !== id);
+      } else {
+        config.wife = config.wife.filter(s => s.id !== id);
+      }
+      delete dailyTaken[id];
+      saveTtcSupplementsData(config, dailyTaken);
+      renderTtcSupplementsUI();
+      showToast(currentLang === 'en' ? 'Supplement removed.' : 'Suplemen telah dipadam.');
+    }
+
+    function handleSaveCustomTtcSupp(e) {
+      e.preventDefault();
+      const target = document.getElementById('inp-custom-supp-target').value;
+      const name = document.getElementById('inp-custom-supp-name').value.trim();
+      const desc = document.getElementById('inp-custom-supp-desc').value.trim();
+      if (!name) return;
+
+      const { config, dailyTaken } = loadTtcSupplementsData();
+      const newId = 'custom_' + Date.now();
+      const newSupp = {
+        id: newId,
+        name,
+        desc: desc || 'Suplemen pilihan peribadi',
+        active: true,
+        isCustom: true
+      };
+
+      if (target === 'husband') {
+        config.husband.push(newSupp);
+      } else {
+        config.wife.push(newSupp);
+      }
+
+      saveTtcSupplementsData(config, dailyTaken);
+      closeModal('modal-add-custom-supp');
+      document.getElementById('inp-custom-supp-name').value = '';
+      document.getElementById('inp-custom-supp-desc').value = '';
+      renderTtcSupplementsUI();
+      showToast(currentLang === 'en' ? '✅ Custom supplement added to your choices!' : '✅ Suplemen baru berjaya ditambah ke senarai pilihan!');
+    }
+
     }
 
     async function toggleTtcMed(person) {
