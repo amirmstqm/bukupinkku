@@ -2608,7 +2608,23 @@
     </div>
   </div>
 
-  <!-- ================= MODAL: UJI MAKANAN BARU (3-DAY RULE) ================= -->
+  <script>
+    (function() {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        if (!params.get('code') && localStorage.getItem('bukupink_family_id')) {
+          var l = document.getElementById('screen-landing');
+          var o = document.getElementById('screen-onboarding');
+          var d = document.getElementById('screen-dashboard');
+          if (l) l.classList.add('hidden');
+          if (o) o.classList.add('hidden');
+          if (d) d.classList.remove('hidden');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+    <!-- ================= MODAL: UJI MAKANAN BARU (3-DAY RULE) ================= -->
   <div id="modal-add-food-test" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-tealsoft-200">
       <div class="flex justify-between items-center">
@@ -5065,7 +5081,7 @@
       renderBabyTeeth();
       renderBabyKicks();
       renderChildJaundice();
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     if ('serviceWorker' in navigator) {
@@ -5075,14 +5091,22 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
       const today = new Date().toISOString().split('T')[0];
       const dateEl = document.getElementById('inp-mem-date');
       if (dateEl) dateEl.value = today;
 
-      switchLanguage(currentLang);
-      // Semak sama ada pengguna ada sesi sedia ada atau pengguna baru
-      checkAuthSession();
+      // Pastikan sesi aktif terus kekal di dashboard tanpa tersekat oleh ralat render/bahasa
+      try {
+        checkAuthSession();
+      } catch (err) {
+        console.warn("checkAuthSession error:", err);
+      }
+      try {
+        switchLanguage(currentLang);
+      } catch (err) {
+        console.warn("switchLanguage error:", err);
+      }
     });
 
     // ==========================================
@@ -5252,39 +5276,34 @@
         return;
       }
 
-      // 1. Jika pengguna SUDAH ada sesi aktif dalam telefon: TERUS KE DASHBOARD!
+      // 1. Jika pengguna SUDAH ada sesi aktif dalam telefon: TERUS KE DASHBOARD SERTA-MERTA!
       if (currentFamilyId) {
-        if (currentFamilyToken || currentFamilyId === DEMO_FAMILY_ID) {
-          showDashboardScreen();
-          return;
-        }
+        showDashboardScreen();
 
-        // Jika sesi ada tapi token keselamatan kosong, cuba refresh secara senyap
-        const savedCode = localStorage.getItem('bukupink_saved_family_code') || currentFamilyCode;
-        const savedPhone4 = localStorage.getItem('bukupink_saved_phone4');
-        const savedPin = localStorage.getItem('bukupink_saved_pin');
+        // Jika token keselamatan kosong, cuba refresh secara senyap di latar belakang
+        if (!currentFamilyToken && currentFamilyId !== DEMO_FAMILY_ID && db) {
+          const savedCode = localStorage.getItem('bukupink_saved_family_code') || currentFamilyCode;
+          const savedPhone4 = localStorage.getItem('bukupink_saved_phone4');
+          const savedPin = localStorage.getItem('bukupink_saved_pin');
 
-        if (savedCode && savedPhone4 && savedPin && db) {
-          try {
-            const { data: rpcRows, error: rpcErr } = await db.rpc('verify_family_access', {
-              p_invite_code: savedCode,
-              p_phone4: savedPhone4,
-              p_pin: savedPin
-            });
-            if (!rpcErr && rpcRows && rpcRows.length > 0 && rpcRows[0].ret_status === 'OK') {
-              const res = rpcRows[0];
-              currentFamilyToken = res.ret_access_token || '';
-              localStorage.setItem('bukupink_family_token', currentFamilyToken);
-              showDashboardScreen();
-              return;
+          if (savedCode && savedPhone4 && savedPin) {
+            try {
+              const { data: rpcRows, error: rpcErr } = await db.rpc('verify_family_access', {
+                p_invite_code: savedCode,
+                p_phone4: savedPhone4,
+                p_pin: savedPin
+              });
+              if (!rpcErr && rpcRows && rpcRows.length > 0 && rpcRows[0].ret_status === 'OK') {
+                const res = rpcRows[0];
+                currentFamilyToken = res.ret_access_token || '';
+                localStorage.setItem('bukupink_family_token', currentFamilyToken);
+                loadAllSupabaseData();
+              }
+            } catch (e) {
+              console.warn("Silent re-auth error:", e);
             }
-          } catch (e) {
-            console.warn("Silent re-auth error:", e);
           }
         }
-
-        // Tetap kekalkan sesi dan tunjukkan dashboard
-        showDashboardScreen();
         return;
       }
 
