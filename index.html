@@ -1224,28 +1224,33 @@
           </nav>
         </div>
 
-        <!-- SEKSYEN: SETTING / TETAPAN -->
+        <!-- SEKSYEN: SETTING / TETAPAN (TERTUTUP SECARA LALAI) -->
         <div class="space-y-1.5 pt-2 border-t border-slate-100">
-          <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
-            <span data-i18n="hdr_sidebar_settings">Tetapan</span>
-            <span class="text-xs">⚙️</span>
-          </p>
-
-          <button onclick="openPhotobookModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-900 text-xs font-bold hover:bg-amber-100 transition">
+          <button type="button" onclick="toggleSidebarSettings()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold transition">
             <span class="flex items-center space-x-2">
-              <span>📖</span>
-              <span data-i18n="btn_export_book">Buku Kenangan PDF</span>
+              <span>⚙️</span>
+              <span data-i18n="hdr_sidebar_settings">Tetapan</span>
             </span>
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-700"></i>
+            <i data-lucide="chevron-down" id="icon-sidebar-settings-chevron" class="w-3.5 h-3.5 text-slate-500 transition-transform"></i>
           </button>
 
-          <button onclick="openChangePinModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold transition">
-            <span class="flex items-center space-x-2">
-              <span>🔐</span>
-              <span data-i18n="btn_change_pin_sidebar">Tukar PIN Keluarga</span>
-            </span>
-            <i data-lucide="key-round" class="w-3.5 h-3.5 text-slate-500"></i>
-          </button>
+          <div id="sidebar-settings-submenu" class="hidden space-y-1.5 pl-2 pt-0.5">
+            <button onclick="openPhotobookModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-900 text-xs font-bold hover:bg-amber-100 transition">
+              <span class="flex items-center space-x-2">
+                <span>📖</span>
+                <span data-i18n="btn_export_book">Buku Kenangan PDF</span>
+              </span>
+              <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-700"></i>
+            </button>
+
+            <button onclick="openChangePinModal(); toggleSidebar(false);" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold transition">
+              <span class="flex items-center space-x-2">
+                <span>🔐</span>
+                <span data-i18n="btn_change_pin_sidebar">Tukar PIN Keluarga</span>
+              </span>
+              <i data-lucide="key-round" class="w-3.5 h-3.5 text-slate-500"></i>
+            </button>
+          </div>
         </div>
 
         <!-- TINDAKAN PANTAS KELUARGA & SOKONGAN -->
@@ -2081,6 +2086,18 @@
               <p id="vac-summary-text" class="text-[11px] text-slate-500">4 daripada 7 temujanji vaksin telah selesai</p>
             </div>
             <span id="vac-progress-badge" class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">57% Selesai</span>
+          </div>
+
+          <!-- LOKASI FOLLOW-UP / KLINIK PILIHAN (BOLEH DIUBAH: KERAJAAN / SWASTA / KPJ / DLL) -->
+          <div class="bg-sky-50/70 p-3 rounded-2xl border border-sky-200 flex items-center justify-between gap-2 text-xs">
+            <div class="min-w-0">
+              <p data-i18n="lbl_vac_clinic_hdr" class="text-[10px] font-bold text-sky-800 uppercase tracking-wider">🏥 Klinik / Hospital Follow-up</p>
+              <p id="vac-preferred-clinic-display" class="font-bold text-slate-800 truncate mt-0.5">Klinik / Hospital Pilihan</p>
+            </div>
+            <button type="button" onclick="editPreferredVaccineClinic()" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-sky-100 border border-sky-200 text-sky-800 font-bold text-[11px] shrink-0 transition shadow-2xs flex items-center space-x-1">
+              <span>✏️</span>
+              <span data-i18n="btn_edit_clinic">Tukar</span>
+            </button>
           </div>
 
           <div class="space-y-2 text-xs" id="vaccine-list-container">
@@ -3821,6 +3838,8 @@
         land_kkm_title: "Peringatan Rasmi Kesihatan (KKM)",
         landing_kkm_notice: "BukuPinkKu adalah aplikasi peneman digital untuk membantu ibu dan pasangan memahami maklumat kehamilan & kesihatan anak. <strong>Ia BUKAN pengganti buku pink fizikal KKM yang sah</strong> — anda tetap wajib membawa Buku Pink fizikal setiap kali hadir ke Klinik Kesihatan atau hospital.",
         hdr_sidebar_settings: "Tetapan",
+        lbl_vac_clinic_hdr: "🏥 Klinik / Hospital Follow-up",
+        btn_edit_clinic: "Tukar",
         btn_mini_game: "Mini Game",
         hdr_mini_game_sub: "Hilangkan bosan sementara menunggu giliran klinik atau anak tidur",
         ttc_lmp_prompt_title: "Mula Kira Jendela Subur & Ovulasi Anda",
@@ -3834,6 +3853,8 @@
         lbl_supp_choose_hint: "Tanda <b>+ Pilih</b> pada suplemen yang anda amalkan sahaja:",
         btn_add_supp: "Tambah Suplemen",
         hdr_sidebar_settings: "Settings",
+        lbl_vac_clinic_hdr: "🏥 Follow-up Clinic / Hospital",
+        btn_edit_clinic: "Edit",
         btn_mini_game: "Mini Games",
         hdr_mini_game_sub: "Take a quick break while waiting at the clinic or while baby naps",
         ttc_lmp_prompt_title: "Start Tracking Your Fertile Window & Ovulation",
@@ -8354,12 +8375,12 @@
     // ==========================================
     const KKM_VACCINE_LIST = [
       { id: 'v_0m', ageMs: 'Masa Lahir (0 Bulan)', ageEn: 'At Birth (0 Months)', nameMs: 'BCG & Hepatitis B (Dos 1)', nameEn: 'BCG & Hepatitis B (Dose 1)', locMs: 'Hospital Bersalin', locEn: 'Maternity Hospital' },
-      { id: 'v_1m', ageMs: 'Umur 1 Bulan', ageEn: '1 Month', nameMs: 'Hepatitis B (Dos 2)', nameEn: 'Hepatitis B (Dose 2)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' },
-      { id: 'v_2m', ageMs: 'Umur 2 Bulan', ageEn: '2 Months', nameMs: 'DTaP-IPV-HepB-Hib (Dos 1) + Pneumokokal (Dos 1)', nameEn: 'DTaP-IPV-HepB-Hib (Dose 1) + Pneumococcal (Dose 1)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' },
-      { id: 'v_3m', ageMs: 'Umur 3 Bulan', ageEn: '3 Months', nameMs: 'DTaP-IPV-HepB-Hib (Dos 2)', nameEn: 'DTaP-IPV-HepB-Hib (Dose 2)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' },
-      { id: 'v_5m', ageMs: 'Umur 5 Bulan', ageEn: '5 Months', nameMs: 'DTaP-IPV-HepB-Hib (Dos 3) + Pneumokokal (Dos 2)', nameEn: 'DTaP-IPV-HepB-Hib (Dose 3) + Pneumococcal (Dose 2)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' },
-      { id: 'v_9m', ageMs: 'Umur 9 Bulan', ageEn: '9 Months', nameMs: 'Campak / MMR (Dos 1)', nameEn: 'Measles / MMR (Dose 1)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' },
-      { id: 'v_12m', ageMs: 'Umur 12 Bulan', ageEn: '12 Months', nameMs: 'MMR (Dos 2) + Pneumokokal (Dos Penggalak)', nameEn: 'MMR (Dose 2) + Pneumococcal (Booster)', locMs: 'Klinik Kesihatan Kerajaan', locEn: 'Government Health Clinic (KK)' }
+      { id: 'v_1m', ageMs: 'Umur 1 Bulan', ageEn: '1 Month', nameMs: 'Hepatitis B (Dos 2)', nameEn: 'Hepatitis B (Dose 2)', locMs: 'Klinik / Hospital Pilihan', locEn: 'Preferred Clinic / Hospital' },
+      { id: 'v_2m', ageMs: 'Umur 2 Bulan', ageEn: '2 Months', nameMs: 'DTaP-IPV-HepB-Hib (Dos 1) + Pneumokokal (Dos 1)', nameEn: 'DTaP-IPV-HepB-Hib (Dose 1) + Pneumococcal (Dose 1)', locMs: 'Klinik / Hospital Pilihan', locEn: 'Preferred Clinic / Hospital' },
+      { id: 'v_3m', ageMs: 'Umur 3 Bulan', ageEn: '3 Months', nameMs: 'DTaP-IPV-HepB-Hib (Dos 2)', nameEn: 'DTaP-IPV-HepB-Hib (Dose 2)', locMs: 'Klinik / Hospital Pilihan', locEn: 'Preferred Clinic / Hospital' },
+      { id: 'v_5m', ageMs: 'Umur 5 Bulan', ageEn: '5 Months', nameMs: 'DTaP-IPV-HepB-Hib (Dos 3) + Pneumokokal (Dos 2)', nameEn: 'DTaP-IPV-HepB-Hib (Dose 3) + Pneumococcal (Dose 2)', locMs: 'Klinik / Hospital Pilihan', locEn: 'Preferred Clinic / Hospital' },
+      { id: 'v_9m', ageMs: 'Umur 9 Bulan', ageEn: '9 Months', nameMs: 'Campak / MMR (Dos 1)', nameEn: 'Measles / MMR (Dose 1)', locMs: 'Klinik / Hospital Pilihan', locEn: 'Preferred Clinic / Hospital' },
+      { id: 'v_12m', ageMs: 'Umur 12 Bulan', ageEn: '12 Months', nameMs: 'MMR (Dos 2) + Pneumokokal (Dos Penggalak)', nameEn: 'MMR (Dose 2) + Pneumococcal (Booster)', locMs: 'Klinik / Hospital Pilihan', locEn: 'Preferred Clinic / Hospital' }
     ];
 
     function getVaccineStorageKey() {
@@ -8436,6 +8457,10 @@
     async function toggleVaccine(vacId) {
       const isEn = currentLang === 'en';
       const state = getSavedVaccines();
+      const prefClinicEl = document.getElementById('vac-preferred-clinic-display');
+      if (prefClinicEl) {
+        prefClinicEl.innerText = getChildPreferredClinic() || (isEn ? 'Preferred Clinic / Hospital (Not Set)' : 'Klinik / Hospital Pilihan (Belum Ditetapkan)');
+      }
       const vac = KKM_VACCINE_LIST.find(v => v.id === vacId);
       if (!vac) return;
 
@@ -8521,6 +8546,63 @@
       }
     }
 
+    function toggleSidebarSettings() {
+      const sub = document.getElementById('sidebar-settings-submenu');
+      const chev = document.getElementById('icon-sidebar-settings-chevron');
+      if (!sub) return;
+      const isHidden = sub.classList.contains('hidden');
+      sub.classList.toggle('hidden', !isHidden);
+      if (chev) {
+        chev.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+      }
+    }
+
+    function getChildPreferredClinic() {
+      return localStorage.getItem(getChildScopedKey('bukupink_preferred_clinic')) || '';
+    }
+
+    function editPreferredVaccineClinic() {
+      const isEn = currentLang === 'en';
+      const current = getChildPreferredClinic();
+      const input = prompt(
+        isEn
+          ? "Enter your baby's follow-up clinic or hospital (e.g. KPJ Tawakkal, Pantai Hospital, or Government KK):"
+          : "Masukkan nama klinik atau hospital follow-up anak anda (cth: KPJ Tawakkal, Hospital Pantai, atau Klinik Kesihatan):",
+        current || ''
+      );
+      if (input === null) return;
+      const clean = input.trim();
+      if (clean) {
+        localStorage.setItem(getChildScopedKey('bukupink_preferred_clinic'), clean);
+      } else {
+        localStorage.removeItem(getChildScopedKey('bukupink_preferred_clinic'));
+      }
+      renderVaccines();
+      showToast(isEn ? "✅ Follow-up clinic/hospital updated!" : "✅ Klinik / hospital follow-up dikemaskini!");
+    }
+
+    function editSingleVaccineLocation(vacId) {
+      const isEn = currentLang === 'en';
+      const state = getSavedVaccines();
+      const vac = KKM_VACCINE_LIST.find(v => v.id === vacId);
+      if (!vac) return;
+      const currentLoc = (state[vacId] && state[vacId].location) || getChildPreferredClinic() || (isEn ? vac.locEn : vac.locMs);
+      const input = prompt(
+        isEn ? `Clinic / hospital for "${vac.nameEn}":` : `Klinik / hospital bagi "${vac.nameMs}":`,
+        currentLoc
+      );
+      if (input === null) return;
+      const clean = input.trim();
+      if (!state[vacId]) state[vacId] = { done: false };
+      if (clean) {
+        state[vacId].location = clean;
+      } else {
+        delete state[vacId].location;
+      }
+      saveVaccinesState(state);
+      renderVaccines();
+    }
+
     function renderVaccines() {
       const isEn = currentLang === 'en';
       const container = document.getElementById('vaccine-list-container');
@@ -8549,7 +8631,9 @@
         const card = document.createElement('div');
         const ageLabel = isEn ? vac.ageEn : vac.ageMs;
         const nameLabel = isEn ? vac.nameEn : vac.nameMs;
-        const locLabel = isEn ? vac.locEn : vac.locMs;
+        const preferredClinic = getChildPreferredClinic();
+        const customLoc = state[vac.id]?.location || '';
+        const locLabel = customLoc || (vac.id === 'v_0m' ? (isEn ? vac.locEn : vac.locMs) : (preferredClinic || (isEn ? vac.locEn : vac.locMs)));
         const vacDate = (state[vac.id] && state[vac.id].date) ? state[vac.id].date : '';
 
         if (isDone) {
@@ -8558,7 +8642,7 @@
             <div>
               <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">${ageLabel}</span>
               <p class="font-bold text-slate-800 mt-1">${nameLabel}</p>
-              <p class="text-[11px] text-slate-500">${locLabel} ${vacDate ? `• <span class="text-emerald-700 font-medium">${vacDate}</span>` : ''}</p>
+              <p class="text-[11px] text-slate-500 flex items-center space-x-1"><span>${escapeHtml(locLabel)}</span><button type="button" onclick="editSingleVaccineLocation('${vac.id}')" title="${isEn ? 'Edit clinic/hospital' : 'Ubah klinik/hospital'}" class="text-slate-400 hover:text-sky-600">✏️</button>${vacDate ? `<span>• <span class="text-emerald-700 font-medium">${vacDate}</span></span>` : ''}</p>
             </div>
             <button onclick="toggleVaccine('${vac.id}')" title="${isEn ? 'Click to undo' : 'Klik untuk tukar status'}" class="text-emerald-700 font-bold text-xs flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 transition">
               <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
@@ -8574,7 +8658,7 @@
                 <span class="text-[10px] text-amber-600 font-bold">⏳ ${isEn ? 'Upcoming' : 'Akan Datang'}</span>
               </div>
               <p class="font-bold text-slate-800 mt-1">${nameLabel}</p>
-              <p class="text-[11px] text-slate-500">${locLabel}</p>
+              <p class="text-[11px] text-slate-500 flex items-center space-x-1"><span>${escapeHtml(locLabel)}</span><button type="button" onclick="editSingleVaccineLocation('${vac.id}')" title="${isEn ? 'Edit clinic/hospital' : 'Ubah klinik/hospital'}" class="text-slate-400 hover:text-sky-600">✏️</button></p>
             </div>
             <button onclick="toggleVaccine('${vac.id}')" class="px-3 py-1.5 rounded-xl bg-pastel-500 hover:bg-pastel-600 text-white font-bold text-xs shadow-sm transition whitespace-nowrap">
               ${isEn ? 'Mark Done' : 'Tanda Selesai'}
@@ -11028,7 +11112,7 @@
           let textClass = '';
 
           if (isDone) {
-            statusBadge = `✓ Selesai ${vacDate ? '(' + vacDate + ')' : 'di KK'}`;
+            statusBadge = isEn ? `✓ Completed ${vacDate ? '(' + vacDate + ')' : ''}` : `✓ Selesai ${vacDate ? '(' + vacDate + ')' : ''}`;
             bgClass = 'bg-emerald-50/70 border-emerald-200';
             textClass = 'text-emerald-900';
           } else if (childMonths < reqMonths) {
