@@ -2612,7 +2612,10 @@
     (function() {
       try {
         var params = new URLSearchParams(window.location.search);
-        if (!params.get('code') && localStorage.getItem('bukupink_family_id')) {
+        var urlCode = (params.get('code') || '').trim().toUpperCase();
+        var activeCode = (localStorage.getItem('bukupink_invite_code') || '').trim().toUpperCase();
+        var hasFamilyId = Boolean(localStorage.getItem('bukupink_family_id'));
+        if (hasFamilyId && (!urlCode || urlCode === activeCode)) {
           var l = document.getElementById('screen-landing');
           var o = document.getElementById('screen-onboarding');
           var d = document.getElementById('screen-dashboard');
@@ -5081,6 +5084,7 @@
       renderBabyTeeth();
       renderBabyKicks();
       renderChildJaundice();
+      if (typeof applyCoupleProfileUI === 'function' && currentFamilyId) applyCoupleProfileUI();
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
@@ -5262,22 +5266,14 @@
 
     // SEMAK SESI AUTH
     async function checkAuthSession() {
-      // Semak query parameter URL jika suami buka link WhatsApp cth: bukupinkku.my?code=PINK-XXXX
       const urlParams = new URLSearchParams(window.location.search);
-      const inviteCodeParam = urlParams.get('code');
+      const inviteCodeParam = (urlParams.get('code') || '').trim().toUpperCase();
 
-      if (inviteCodeParam) {
-        showOnboardingScreen('father');
-        const joinInput = document.getElementById('join-invite-code');
-        if (joinInput) joinInput.value = inviteCodeParam.trim().toUpperCase();
-        showToast(currentLang === 'en'
-          ? `Invite code ${inviteCodeParam.toUpperCase()} detected! Enter your name and the last 4 digits of your wife's phone number.`
-          : `Kod jemputan ${inviteCodeParam.toUpperCase()} dikesan! Masukkan nama & 4 digit terakhir no. telefon isteri.`);
-        return;
-      }
-
-      // 1. Jika pengguna SUDAH ada sesi aktif dalam telefon: TERUS KE DASHBOARD SERTA-MERTA!
-      if (currentFamilyId) {
+      // 1. Jika pengguna SUDAH ada sesi aktif dalam telefon (dan tiada kod keluarga LAIN di URL): TERUS KE DASHBOARD!
+      if (currentFamilyId && (!inviteCodeParam || inviteCodeParam === (currentFamilyCode || '').trim().toUpperCase())) {
+        if (inviteCodeParam && window.history && window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
         showDashboardScreen();
 
         // Jika token keselamatan kosong, cuba refresh secara senyap di latar belakang
@@ -5307,7 +5303,18 @@
         return;
       }
 
-      // 2. Jika tiada sesi aktif, tunjukkan laman utama (berserta kad sambung pantas jika ada akaun tersimpan)
+      // 2. Jika ada ?code= di URL untuk keluarga baharu / belum log masuk, buka tab pautan pasangan
+      if (inviteCodeParam) {
+        showOnboardingScreen('father');
+        const joinInput = document.getElementById('join-invite-code');
+        if (joinInput) joinInput.value = inviteCodeParam;
+        showToast(currentLang === 'en'
+          ? `Invite code ${inviteCodeParam} detected! Enter your name and the last 4 digits of your wife's phone number.`
+          : `Kod jemputan ${inviteCodeParam} dikesan! Masukkan nama & 4 digit terakhir no. telefon isteri.`);
+        return;
+      }
+
+      // 3. Jika tiada sesi aktif, tunjukkan laman utama (berserta kad sambung pantas jika ada akaun tersimpan)
       showLandingScreen();
     }
 
@@ -5380,6 +5387,12 @@
     }
 
     function showDashboardScreen() {
+      try {
+        const u = new URLSearchParams(window.location.search);
+        if (u.has('code') && window.history && window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } catch (e) {}
       const landEl = document.getElementById('screen-landing');
       if (landEl) landEl.classList.add('hidden');
       document.getElementById('screen-onboarding').classList.add('hidden');
