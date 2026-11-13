@@ -8463,8 +8463,8 @@
     }
 
     function renderDailyMedsUI() {
-      renderTtcSupplementsUI();
       renderPregnancyMedsList();
+      if (typeof renderTtcSupplementsUI === 'function') renderTtcSupplementsUI();
       const isEn = currentLang === 'en';
 
       const wifeBtn = document.getElementById('btn-ttc-med-wife');
@@ -10576,6 +10576,7 @@
       } else {
         showToast(isEn ? "✅ Menstrual cycle updated & synced! Ovulation recalculated." : "✅ Kitaran haid dikemaskini & diselaraskan ke awan!");
       }
+    }
 
     // ==========================================
     // SISTEM PILIHAN VITAMIN & SUPLEMEN PASANGAN (TTC) - FLEKSIBEL & PILIHAN
@@ -10804,8 +10805,6 @@
       document.getElementById('inp-custom-supp-desc').value = '';
       renderTtcSupplementsUI();
       showToast(currentLang === 'en' ? '✅ Custom supplement added to your choices!' : '✅ Suplemen baru berjaya ditambah ke senarai pilihan!');
-    }
-
     }
 
     async function toggleTtcMed(person) {
