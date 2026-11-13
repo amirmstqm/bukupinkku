@@ -1333,9 +1333,9 @@
                 </button>
               </div>
               <div class="flex items-center space-x-1.5 mt-0.5">
-                <p class="text-[11px] text-slate-500"><span data-i18n="hdr_family_code">Kod:</span> <span id="display-invite-code" onclick="toggleHideFamilyCode()" title="Klik untuk sorok/tunjuk kod keluarga" class="font-mono font-bold bg-pastel-50 hover:bg-pastel-100 text-pastel-700 px-1.5 py-0.5 rounded border border-pastel-200 cursor-pointer transition select-all">PINK-8821</span></p>
+                <p class="text-[11px] text-slate-500"><span data-i18n="hdr_family_code">Kod:</span> <span id="display-invite-code" onclick="toggleHideFamilyCode()" title="Klik untuk sorok/tunjuk kod keluarga" class="font-mono font-bold bg-pastel-50 hover:bg-pastel-100 text-pastel-700 px-1.5 py-0.5 rounded border border-pastel-200 cursor-pointer transition select-all">PINK-••••••</span></p>
                 <button type="button" onclick="toggleHideFamilyCode()" id="btn-toggle-code-privacy" data-i18n-title="title_toggle_code" title="Sorokkan / Tunjukkan Kod Keluarga" class="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
-                  <i data-lucide="eye-off" id="icon-toggle-code" class="w-3.5 h-3.5"></i>
+                  <i data-lucide="eye" id="icon-toggle-code" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
             </div>
@@ -2119,8 +2119,7 @@
                 <span>Panduan KKM: Peraturan 3 Hari (3-Day Rule)</span>
               </p>
               <button onclick="openNewFoodTestModal()" class="text-[11px] bg-teal-700 hover:bg-teal-800 text-white font-bold px-3 py-1.5 rounded-xl transition shadow-sm flex items-center space-x-1">
-                <span>+</span>
-                <span data-i18n="food_btn_new">Uji Makanan Baru</span>
+                <span data-i18n="food_btn_new">+ Uji Makanan Baru</span>
               </button>
             </div>
             <p data-i18n="food_guide_desc" class="text-[11px] text-teal-800/90 leading-relaxed">Beri 1 jenis makanan baru selama 3 hari berturut-turut untuk kenal pasti sebarang alergi atau ruam sebelum mencampurkan bahan lain.</p>
@@ -2667,7 +2666,7 @@
           <input type="text" id="inp-food-test-name" data-i18n-placeholder="ph_food_test_name" required placeholder="Cth: Puri Avokado / Kuning Telur" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
         </div>
 
-        <div>
+        <div id="food-test-presets-wrap">
           <label data-i18n="lbl_food_presets" class="block font-semibold mb-1.5 text-slate-700">Pilihan Cepat (Cadangan KKM):</label>
           <div class="flex flex-wrap gap-1.5">
             <button type="button" data-i18n="preset_food_1" onclick="setFoodPreset('🍳 Kuning Telur Rebus (Lumat)', '🍳 Mashed Boiled Egg Yolk')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">🍳 Kuning Telur</button>
@@ -2679,13 +2678,13 @@
           </div>
         </div>
 
-        <div>
+        <div id="food-test-notes-wrap">
           <label data-i18n="lbl_food_notes" class="block font-semibold mb-1 text-slate-700">Catatan Penyediaan (Pilihan)</label>
           <input type="text" id="inp-food-test-notes" data-i18n-placeholder="ph_food_test_notes" placeholder="Cth: Kukus 10 min & kisar halus bersama susu ibu" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
         </div>
 
-        <button type="submit" class="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl mt-2 transition shadow-sm flex items-center justify-center space-x-1.5">
-          <span data-i18n="btn_start_test">Mula Ujian 3 Hari</span>
+        <button type="submit" id="btn-submit-food-test" class="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl mt-2 transition shadow-sm flex items-center justify-center space-x-1.5">
+          <span id="lbl-submit-food-test" data-i18n="btn_start_test">Mula Ujian 3 Hari</span>
         </button>
       </form>
     </div>
@@ -5412,7 +5411,7 @@
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
-    let isFamilyCodeMasked = localStorage.getItem('bukupink_mask_code') === 'true';
+    let isFamilyCodeMasked = true;
 
     function updateFamilyCodeDisplay() {
       const code = currentFamilyCode || 'PINK-8821';
@@ -5433,7 +5432,6 @@
 
     function toggleHideFamilyCode() {
       isFamilyCodeMasked = !isFamilyCodeMasked;
-      localStorage.setItem('bukupink_mask_code', isFamilyCodeMasked ? 'true' : 'false');
       updateFamilyCodeDisplay();
       const isEn = currentLang === 'en';
       showToast(isFamilyCodeMasked
@@ -8820,14 +8818,144 @@
       }
     }
 
+    let foodTestModalMode = 'new'; // 'new' | 'edit_active' | 'edit_safe'
+    let editingSafeFoodIndex = -1;
+
+    function configureFoodTestModalUI(mode, foodName = '', notes = '') {
+      const isEn = currentLang === 'en';
+      foodTestModalMode = mode;
+      const titleEl = document.getElementById('title-modal-food-test');
+      const submitLbl = document.getElementById('lbl-submit-food-test');
+      const presetsWrap = document.getElementById('food-test-presets-wrap');
+      const notesWrap = document.getElementById('food-test-notes-wrap');
+      const nameInp = document.getElementById('inp-food-test-name');
+      const notesInp = document.getElementById('inp-food-test-notes');
+
+      if (nameInp) nameInp.value = foodName;
+      if (notesInp) notesInp.value = notes;
+
+      if (mode === 'edit_active') {
+        if (titleEl) titleEl.innerText = isEn ? 'Edit Food Test' : 'Edit Ujian Makanan';
+        if (submitLbl) submitLbl.innerText = isEn ? 'Save Changes' : 'Simpan Perubahan';
+        if (presetsWrap) presetsWrap.classList.remove('hidden');
+        if (notesWrap) notesWrap.classList.remove('hidden');
+      } else if (mode === 'edit_safe') {
+        if (titleEl) titleEl.innerText = isEn ? 'Edit Safe Food' : 'Edit Makanan Selamat';
+        if (submitLbl) submitLbl.innerText = isEn ? 'Save Changes' : 'Simpan Perubahan';
+        if (presetsWrap) presetsWrap.classList.add('hidden');
+        if (notesWrap) notesWrap.classList.add('hidden');
+      } else {
+        if (titleEl) titleEl.innerText = isEn ? 'Test New Food (3-Day Rule)' : 'Uji Makanan Baru (3-Day Rule)';
+        if (submitLbl) submitLbl.innerText = isEn ? 'Start 3-Day Test' : 'Mula Ujian 3 Hari';
+        if (presetsWrap) presetsWrap.classList.remove('hidden');
+        if (notesWrap) notesWrap.classList.remove('hidden');
+      }
+      openModal('modal-add-food-test', mode !== 'new');
+    }
+
     function openNewFoodTestModal() {
-      document.getElementById('inp-food-test-name').value = '';
-      document.getElementById('inp-food-test-notes').value = '';
-      openModal('modal-add-food-test');
+      editingSafeFoodIndex = -1;
+      configureFoodTestModalUI('new', '', '');
+    }
+
+    function openEditActiveFoodTestModal() {
+      const test = getSavedFoodTest();
+      if (!test || !test.foodName || test.status === 'idle') {
+        openNewFoodTestModal();
+        return;
+      }
+      editingSafeFoodIndex = -1;
+      configureFoodTestModalUI('edit_active', test.foodName || '', test.notes || '');
+    }
+
+    function openEditSafeFoodModal(index) {
+      const safeList = getSavedSafeFoods();
+      if (index < 0 || index >= safeList.length) return;
+      editingSafeFoodIndex = index;
+      configureFoodTestModalUI('edit_safe', safeList[index] || '', '');
     }
 
     function setFoodPreset(msName, enName = '') {
       document.getElementById('inp-food-test-name').value = (currentLang === 'en' && enName) ? enName : msName;
+    }
+
+    async function updateCloudSafeFoodTitle(oldName, newName) {
+      if (!db || !currentFamilyId || !oldName) return null;
+      try {
+        const { data, error } = await secureGetRecords('baby_memories', { category: 'Ujian Makanan' });
+        if (error || !Array.isArray(data)) return error || null;
+        const targetPrefix = `Ujian Makanan Selamat: ${oldName}`.toLowerCase();
+        const matches = data.filter(r =>
+          recordMatchesActiveChild(r) &&
+          (String(r.title || '').trim().toLowerCase() === targetPrefix ||
+           String(r.title || '').trim().toLowerCase() === oldName.toLowerCase())
+        );
+        for (const row of matches) {
+          if (newName === null) {
+            const { error: delErr } = await secureDeleteRecord('baby_memories', { rowId: row.id });
+            if (delErr) return delErr;
+          } else {
+            const { error: updErr } = await secureUpdateRecord('baby_memories', row.id, {
+              title: `Ujian Makanan Selamat: ${newName}`
+            });
+            if (updErr) return updErr;
+          }
+        }
+        return null;
+      } catch (e) {
+        return e;
+      }
+    }
+
+    async function deleteActiveFoodTest() {
+      const isEn = currentLang === 'en';
+      const test = getSavedFoodTest();
+      if (!test || !test.foodName || test.status === 'idle') return;
+      const msg = isEn
+        ? `Delete active food test "${test.foodName}"?`
+        : `Padam ujian makanan "${test.foodName}"?`;
+      if (!confirm(msg)) return;
+
+      const idleState = {
+        foodName: '',
+        currentDay: 1,
+        day1: 'pending',
+        day2: 'pending',
+        day3: 'pending',
+        status: 'idle',
+        notes: ''
+      };
+      saveFoodTestState(idleState);
+      renderFoodTests();
+
+      const { error } = await persistActiveFoodTestToCloud(idleState);
+      if (error) {
+        showCloudSyncNotice(error, true);
+      } else {
+        showToast(isEn ? '🗑️ Food test deleted.' : '🗑️ Ujian makanan dipadam.');
+      }
+    }
+
+    async function deleteSafeFood(index) {
+      const isEn = currentLang === 'en';
+      const safeList = getSavedSafeFoods();
+      if (index < 0 || index >= safeList.length) return;
+      const targetName = safeList[index];
+      const msg = isEn
+        ? `Remove "${targetName}" from Safe Foods list?`
+        : `Padam "${targetName}" daripada senarai makanan selamat?`;
+      if (!confirm(msg)) return;
+
+      safeList.splice(index, 1);
+      saveSafeFoodsState(safeList);
+      renderFoodTests();
+
+      const err = await updateCloudSafeFoodTitle(targetName, null);
+      if (err) {
+        showCloudSyncNotice(err, true);
+      } else {
+        showToast(isEn ? `🗑️ Removed "${targetName}".` : `🗑️ "${targetName}" telah dipadam.`);
+      }
     }
 
     async function handleStartNewFoodTest(e) {
@@ -8836,6 +8964,61 @@
       const foodName = document.getElementById('inp-food-test-name').value.trim();
       const notes = document.getElementById('inp-food-test-notes').value.trim();
       if (!foodName) return;
+
+      if (foodTestModalMode === 'edit_active') {
+        const test = getSavedFoodTest();
+        const oldName = test.foodName;
+        test.foodName = foodName;
+        test.notes = notes;
+        saveFoodTestState(test);
+
+        let cloudErr = null;
+        if (test.status === 'passed' && oldName && oldName !== foodName) {
+          const safeList = getSavedSafeFoods().map(item => item === oldName ? foodName : item);
+          saveSafeFoodsState([...new Set(safeList)]);
+          cloudErr = await updateCloudSafeFoodTitle(oldName, foodName);
+        }
+
+        closeModal('modal-add-food-test');
+        renderFoodTests();
+
+        const { error } = await persistActiveFoodTestToCloud(test);
+        if (error || cloudErr) {
+          showCloudSyncNotice(error || cloudErr, true);
+        } else {
+          showToast(isEn ? `✏️ Updated food test "${foodName}"!` : `✏️ Ujian makanan "${foodName}" dikemas kini!`);
+        }
+        return;
+      }
+
+      if (foodTestModalMode === 'edit_safe' && editingSafeFoodIndex >= 0) {
+        const safeList = getSavedSafeFoods();
+        const oldName = safeList[editingSafeFoodIndex];
+        if (!oldName) {
+          closeModal('modal-add-food-test');
+          return;
+        }
+        safeList[editingSafeFoodIndex] = foodName;
+        saveSafeFoodsState([...new Set(safeList)]);
+
+        const activeTest = getSavedFoodTest();
+        if (activeTest && activeTest.foodName === oldName && activeTest.status === 'passed') {
+          activeTest.foodName = foodName;
+          saveFoodTestState(activeTest);
+          await persistActiveFoodTestToCloud(activeTest);
+        }
+
+        closeModal('modal-add-food-test');
+        renderFoodTests();
+
+        const cloudErr = await updateCloudSafeFoodTitle(oldName, foodName);
+        if (cloudErr) {
+          showCloudSyncNotice(cloudErr, true);
+        } else {
+          showToast(isEn ? `✏️ Updated "${foodName}"!` : `✏️ "${foodName}" dikemas kini!`);
+        }
+        return;
+      }
 
       const newTest = {
         foodName,
@@ -9047,9 +9230,14 @@
                 <h4 class="text-sm font-bold text-slate-800 mt-1.5">${escapeHtml(test.foodName)}</h4>
                 ${test.notes ? `<p class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(test.notes)}</p>` : ''}
               </div>
-              <button onclick="openNewFoodTestModal()" class="text-[11px] text-slate-400 hover:text-slate-600">
-                <i data-lucide="edit" class="w-4 h-4"></i>
-              </button>
+              <div class="flex items-center space-x-1">
+                <button type="button" onclick="openEditActiveFoodTestModal()" title="${isEn ? 'Edit' : 'Edit'}" class="p-1.5 rounded-lg text-slate-400 hover:text-teal-700 hover:bg-teal-50 transition">
+                  <i data-lucide="edit-2" class="w-4 h-4"></i>
+                </button>
+                <button type="button" onclick="deleteActiveFoodTest()" title="${isEn ? 'Delete' : 'Padam'}" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
             </div>
 
             <!-- 3-Day Steps Visual Tracker -->
@@ -9083,9 +9271,15 @@
         if (safeList.length === 0) {
           safeContainer.innerHTML = `<p class="text-xs text-slate-400 py-1">${isEn ? 'No safe foods logged yet.' : 'Belum ada makanan disahkan selesai ujian.'}</p>`;
         } else {
-          safeContainer.innerHTML = safeList.map(item => `
-            <span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 font-semibold rounded-lg border border-emerald-200 shadow-2xs">
-              ✓ ${escapeHtml(item)}
+          safeContainer.innerHTML = safeList.map((item, idx) => `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-800 font-semibold rounded-lg border border-emerald-200 shadow-2xs">
+              <span>✓ ${escapeHtml(item)}</span>
+              <button type="button" onclick="openEditSafeFoodModal(${idx})" title="${isEn ? 'Edit' : 'Edit'}" class="text-emerald-600 hover:text-emerald-900 p-0.5 rounded transition">
+                <i data-lucide="edit-2" class="w-3 h-3"></i>
+              </button>
+              <button type="button" onclick="deleteSafeFood(${idx})" title="${isEn ? 'Delete' : 'Padam'}" class="text-rose-400 hover:text-rose-700 p-0.5 rounded transition">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+              </button>
             </span>
           `).join('');
         }
