@@ -5314,7 +5314,19 @@
         return;
       }
 
-      // 3. Jika tiada sesi aktif, tunjukkan laman utama (berserta kad sambung pantas jika ada akaun tersimpan)
+      // 3. Jika dibuka sebagai aplikasi Home Screen (PWA Standalone) tanpa sesi, terus ke skrin Log Masuk
+      const isStandaloneApp = (window.navigator && window.navigator.standalone === true) ||
+        (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+      if (isStandaloneApp) {
+        showOnboardingScreen('father');
+        prefillLoginFormFromSaved();
+        showToast(currentLang === 'en'
+          ? "📱 Opened as Home Screen App! Please sign in once here to save your session."
+          : "📱 Aplikasi Home Screen dibuka! Sila log masuk sekali di sini (iOS mengasingkan sesi Safari & Home Screen).");
+        return;
+      }
+
+      // 4. Jika tiada sesi aktif di pelayar biasa, tunjukkan laman utama
       showLandingScreen();
     }
 
@@ -5791,7 +5803,7 @@
           ? I18N[currentLang].btn_create_profile
           : 'Cipta Profil Keluarga Baharu';
         submitBtn.innerHTML = `<span data-i18n="btn_create_profile">${createText}</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
-        lucide.createIcons();
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
       }
     }
 
@@ -5972,7 +5984,7 @@
           ? I18N[currentLang].btn_login_code
           : 'Log Masuk Ke Kod Keluarga';
         submitBtn.innerHTML = `<span data-i18n="btn_login_code">${loginText}</span><i data-lucide="link" class="w-4 h-4"></i>`;
-        lucide.createIcons();
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
       }
     }
 
@@ -6482,7 +6494,7 @@
 
       toggleChildProfileModalFields(statusEl ? statusEl.value : 'pregnancy');
       openModal('modal-child-profile');
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     async function handleSaveChildProfile(e) {
@@ -7325,7 +7337,7 @@
             </button>
           </div>
         `;
-        lucide.createIcons();
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
         return;
       }
 
@@ -7368,7 +7380,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     async function deleteTtcLetter(id) {
@@ -8005,7 +8017,7 @@
 
       if (modal) {
         modal.classList.remove('hidden');
-        lucide.createIcons();
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
       }
     }
 
@@ -8035,7 +8047,7 @@
           overlay.classList.add('hidden');
         }, 300);
       }
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function navigateFromSidebar(phase, subtab) {
@@ -8069,7 +8081,7 @@
       let currentNavId = `nav-${phase}-${subtab}`;
       const activeEl = document.getElementById(currentNavId);
       if (activeEl) activeEl.className = activeClass;
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function switchPhase(phase) {
@@ -8107,7 +8119,7 @@
         if (btnPreg) btnPreg.className = activeBtnClass;
         updateSidebarActiveMenu('pregnancy', 'overview');
       }
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function switchTtcSubtab(tab) {
@@ -8127,7 +8139,7 @@
       if (tab === 'supplements') {
         renderTtcSupplementsUI();
       }
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function navigateFromSidebar(phase, subtab) {
@@ -8157,7 +8169,7 @@
       if (activeSubtab) activeSubtab.className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
       if (tab === 'kicks') renderBabyKicks();
       updateSidebarActiveMenu('pregnancy', tab);
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function switchChildSubtab(tab) {
@@ -8182,7 +8194,7 @@
       if (tab === 'vaccine') renderVaccines();
       if (tab === 'food') renderFoodTests();
       if (tab === 'milestone') renderMilestones();
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function renderDailyMedsUI() {
@@ -8545,7 +8557,7 @@
         }
         container.appendChild(card);
       });
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     // ==========================================
@@ -8967,7 +8979,7 @@
         }
       }
 
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     // ==========================================
@@ -9227,7 +9239,7 @@
         `;
         container.appendChild(stageCard);
       });
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     // ==========================================
@@ -9729,7 +9741,7 @@
           container.appendChild(card);
         });
       }
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function showToast(message) {
@@ -9740,7 +9752,7 @@
       setTimeout(() => {
         toast.classList.add('opacity-0', 'pointer-events-none');
       }, 3500);
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function openModal(id, isEdit = false) {
@@ -9940,7 +9952,7 @@
           btnEditCycle.innerHTML = `<i data-lucide="calendar" class="w-3.5 h-3.5"></i><span>${isEn ? '✨ Set LMP / Cycle' : '✨ Tetapkan Kitaran / LMP'}</span>`;
           btnEditCycle.className = "text-[11px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-lg hover:bg-rose-100 flex items-center space-x-1 transition shadow-xs";
         }
-        lucide.createIcons();
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
         loadOpkLogs({ syncCloud: syncOpk });
         return;
       }
@@ -10005,7 +10017,7 @@
         cycleEl.className = "font-bold text-purple-700";
       }
 
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
       loadOpkLogs({ syncCloud: syncOpk });
     }
 
@@ -10172,7 +10184,7 @@
         }
       }
 
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function toggleTtcNaturalDiet(checked) {
@@ -10437,7 +10449,7 @@
           </div>
         `;
       }).join('');
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     async function loadOpkLogs({ syncCloud = true } = {}) {
@@ -10657,7 +10669,7 @@
       }
 
       openModal('modal-coffee');
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     function copyDuitNowInfo() {
@@ -10881,7 +10893,7 @@
       } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
-        lucide.createIcons();
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
       }
     }
 
@@ -11119,7 +11131,7 @@
         </div>
       `;}).join('');
 
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     async function downloadPhotobookPDF() {
@@ -11152,7 +11164,7 @@
       } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
-        lucide.createIcons();
+        if (window.lucide && lucide.createIcons) lucide.createIcons();
       }
     }
 
@@ -11336,7 +11348,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     // =========================================================
@@ -11780,7 +11792,7 @@
             </div>`;
         }).join('');
       }
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     // =========================================================
@@ -12117,7 +12129,7 @@
           }).join('');
         }
       }
-      lucide.createIcons();
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
     document.addEventListener('visibilitychange', () => {
