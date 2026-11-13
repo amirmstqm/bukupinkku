@@ -1731,25 +1731,22 @@
           </div>
 
           <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2.5">
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center gap-2 flex-wrap">
               <span class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
                 <i data-lucide="pill" class="w-4 h-4 text-tealsoft-600"></i>
                 <span data-i18n="lbl_daily_meds">Peringatan Ubat Harian</span>
               </span>
-              <button onclick="sendNudge('ubat')" data-i18n="btn_remind_partner" class="text-[11px] font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg">
-                Ingatkan Pasangan 🔔
-              </button>
-            </div>
-            <div class="space-y-1.5">
-              <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 text-xs">
-                <div>
-                  <p data-i18n="med_daily_label" class="font-bold text-slate-800">Iberet Folic Acid / Zincofer (1x Pagi)</p>
-                  <p data-i18n="med_instruction" class="text-[10px] text-slate-500">Minum bersama air kosong atau jus oren</p>
-                </div>
-                <button onclick="toggleMed(1)" id="med-1-status" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800">
-                  ✓ Dah Makan
+              <div class="flex items-center space-x-1.5">
+                <button type="button" onclick="openAddPregMedModal()" data-i18n="btn_add_med" class="text-[11px] font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-2.5 py-1 rounded-lg transition">
+                  + Tambah Ubat
+                </button>
+                <button onclick="sendNudge('ubat')" data-i18n="btn_remind_partner" class="text-[11px] font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg">
+                  Ingatkan Pasangan 🔔
                 </button>
               </div>
+            </div>
+            <div id="pregnancy-meds-list" class="space-y-1.5">
+              <!-- Populated dynamically -->
             </div>
           </div>
 
@@ -2685,6 +2682,49 @@
 
         <button type="submit" id="btn-submit-food-test" class="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl mt-2 transition shadow-sm flex items-center justify-center space-x-1.5">
           <span id="lbl-submit-food-test" data-i18n="btn_start_test">Mula Ujian 3 Hari</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: TAMBAH / EDIT UBAT HARIAN ================= -->
+  <div id="modal-preg-med" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-tealsoft-200">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <span class="text-xl">💊</span>
+          <h3 id="title-modal-preg-med" class="text-sm font-bold text-slate-800">Tambah Ubat / Vitamin Harian</h3>
+        </div>
+        <button type="button" onclick="closeModal('modal-preg-med')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSavePregMed(event)" class="space-y-3 text-xs">
+        <div>
+          <label id="lbl-preg-med-name" class="block font-semibold mb-1 text-slate-700">Nama Ubat / Vitamin & Dos</label>
+          <input type="text" id="inp-preg-med-name" required placeholder="Cth: Obimin / Maltofer / Kalsium (1x Pagi)" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-300">
+        </div>
+
+        <div>
+          <label id="lbl-preg-med-presets" class="block font-semibold mb-1.5 text-slate-700">Pilihan Cepat:</label>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="setPregMedPreset('Iberet Folic Acid / Zincofer (1x Pagi)', 'Minum bersama air kosong atau jus oren')" class="px-2 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">Iberet / Zincofer</button>
+            <button type="button" onclick="setPregMedPreset('Obimin Pluz (1x Pagi)', 'Selepas makan pagi')" class="px-2 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">Obimin</button>
+            <button type="button" onclick="setPregMedPreset('Maltofer Fol (1x Sehari)', 'Kunyah atau telan selepas makan')" class="px-2 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">Maltofer</button>
+            <button type="button" onclick="setPregMedPreset('Asid Folik 5mg (1x Pagi)', 'Sebelum atau selepas makan')" class="px-2 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">Asid Folik</button>
+            <button type="button" onclick="setPregMedPreset('Kalsium / Vitamin D (1x Malam)', 'Elakkan ambil serentak dengan pil zat besi')" class="px-2 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">Kalsium / Vit D</button>
+            <button type="button" onclick="setPregMedPreset('Metformin / Insulin', 'Ikut jadual dos doktor')" class="px-2 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-lg text-[11px] font-medium border border-slate-200 transition">Metformin</button>
+          </div>
+        </div>
+
+        <div>
+          <label id="lbl-preg-med-note" class="block font-semibold mb-1 text-slate-700">Catatan / Masa Pengambilan (Pilihan)</label>
+          <input type="text" id="inp-preg-med-note" placeholder="Cth: Selepas makan malam / Bersama jus oren" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none">
+        </div>
+
+        <button type="submit" id="btn-submit-preg-med" class="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl mt-2 transition shadow-sm">
+          Simpan Ubat
         </button>
       </form>
     </div>
@@ -4068,6 +4108,7 @@
         subtab_preg_allergy: "Pantang & Alahan",
         badge_update: "+ Kemaskini",
         lbl_daily_meds: "Peringatan Ubat Harian",
+        btn_add_med: "+ Tambah Ubat",
         btn_remind_partner: "Ingatkan Pasangan 🔔",
         med_instruction: "Minum bersama air kosong atau jus oren",
         lbl_last_hb: "BACAAN HB TERAKHIR",
@@ -4932,6 +4973,7 @@
         title_remove_photo: "Remove Photo",
         title_download_photo: "Download Full Photo",
         med_daily_label: "Iberet Folic Acid / Zincofer (1x Morning)",
+        btn_add_med: "+ Add Med",
         loading_appts: "Loading appointments...",
         loading_vitals: "Loading readings...",
         loading_allergies: "Loading allergy records...",
@@ -8246,19 +8288,184 @@
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
+    let pregnancyMeds = [];
+    let editingPregMedId = null;
+
+    function getDefaultPregnancyMeds() {
+      const isEn = currentLang === 'en';
+      return [
+        {
+          id: 'med_default_1',
+          name: isEn ? 'Iberet Folic Acid / Zincofer (1x Morning)' : 'Iberet Folic Acid / Zincofer (1x Pagi)',
+          note: isEn ? 'Take with plain water or orange juice' : 'Minum bersama air kosong atau jus oren',
+          takenDate: ''
+        }
+      ];
+    }
+
+    function normalizePregnancyMeds(rawList, legacyTaken = false, todayIso = getLocalTodayIso()) {
+      if (!Array.isArray(rawList)) {
+        const defs = getDefaultPregnancyMeds();
+        if (legacyTaken) defs[0].takenDate = todayIso;
+        return defs;
+      }
+      return rawList
+        .filter(item => item && typeof item.name === 'string' && item.name.trim())
+        .map((item, idx) => ({
+          id: String(item.id || `med_${Date.now()}_${idx}`),
+          name: item.name.trim(),
+          note: String(item.note || '').trim(),
+          takenDate: String(item.takenDate || '')
+        }));
+    }
+
+    function renderPregnancyMedsList() {
+      const container = document.getElementById('pregnancy-meds-list');
+      if (!container) return;
+      const isEn = currentLang === 'en';
+      const todayIso = getLocalTodayIso();
+
+      if (!Array.isArray(pregnancyMeds) || pregnancyMeds.length === 0) {
+        container.innerHTML = `
+          <div class="p-3 rounded-xl bg-slate-50 border border-dashed border-slate-200 text-center text-[11px] text-slate-500">
+            ${isEn ? "No daily medications listed yet. Tap '+ Add Med' to add your vitamins or medicines." : "Tiada ubat harian disenaraikan. Tekan '+ Tambah Ubat' untuk menambah ubat atau vitamin anda."}
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = pregnancyMeds.map(med => {
+        const isTaken = med.takenDate === todayIso;
+        const safeId = escapeHtml(med.id);
+        return `
+          <div class="flex justify-between items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 text-xs">
+            <div class="min-w-0 flex-1">
+              <p class="font-bold text-slate-800 break-words">${escapeHtml(med.name)}</p>
+              ${med.note ? `<p class="text-[10px] text-slate-500 break-words mt-0.5">${escapeHtml(med.note)}</p>` : ''}
+            </div>
+            <div class="flex items-center space-x-1 shrink-0">
+              <button type="button" onclick="toggleMed('${safeId}')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition ${isTaken ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
+                ${isTaken ? (isEn ? '✓ Taken' : '✓ Dah Makan') : (isEn ? 'Not Taken' : 'Belum Makan')}
+              </button>
+              <button type="button" onclick="openEditPregMedModal('${safeId}')" title="${isEn ? 'Edit' : 'Edit'}" class="p-1.5 rounded-lg text-slate-400 hover:text-teal-700 hover:bg-teal-50 transition">
+                <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+              </button>
+              <button type="button" onclick="deletePregMed('${safeId}')" title="${isEn ? 'Delete' : 'Padam'}" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function setPregMedPreset(name, note = '') {
+      const nameEl = document.getElementById('inp-preg-med-name');
+      const noteEl = document.getElementById('inp-preg-med-note');
+      if (nameEl) nameEl.value = name;
+      if (noteEl && note) noteEl.value = note;
+    }
+
+    function openAddPregMedModal() {
+      editingPregMedId = null;
+      const isEn = currentLang === 'en';
+      const titleEl = document.getElementById('title-modal-preg-med');
+      const nameLbl = document.getElementById('lbl-preg-med-name');
+      const presetsLbl = document.getElementById('lbl-preg-med-presets');
+      const noteLbl = document.getElementById('lbl-preg-med-note');
+      const submitBtn = document.getElementById('btn-submit-preg-med');
+      const nameInp = document.getElementById('inp-preg-med-name');
+      const noteInp = document.getElementById('inp-preg-med-note');
+
+      if (titleEl) titleEl.innerText = isEn ? 'Add Daily Medicine / Vitamin' : 'Tambah Ubat / Vitamin Harian';
+      if (nameLbl) nameLbl.innerText = isEn ? 'Medicine / Vitamin Name & Dose' : 'Nama Ubat / Vitamin & Dos';
+      if (presetsLbl) presetsLbl.innerText = isEn ? 'Quick Presets:' : 'Pilihan Cepat:';
+      if (noteLbl) noteLbl.innerText = isEn ? 'Notes / Timing (Optional)' : 'Catatan / Masa Pengambilan (Pilihan)';
+      if (submitBtn) submitBtn.innerText = isEn ? 'Save Medicine' : 'Simpan Ubat';
+      if (nameInp) {
+        nameInp.value = '';
+        nameInp.placeholder = isEn ? 'e.g. Obimin / Maltofer / Calcium (1x Morning)' : 'Cth: Obimin / Maltofer / Kalsium (1x Pagi)';
+      }
+      if (noteInp) {
+        noteInp.value = '';
+        noteInp.placeholder = isEn ? 'e.g. After dinner / With orange juice' : 'Cth: Selepas makan malam / Bersama jus oren';
+      }
+      openModal('modal-preg-med', true);
+    }
+
+    function openEditPregMedModal(medId) {
+      const target = pregnancyMeds.find(m => m.id === medId);
+      if (!target) return;
+      openAddPregMedModal();
+      editingPregMedId = medId;
+      const isEn = currentLang === 'en';
+      const titleEl = document.getElementById('title-modal-preg-med');
+      const submitBtn = document.getElementById('btn-submit-preg-med');
+      if (titleEl) titleEl.innerText = isEn ? 'Edit Daily Medicine' : 'Edit Ubat Harian';
+      if (submitBtn) submitBtn.innerText = isEn ? 'Save Changes' : 'Simpan Perubahan';
+      document.getElementById('inp-preg-med-name').value = target.name || '';
+      document.getElementById('inp-preg-med-note').value = target.note || '';
+    }
+
+    async function handleSavePregMed(e) {
+      e.preventDefault();
+      const isEn = currentLang === 'en';
+      const name = document.getElementById('inp-preg-med-name').value.trim();
+      const note = document.getElementById('inp-preg-med-note').value.trim();
+      if (!name) return;
+
+      if (editingPregMedId) {
+        const target = pregnancyMeds.find(m => m.id === editingPregMedId);
+        if (target) {
+          target.name = name;
+          target.note = note;
+        }
+      } else {
+        pregnancyMeds.push({
+          id: 'med_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+          name,
+          note,
+          takenDate: ''
+        });
+      }
+
+      closeModal('modal-preg-med');
+      renderDailyMedsUI();
+      const { error } = await persistDailyMedsState();
+      if (error) {
+        showCloudSyncNotice(error, true);
+      } else {
+        showToast(editingPregMedId
+          ? (isEn ? `✏️ Updated "${name}".` : `✏️ "${name}" dikemas kini.`)
+          : (isEn ? `💊 Added "${name}" to daily reminders.` : `💊 "${name}" ditambah ke peringatan harian.`));
+      }
+      editingPregMedId = null;
+    }
+
+    async function deletePregMed(medId) {
+      const isEn = currentLang === 'en';
+      const target = pregnancyMeds.find(m => m.id === medId);
+      if (!target) return;
+      const msg = isEn
+        ? `Remove "${target.name}" from daily reminders?`
+        : `Padam "${target.name}" daripada peringatan ubat harian?`;
+      if (!confirm(msg)) return;
+
+      pregnancyMeds = pregnancyMeds.filter(m => m.id !== medId);
+      renderDailyMedsUI();
+      const { error } = await persistDailyMedsState();
+      if (error) {
+        showCloudSyncNotice(error, true);
+      } else {
+        showToast(isEn ? `🗑️ Removed "${target.name}".` : `🗑️ "${target.name}" telah dipadam.`);
+      }
+    }
+
     function renderDailyMedsUI() {
       renderTtcSupplementsUI();
+      renderPregnancyMedsList();
       const isEn = currentLang === 'en';
-      const medBtn = document.getElementById('med-1-status');
-      if (medBtn) {
-        if (med1Taken) {
-          medBtn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800";
-          medBtn.innerText = isEn ? "✓ Taken" : "✓ Dah Makan";
-        } else {
-          medBtn.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-700";
-          medBtn.innerText = isEn ? "Not Taken" : "Belum Makan";
-        }
-      }
 
       const wifeBtn = document.getElementById('btn-ttc-med-wife');
       if (wifeBtn) {
@@ -8284,9 +8491,12 @@
     }
 
     async function persistDailyMedsState() {
+      const todayIso = getLocalTodayIso();
+      med1Taken = pregnancyMeds.length > 0 && pregnancyMeds.every(m => m.takenDate === todayIso);
       const payload = {
-        date: getLocalTodayIso(),
+        date: todayIso,
         med1Taken: Boolean(med1Taken),
+        pregnancyMeds: pregnancyMeds,
         ttcMedWifeTaken: Boolean(ttcMedWifeTaken),
         ttcMedHusbandTaken: Boolean(ttcMedHusbandTaken)
       };
@@ -8297,12 +8507,15 @@
     async function loadDailyMedsState() {
       const todayIso = getLocalTodayIso();
       const cached = parseJsonSafe(localStorage.getItem(getFamilyScopedKey('bukupink_daily_meds')));
-      if (cached && cached.date === todayIso) {
-        med1Taken = cached.med1Taken !== undefined ? Boolean(cached.med1Taken) : true;
-        ttcMedWifeTaken = Boolean(cached.ttcMedWifeTaken);
-        ttcMedHusbandTaken = Boolean(cached.ttcMedHusbandTaken);
+      if (cached) {
+        const isSameDay = cached.date === todayIso;
+        med1Taken = isSameDay && cached.med1Taken !== undefined ? Boolean(cached.med1Taken) : false;
+        pregnancyMeds = normalizePregnancyMeds(cached.pregnancyMeds, med1Taken, todayIso);
+        ttcMedWifeTaken = isSameDay ? Boolean(cached.ttcMedWifeTaken) : false;
+        ttcMedHusbandTaken = isSameDay ? Boolean(cached.ttcMedHusbandTaken) : false;
       } else {
-        med1Taken = true;
+        med1Taken = false;
+        pregnancyMeds = getDefaultPregnancyMeds();
         ttcMedWifeTaken = false;
         ttcMedHusbandTaken = false;
       }
@@ -8314,13 +8527,20 @@
         if (error || !data) return;
         const row = data.find(r => r.title === 'STATUS_UBAT_HARIAN');
         const parsed = row ? parseJsonSafe(row.notes) : null;
-        if (parsed && parsed.date === todayIso) {
-          med1Taken = parsed.med1Taken !== undefined ? Boolean(parsed.med1Taken) : true;
-          ttcMedWifeTaken = Boolean(parsed.ttcMedWifeTaken);
-          ttcMedHusbandTaken = Boolean(parsed.ttcMedHusbandTaken);
+        if (parsed) {
+          const isSameDay = parsed.date === todayIso;
+          med1Taken = isSameDay && parsed.med1Taken !== undefined ? Boolean(parsed.med1Taken) : false;
+          if (Array.isArray(parsed.pregnancyMeds)) {
+            pregnancyMeds = normalizePregnancyMeds(parsed.pregnancyMeds, med1Taken, todayIso);
+          }
+          if (isSameDay) {
+            ttcMedWifeTaken = Boolean(parsed.ttcMedWifeTaken);
+            ttcMedHusbandTaken = Boolean(parsed.ttcMedHusbandTaken);
+          }
           localStorage.setItem(getFamilyScopedKey('bukupink_daily_meds'), JSON.stringify({
             date: todayIso,
             med1Taken,
+            pregnancyMeds,
             ttcMedWifeTaken,
             ttcMedHusbandTaken
           }));
@@ -8332,16 +8552,24 @@
     }
 
     async function toggleMed(medId) {
-      med1Taken = !med1Taken;
       const isEn = currentLang === 'en';
+      const todayIso = getLocalTodayIso();
+      let target = pregnancyMeds.find(m => m.id === String(medId));
+      if (!target && medId === 1 && pregnancyMeds.length > 0) {
+        target = pregnancyMeds[0];
+      }
+      if (!target) return;
+
+      const wasTaken = target.takenDate === todayIso;
+      target.takenDate = wasTaken ? '' : todayIso;
       renderDailyMedsUI();
       const { error } = await persistDailyMedsState();
       if (error) {
         showCloudSyncNotice(error, true);
-      } else if (med1Taken) {
-        showToast(isEn ? "Medication marked as taken." : "Telah ditanda Ubat Diambil.");
+      } else if (!wasTaken) {
+        showToast(isEn ? `✅ "${target.name}" marked as taken.` : `✅ "${target.name}" ditanda sudah makan.`);
       } else {
-        showToast(isEn ? "Medication status changed to Not Taken." : "Status ubat ditukar ke Belum Makan.");
+        showToast(isEn ? `Status for "${target.name}" changed to Not Taken.` : `Status "${target.name}" ditukar ke Belum Makan.`);
       }
     }
 
@@ -8362,9 +8590,12 @@
           : "Salam sayang! ❤️ Ingatan mesra untuk temujanji Klinik Kesihatan (KK) kita yang seterusnya. Jangan lupa bawa Buku Pink ya! 🏥📋 - dari BukuPinkKu (https://bukupinkku.my)";
       } else {
         // default: ubat harian hamil
+        const medNames = (Array.isArray(pregnancyMeds) && pregnancyMeds.length > 0)
+          ? pregnancyMeds.map(m => m.name).join(', ')
+          : (isEn ? 'daily prenatal vitamins/meds' : 'ubat & suplemen harian');
         msg = isEn
-          ? "Hi dear! ❤️ Don't forget to take your daily vitamins & prenatal meds (Iberet / Zincofer / Folic Acid) today. Thinking of you and our baby! 🤰💊 - from BukuPinkKu (https://bukupinkku.my)"
-          : "Salam sayang! ❤️ Jangan lupa makan ubat & suplemen harian (Iberet / Zincofer / Asid Folik) hari ini ya. Kesihatan awak dan baby keutamaan kita! 🤰💊 - dari BukuPinkKu (https://bukupinkku.my)";
+          ? `Hi dear! ❤️ Don't forget to take your daily medications (${medNames}) today. Thinking of you and our baby! 🤰💊 - from BukuPinkKu (https://bukupinkku.my)`
+          : `Salam sayang! ❤️ Jangan lupa makan ubat & vitamin harian (${medNames}) hari ini ya. Kesihatan awak dan baby keutamaan kita! 🤰💊 - dari BukuPinkKu (https://bukupinkku.my)`;
       }
 
       const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
