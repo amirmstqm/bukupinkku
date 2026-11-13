@@ -1779,6 +1779,22 @@
               <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
             </div>
           </div>
+
+          <!-- Album Scan 4D & Kenangan Kehamilan -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex justify-between items-center gap-2">
+              <h3 data-i18n="hdr_preg_scan_album" class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
+                <span>📸</span>
+                <span>Album Scan 4D &amp; Kenangan</span>
+              </h3>
+              <button type="button" onclick="openModal('modal-add-memory')" class="bg-pastel-500 hover:bg-pastel-600 text-white font-bold text-[11px] px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm transition">
+                <span data-i18n="btn_add_short">+ Tambah</span>
+              </button>
+            </div>
+            <div id="preg-memory-timeline-container" class="space-y-3">
+              <div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">Memuatkan foto scan 4D &amp; kenangan...</div>
+            </div>
+          </div>
         </div>
 
         <!-- VIEW 2: APPOINTMENT -->
@@ -4108,6 +4124,8 @@
         subtab_preg_allergy: "Pantang & Alahan",
         badge_update: "+ Kemaskini",
         lbl_daily_meds: "Peringatan Ubat Harian",
+        hdr_preg_scan_album: "📸 Album Scan 4D & Kenangan",
+        btn_add_short: "+ Tambah",
         btn_add_med: "+ Tambah Ubat",
         btn_remind_partner: "Ingatkan Pasangan 🔔",
         med_instruction: "Minum bersama air kosong atau jus oren",
@@ -4973,6 +4991,8 @@
         title_remove_photo: "Remove Photo",
         title_download_photo: "Download Full Photo",
         med_daily_label: "Iberet Folic Acid / Zincofer (1x Morning)",
+        hdr_preg_scan_album: "📸 4D Scan & Memory Album",
+        btn_add_short: "+ Add",
         btn_add_med: "+ Add Med",
         loading_appts: "Loading appointments...",
         loading_vitals: "Loading readings...",
@@ -7241,23 +7261,37 @@
 
       const isEn = currentLang === 'en';
       const container = document.getElementById('memory-timeline-container');
+      const pregContainer = document.getElementById('preg-memory-timeline-container');
       const filtered = (data || []).filter(item =>
         !NON_GALLERY_CATEGORIES.includes(item.category) && recordMatchesActiveChild(item)
       );
       if (error || filtered.length === 0) {
         cachedMemories = [];
-        container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">${isEn ? "No photo memories yet. Tap '+ Save New Memory' to upload your baby's first photo! 📸" : "Belum ada memori foto. Klik butang '+ Simpan Kenangan Baru' untuk muat naik foto pertama anak anda! 📸"}</div>`;
+        const emptyChildHtml = `<div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">${isEn ? "No photo memories yet. Tap '+ Save New Memory' to upload your baby's first photo! 📸" : "Belum ada memori foto. Klik butang '+ Simpan Kenangan Baru' untuk muat naik foto pertama anak anda! 📸"}</div>`;
+        if (container) container.innerHTML = emptyChildHtml;
+        if (pregContainer) pregContainer.innerHTML = `<div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">${isEn ? "No 4D scan or pregnancy memory photos saved yet. Tap '+ Save 4D Scan / Memory Photo' above to upload!" : "Belum ada foto scan 4D atau kenangan kehamilan disimpan. Tekan butang '+ Simpan Foto Scan 4D / Kenangan' di atas untuk muat naik!"}</div>`;
         return;
       }
 
       cachedMemories = filtered;
-      container.innerHTML = '';
-      filtered.forEach(item => {
-        const card = document.createElement('div');
-        card.className = "bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2.5";
-        createMemoryCard(card, item.title, item.category, item.memory_date, item.notes, item.image_url, item.uploaded_by, item.id);
-        container.appendChild(card);
-      });
+      if (container) {
+        container.innerHTML = '';
+        filtered.forEach(item => {
+          const card = document.createElement('div');
+          card.className = "bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2.5";
+          createMemoryCard(card, item.title, item.category, item.memory_date, item.notes, item.image_url, item.uploaded_by, item.id);
+          container.appendChild(card);
+        });
+      }
+      if (pregContainer) {
+        pregContainer.innerHTML = '';
+        filtered.forEach(item => {
+          const card = document.createElement('div');
+          card.className = "bg-slate-50/60 p-3.5 rounded-2xl border border-slate-200 shadow-2xs space-y-2.5";
+          createMemoryCard(card, item.title, item.category, item.memory_date, item.notes, item.image_url, item.uploaded_by, item.id);
+          pregContainer.appendChild(card);
+        });
+      }
     }
 
     // ================= WARKAH BUAT BAKAL ANAK (TTC) =================
@@ -10333,6 +10367,8 @@
           editingMemoryId = null;
           currentMemoryPendingImage = null;
           document.getElementById('inp-mem-title').value = '';
+          const catEl = document.getElementById('inp-mem-cat');
+          if (catEl) catEl.value = (currentPhase === 'pregnancy') ? 'Ultrasound Scan' : 'Milestone';
           document.getElementById('inp-mem-date').value = today;
           document.getElementById('inp-mem-notes').value = '';
           const fileEl = document.getElementById('inp-mem-file');
