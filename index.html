@@ -3849,11 +3849,24 @@
       return sorted[0] && sorted[0].id ? String(sorted[0].id) : String(cachedChildren[cachedChildren.length - 1].id);
     }
 
+    function normalizeChildNickname(name) {
+      return String(name || '')
+        .replace(/\(\s*(kandungan|pregnancy|hamil|in womb)\s*\)/gi, '')
+        .trim()
+        .toLowerCase();
+    }
+
     function isPrimaryLegacyChild(childId = null) {
       const targetId = childId || getActiveChildId();
       if (!cachedChildren || cachedChildren.length <= 1) return true;
       const oldestId = getOldestChildId();
-      return !oldestId || !targetId || String(targetId) === String(oldestId);
+      if (!oldestId || !targetId || String(targetId) === String(oldestId)) return true;
+      const oldestRec = cachedChildren.find(c => String(c.id) === String(oldestId));
+      const targetRec = cachedChildren.find(c => String(c.id) === String(targetId));
+      const oldestNick = normalizeChildNickname(oldestRec?.nickname);
+      const targetNick = normalizeChildNickname(targetRec?.nickname);
+      if (oldestNick && targetNick && oldestNick === targetNick) return true;
+      return false;
     }
 
     function getChildScopedKey(prefix) {
@@ -3874,13 +3887,16 @@
           if (!rowChildRec) {
             return isPrimaryLegacyChild(cid);
           }
-          const activeNick = String(activeRec?.nickname || '').trim().toLowerCase();
-          const rowNick = String(rowChildRec?.nickname || '').trim().toLowerCase();
+          const activeNick = normalizeChildNickname(activeRec?.nickname);
+          const rowNick = normalizeChildNickname(rowChildRec?.nickname);
           if (activeNick && rowNick && activeNick === rowNick) {
             return true;
           }
         }
         return false;
+      }
+      if ('memory_date' in row && !isSystemSyncMemoryRow(row, false)) {
+        return true;
       }
       return isPrimaryLegacyChild(cid);
     }
@@ -6689,15 +6705,16 @@
         if (error && String(error.message || '').includes('INVALID_TABLE') && db) {
           const fallbackRes = await db.from('children').delete().eq('id', active.id).eq('family_id', currentFamilyId);
           error = fallbackRes.error || null;
+          if (error) {
+            const softRes = await secureUpdateRecord('children', active.id, {
+              nickname: `__DELETED__:${active.nickname || ''}`,
+              status: 'deleted'
+            });
+            error = softRes.error || null;
+          }
         }
         if (error) {
-          if (String(error.message || '').includes('INVALID_TABLE')) {
-            showToast(isEn
-              ? '⚠️ Please run the updated supabase_security_rpc.sql in Supabase SQL Editor to enable deleting child profiles.'
-              : '⚠️ Pelayan Supabase perlu dikemaskini: jalankan semula supabase_security_rpc.sql di Supabase SQL Editor untuk aktifkan padam profil anak.');
-          } else {
-            showCloudSyncNotice(error, false);
-          }
+          showCloudSyncNotice(error, false);
           return;
         }
         const remaining = cachedChildren.filter(c => String(c.id) !== String(active.id));
@@ -6929,7 +6946,14 @@
         return;
       }
 
-      cachedChildren = childRows;
+      cachedChildren = (childRows || []).filter(c =>
+        c && !String(c.nickname || '').startsWith('__DELETED__') && c.status !== 'deleted'
+      );
+      if (cachedChildren.length === 0) {
+        activeChildId = null;
+        renderChildSwitcher();
+        return;
+      }
       const active = getActiveChildRecord();
       activeChildId = active ? active.id : null;
       if (activeChildId) {
@@ -7992,6 +8016,16 @@
           return;
         }
 
+        const savedItem = (saveRes && saveRes.data && typeof saveRes.data === 'object') ? saveRes.data : {
+          id: editingMemoryId || `temp_${Date.now()}`,
+          child_id: getActiveChildId(),
+          title: title,
+          category: cat,
+          memory_date: date,
+          notes: notes,
+          image_url: finalImageUrl,
+          uploaded_by: uploader
+        };
         const wasEditing = !!editingMemoryId;
         editingMemoryId = null;
         currentMemoryPendingImage = null;
@@ -8004,7 +8038,30 @@
         if (fileInput) fileInput.value = '';
         const previewContainer = document.getElementById('mem-preview-container');
         if (previewContainer) previewContainer.classList.add('hidden');
-        loadBabyMemories();
+        if (savedItem && !isSystemSyncMemoryRow(savedItem, true)) {
+          cachedMemories = [savedItem, ...(cachedMemories || []).filter(m => String(m.id) !== String(savedItem.id))];
+          const container = document.getElementById('memory-timeline-container');
+          const pregContainer = document.getElementById('preg-memory-timeline-container');
+          if (container) {
+            container.innerHTML = '';
+            cachedMemories.forEach(item => {
+              const card = document.createElement('div');
+              card.className = "bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-2.5";
+              createMemoryCard(card, item.title, item.category, item.memory_date, item.notes, item.image_url, item.uploaded_by, item.id);
+              container.appendChild(card);
+            });
+          }
+          if (pregContainer) {
+            pregContainer.innerHTML = '';
+            cachedMemories.forEach(item => {
+              const card = document.createElement('div');
+              card.className = "bg-slate-50/60 p-3.5 rounded-2xl border border-slate-200 shadow-2xs space-y-2.5";
+              createMemoryCard(card, item.title, item.category, item.memory_date, item.notes, item.image_url, item.uploaded_by, item.id);
+              pregContainer.appendChild(card);
+            });
+          }
+        }
+        await loadBabyMemories();
       } finally {
         btn.innerHTML = `<i data-lucide="cloud-upload" class="w-4 h-4"></i><span data-i18n="btn_save_cloud">${isEn ? 'Save to Cloud Vault' : 'Simpan Ke Cloud Supabase'}</span>`;
         if (window.lucide && lucide.createIcons) lucide.createIcons();
