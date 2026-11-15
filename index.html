@@ -3784,7 +3784,6 @@
 
     const NON_PHOTOBOOK_CATEGORIES = [
       'Vaksin KKM',
-      'Milestone',
       'Ujian Makanan',
       'Ujian Makanan Aktif',
       'Tumbesaran',
@@ -3799,6 +3798,21 @@
       'Tendangan Bayi'
     ];
     const NON_GALLERY_CATEGORIES = ['Warkah Buat Bakal Anak', ...NON_PHOTOBOOK_CATEGORIES];
+
+    function isSystemSyncMemoryRow(item, excludeLetters = true) {
+      if (!item) return true;
+      const cat = String(item.category || '').trim();
+      if (excludeLetters && cat === 'Warkah Buat Bakal Anak') return true;
+      if (NON_PHOTOBOOK_CATEGORIES.includes(cat)) return true;
+      if (cat === 'Milestone') {
+        const notesStr = String(item.notes || '').trim();
+        const titleStr = String(item.title || '').trim();
+        if (!item.image_url && (notesStr.startsWith('{"msId"') || titleStr.startsWith('Milestone:'))) {
+          return true;
+        }
+      }
+      return false;
+    }
     let hasAppliedCloudPhaseForFamily = null;
 
     function getLocalTodayIso() {
@@ -3852,7 +3866,21 @@
       const cid = targetChildId ? String(targetChildId) : getActiveChildId();
       if (!cid) return true;
       if (row.child_id !== null && row.child_id !== undefined && String(row.child_id).trim() !== '') {
-        return String(row.child_id) === cid;
+        const rowCid = String(row.child_id).trim();
+        if (rowCid === cid) return true;
+        if (Array.isArray(cachedChildren) && cachedChildren.length > 0) {
+          const activeRec = cachedChildren.find(c => String(c.id) === cid);
+          const rowChildRec = cachedChildren.find(c => String(c.id) === rowCid);
+          if (!rowChildRec) {
+            return isPrimaryLegacyChild(cid);
+          }
+          const activeNick = String(activeRec?.nickname || '').trim().toLowerCase();
+          const rowNick = String(rowChildRec?.nickname || '').trim().toLowerCase();
+          if (activeNick && rowNick && activeNick === rowNick) {
+            return true;
+          }
+        }
+        return false;
       }
       return isPrimaryLegacyChild(cid);
     }
@@ -7341,7 +7369,7 @@
       const container = document.getElementById('memory-timeline-container');
       const pregContainer = document.getElementById('preg-memory-timeline-container');
       const filtered = (data || []).filter(item =>
-        !NON_GALLERY_CATEGORIES.includes(item.category) && recordMatchesActiveChild(item)
+        !isSystemSyncMemoryRow(item, true) && recordMatchesActiveChild(item)
       );
       if (error || filtered.length === 0) {
         cachedMemories = [];
@@ -11699,7 +11727,7 @@
           const { data, error } = await secureGetRecords('baby_memories');
           if (!error && data && data.length > 0) {
             memories = data
-              .filter(item => !NON_PHOTOBOOK_CATEGORIES.includes(item.category) && recordMatchesActiveChild(item))
+              .filter(item => !isSystemSyncMemoryRow(item, true) && recordMatchesActiveChild(item))
               .slice()
               .sort((a, b) => String(a.memory_date || '').localeCompare(String(b.memory_date || '')));
           }
