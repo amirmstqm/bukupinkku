@@ -1103,7 +1103,7 @@
             <p id="sidebar-family-title" data-i18n="hdr_happy_family" class="text-[10px] text-slate-500">Keluarga Bahagia</p>
           </div>
         </div>
-        <button type="button" onclick="openMiniGamesModal()" data-i18n-title="btn_mini_game" title="Mini Game" class="p-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200 transition">
+        <button type="button" onclick="openMiniGamesModal(); toggleSidebar(false);" data-i18n-title="btn_mini_game" title="Mini Game" class="p-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200 transition">
             <i data-lucide="gamepad-2" class="w-4 h-4"></i>
           </button>
           <button onclick="logoutProfile()" data-i18n-title="title_logout" title="Log Keluar" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition">
@@ -1799,6 +1799,10 @@
 
         <!-- VIEW 2: APPOINTMENT -->
         <div id="view-preg-appt" class="hidden space-y-3">
+          <button type="button" onclick="switchPregSubtab('overview')" class="inline-flex items-center space-x-1.5 text-xs font-bold text-pastel-700 hover:text-pastel-800 bg-pastel-50 border border-pastel-200 px-3 py-1.5 rounded-xl transition">
+            <span>←</span>
+            <span data-i18n="subtab_preg_dash">Dashboard Hamil</span>
+          </button>
           <div class="flex justify-between items-center">
             <h3 data-i18n="hdr_appt_schedule" class="text-xs font-bold text-slate-700 uppercase">Jadual Temujanji KK & Swasta</h3>
             <button onclick="openModal('modal-add-appointment')" class="text-xs font-bold text-white bg-pastel-500 hover:bg-pastel-600 px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm">
@@ -1813,6 +1817,10 @@
 
         <!-- VIEW 3: VITALS -->
         <div id="view-preg-vitals" class="hidden space-y-3">
+          <button type="button" onclick="switchPregSubtab('overview')" class="inline-flex items-center space-x-1.5 text-xs font-bold text-pastel-700 hover:text-pastel-800 bg-pastel-50 border border-pastel-200 px-3 py-1.5 rounded-xl transition">
+            <span>←</span>
+            <span data-i18n="subtab_preg_dash">Dashboard Hamil</span>
+          </button>
           <div class="flex justify-between items-center">
             <h3 data-i18n="hdr_vital_records" class="text-xs font-bold text-slate-700 uppercase">Rekod Buku Pink KKM</h3>
             <button onclick="openModal('modal-add-vital')" class="text-xs font-bold text-white bg-pastel-500 hover:bg-pastel-600 px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm">
@@ -1827,6 +1835,10 @@
 
         <!-- VIEW 4: PANTANG -->
         <div id="view-preg-pantang" class="hidden space-y-3">
+          <button type="button" onclick="switchPregSubtab('overview')" class="inline-flex items-center space-x-1.5 text-xs font-bold text-pastel-700 hover:text-pastel-800 bg-pastel-50 border border-pastel-200 px-3 py-1.5 rounded-xl transition">
+            <span>←</span>
+            <span data-i18n="subtab_preg_dash">Dashboard Hamil</span>
+          </button>
           <div class="flex justify-between items-center">
             <h3 data-i18n="subtab_preg_allergy" class="text-xs font-bold text-slate-700 uppercase">Pantang & Alahan</h3>
             <button onclick="openModal('modal-add-allergy')" class="text-xs font-bold text-white bg-pastel-500 hover:bg-pastel-600 px-3 py-1.5 rounded-xl flex items-center space-x-1 shadow-sm">
@@ -1841,6 +1853,10 @@
 
         <!-- VIEW 5: CHECKLIST BEG BERSALIN HOSPITAL -->
         <div id="view-preg-beg" class="hidden space-y-3">
+          <button type="button" onclick="switchPregSubtab('overview')" class="inline-flex items-center space-x-1.5 text-xs font-bold text-pastel-700 hover:text-pastel-800 bg-pastel-50 border border-pastel-200 px-3 py-1.5 rounded-xl transition">
+            <span>←</span>
+            <span data-i18n="subtab_preg_dash">Dashboard Hamil</span>
+          </button>
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2.5">
             <div class="flex justify-between items-start gap-2">
               <div>
@@ -1869,6 +1885,10 @@
 
         <!-- VIEW 6: KAUNTER TENDANGAN BAYI (CARTA PERGERAKAN JANIN KKM) -->
         <div id="view-preg-kicks" class="hidden space-y-3">
+          <button type="button" onclick="switchPregSubtab('overview')" class="inline-flex items-center space-x-1.5 text-xs font-bold text-pastel-700 hover:text-pastel-800 bg-pastel-50 border border-pastel-200 px-3 py-1.5 rounded-xl transition">
+            <span>←</span>
+            <span data-i18n="subtab_preg_dash">Dashboard Hamil</span>
+          </button>
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2.5">
             <div class="flex justify-between items-start gap-2">
               <div>
@@ -2175,6 +2195,10 @@
 
         <!-- [CHILD TAB: PANTAU JAUNDIS / KUNING BAYI] -->
         <div id="view-child-jaundice" class="hidden space-y-3.5">
+          <button type="button" onclick="switchChildSubtab('memories')" class="inline-flex items-center space-x-1.5 text-xs font-bold text-pastel-700 hover:text-pastel-800 bg-pastel-50 border border-pastel-200 px-3 py-1.5 rounded-xl transition">
+            <span>←</span>
+            <span data-i18n="subtab_child_album">Album &amp; Kenangan</span>
+          </button>
           <div class="bg-white p-4 rounded-2xl border border-amber-200/80 shadow-sm space-y-3">
             <div class="flex justify-between items-start gap-2">
               <div>
@@ -4441,7 +4465,7 @@
         ph_growth_weight: "cth: 7.45",
         ph_growth_height: "cth: 66.5",
         ph_growth_head: "cth: 43.2",
-        ph_growth_notes: "cth: Semakin berselera makan &amp; aktif...",
+        ph_growth_notes: "cth: Semakin berselera makan & aktif...",
         ph_sup_name: "Cth: Siti Aminah / Ahmad",
         ph_sup_phone: "Cth: 012-3456789 atau 6789",
         ph_sup_code: "Cth: PINK-8829 (jika ingat)",
@@ -5041,7 +5065,7 @@
         ph_growth_weight: "e.g. 7.45",
         ph_growth_height: "e.g. 66.5",
         ph_growth_head: "e.g. 43.2",
-        ph_growth_notes: "e.g. Appetite improving &amp; very active...",
+        ph_growth_notes: "e.g. Appetite improving & very active...",
         ph_sup_name: "e.g. Siti Aminah / Ahmad",
         ph_sup_phone: "e.g. 012-3456789 or 6789",
         ph_sup_code: "e.g. PINK-8829 (if remembered)",
@@ -8405,17 +8429,17 @@
       if (phase === 'ttc') {
         if (ttcSec) ttcSec.classList.remove('hidden');
         if (btnTtc) btnTtc.className = activeBtnClass;
-        updateSidebarActiveMenu('ttc', 'fertility');
+        switchTtcSubtab('fertility');
         calculateTtcDates();
         loadTtcLetters();
       } else if (phase === 'child') {
         if (childSec) childSec.classList.remove('hidden');
         if (btnChild) btnChild.className = activeBtnClass;
-        updateSidebarActiveMenu('child', 'memories');
+        switchChildSubtab('memories');
       } else {
         if (pregSec) pregSec.classList.remove('hidden');
         if (btnPreg) btnPreg.className = activeBtnClass;
-        updateSidebarActiveMenu('pregnancy', 'overview');
+        switchPregSubtab('overview');
       }
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
@@ -8425,10 +8449,14 @@
       tabs.forEach(t => {
         const viewEl = document.getElementById('view-ttc-' + t);
         if (viewEl) viewEl.classList.add('hidden');
+        const subtabEl = document.getElementById('subtab-ttc-' + t);
+        if (subtabEl) subtabEl.className = "px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 whitespace-nowrap";
       });
 
       const activeView = document.getElementById('view-ttc-' + tab);
       if (activeView) activeView.classList.remove('hidden');
+      const activeSubtab = document.getElementById('subtab-ttc-' + tab);
+      if (activeSubtab) activeSubtab.className = "px-3 py-1.5 rounded-xl bg-pastel-500 text-white whitespace-nowrap shadow-sm";
 
       updateSidebarActiveMenu('ttc', tab);
       if (tab === 'letters') {
@@ -11893,13 +11921,28 @@
         margin:       [8, 8, 8, 8],
         filename:     'BukuPinkKu-Photobook.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        html2canvas:  { scale: 2, useCORS: true, allowTaint: true, logging: false },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       try {
+        if (element) {
+          const imgs = Array.from(element.querySelectorAll('img'));
+          await Promise.all(imgs.map(img => new Promise(resolve => {
+            if (!img.src || (img.complete && img.naturalWidth > 0)) return resolve();
+            const done = () => resolve();
+            img.addEventListener('load', done, { once: true });
+            img.addEventListener('error', () => {
+              img.removeAttribute('src');
+              img.classList.add('hidden');
+              resolve();
+            }, { once: true });
+          })));
+        }
         if (window.html2pdf) {
-          await window.html2pdf().set(opt).from(element).save();
+          await Promise.resolve(window.html2pdf().set(opt).from(element).save()).catch(err => {
+            console.warn("html2pdf fallback:", err);
+          });
           showToast(isEn ? "🎉 Digital Memory Photobook PDF downloaded!" : "🎉 Buku Kenangan PDF berjaya dimuat turun!");
         } else {
           window.print();
@@ -13130,6 +13173,7 @@
     let quizAnswered = false;
 
     function openMiniGamesModal() {
+      toggleSidebar(false);
       openModal('modal-mini-games');
       switchMiniGameTab('memory');
       initMemoryGame();
